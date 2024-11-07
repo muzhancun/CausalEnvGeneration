@@ -12,6 +12,7 @@ import cv2
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+import albumentations as A
 import numpy as np
 from rich import print
 from rich.console import Console
@@ -19,7 +20,18 @@ from typing import Union, Tuple, List, Dict, Callable, Sequence, Mapping, Any, O
 from pathlib import Path
 from functools import partial
 
-import albumentations as A
+from minestudio.utils.vpt_lib.actions import ActionTransformer
+from minestudio.utils.vpt_lib.action_mapping import CameraHierarchicalMapping
+
+ACTION_TRANSFORMER_KWARGS = dict(
+    camera_binsize=2,
+    camera_maxval=10,
+    camera_mu=10,
+    camera_quantization_scheme="mu_law",
+)
+
+action_mapper = CameraHierarchicalMapping(n_camera_bins=11)
+action_transformer = ActionTransformer(**ACTION_TRANSFORMER_KWARGS)
 
 SEG_RE_MAP = {
     0: 0, 1: 3, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6
@@ -626,15 +638,17 @@ class BaseDataset(Dataset):
             return item
     
     def postprocess(self, item: Dict) -> Dict:
-
+        # rename the keys
         if 'action' in item:
-            item['minecraft_envaction'] = item['action']
-            item['minecraft_action'] = MinecraftWrapper.env_action_to_agent(item.pop('action'))
+            action = item.pop('action')
+            item['env_action'] = action
+            item['agent_action'] = action_transformer.env2policy(action)
         if 'prev_action' in item:
-            item['minecraft_prev_envaction'] = item['prev_action']
-            item['minecraft_prev_action'] = MinecraftWrapper.env_action_to_agent(item.pop('prev_action'))
+            prev_action = item.pop('prev_action')
+            item['env_prev_action'] = prev_action
+            item['agent_prev_action'] = action_transformer.env2policy(prev_action)
         if 'video' in item:
-            item['img'] = item.pop('video')
+            item['image'] = item.pop('video')
         
         masks = []
         for key in list(item.keys()):
@@ -643,7 +657,7 @@ class BaseDataset(Dataset):
         item['mask'] = masks[0]
         
         if self.enable_augmentation:
-            item['img'] = self.augmentor(item['img'])
+            item['image'] = self.augmentor(item['image'])
         
         item = self.to_tensor(item)
         

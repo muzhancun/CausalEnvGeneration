@@ -75,7 +75,6 @@ class RawDataset(BaseDataset):
         start = max(1, relative_idx * self.win_len) # start > 0 is the prequest for previous action
         item = self.kernel.read(episode, start, self.win_len, self.skip_frame)
         item['text'] = 'raw'
-        
         item = self.postprocess(item)
         return item
 
