@@ -1,6 +1,13 @@
+'''
+Date: 2024-11-10 10:26:32
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-10 10:28:56
+FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
+'''
 import io
 import re
 import os
+import math
 import lmdb
 import pickle
 import random
@@ -40,16 +47,15 @@ class RawDataset(BaseDataset):
         else:
             _episodes_with_length = _episodes_with_length[divider:]
         
-        items = []
-        num_items = 0
+        self.items = []
+        self.num_items = 0
+        self.episodes_with_items = []
         for episode, length in _episodes_with_length:
-            num_episode_items = (length + self.win_len - 1) // self.win_len
-            num_items += num_episode_items
-            items.append( (num_items, episode) )
-        
-        self.items = items
-        self.num_items = num_items
-    
+            num_episode_items = (length + self.win_len - 1) // self.win_len 
+            self.episodes_with_items.append( (episode, num_episode_items, self.num_items) )
+            self.num_items += num_episode_items
+            self.items.append( (self.num_items, episode) )
+
     def locate_item(self, idx: int) -> Tuple[str, int]:
         """Find the first episode that idx > acc[episode]"""
         left, right = 0, len(self.items)
@@ -75,6 +81,9 @@ class RawDataset(BaseDataset):
         start = max(1, relative_idx * self.win_len) # start > 0 is the prequest for previous action
         item = self.kernel.read(episode, start, self.win_len, self.skip_frame)
         item['text'] = 'raw'
+        item['episode'] = episode
+        episode_samples = math.ceil(self.episodes_with_length[episode] / self.win_len)
+        item['progress'] = f"{relative_idx}/{episode_samples}"
         item = self.postprocess(item)
         return item
 
@@ -87,7 +96,7 @@ if __name__ == '__main__':
             # '/nfs-readonly/jarvisbase/database/contractors/dataset_8xx', 
             # '/nfs-readonly/jarvisbase/database/contractors/dataset_9xx', 
             # '/nfs-readonly/jarvisbase/database/contractors/dataset_10xx', 
-            '/nfs-shared-2/data/contractors/dataset_6xx', 
+            '/nfs-shared-2/data/contractors/dataset_7xx', 
         ], 
         enable_contractor_info=False, 
         enable_segment=True, 
@@ -106,5 +115,15 @@ if __name__ == '__main__':
     
     item = dataset[128]
     
-    import ipdb; ipdb.set_trace()
-    
+    from minestudio.data.minecraft.samplers import MineDistributedBatchSampler
+    sampler = MineDistributedBatchSampler(dataset, batch_size=4, num_replicas=2, rank=0, shuffle=False, drop_last=True)
+    from torch.utils.data import DataLoader
+    from tqdm import tqdm
+    loader = DataLoader(dataset, batch_sampler=sampler)
+    for batch in loader:
+        print(f"{len(batch['episode']) = }")
+        print(
+            "\t".join(
+                [f"{a} {b}" for a, b in zip(batch['episode'], batch['progress'])]
+            )
+        )

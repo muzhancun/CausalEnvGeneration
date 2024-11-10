@@ -1,3 +1,9 @@
+'''
+Date: 2024-11-08 04:17:36
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-10 11:45:07
+FilePath: /MineStudio/minestudio/data/minecraft/core.py
+'''
 import io
 import typing
 import lmdb
@@ -287,82 +293,6 @@ PADDING_FUNCTIONS = {
     'contractor_info': padding_contractor_info,
     'segment': padding_segment,
 }
-
-def flatten_collate_dict(
-    dic: List[Dict[str, np.ndarray]], support_keys: Optional[List[str]] = None
-) -> Dict[str, np.ndarray]:
-    """Flatten dict of tensors into tensor of dict."""
-    result = dict()
-    if support_keys is None:
-        support_keys = dic[0].keys()
-    for key, val in dic[0].items():
-        if key not in support_keys:
-            continue
-        if isinstance(val, np.ndarray):
-            result[key] = np.stack([d.get(key, np.zeros_like(val)) for d in dic], axis=0)
-        else:
-            result[key] = [d.get(key, None) for d in dic]
-    return result
-
-def list_to_dict(
-    list_of_dict: List[Dict],
-) -> Dict[str, List]:
-    dict_of_list = dict()
-    for key, val in list_of_dict[0].items():
-        if isinstance(val, Dict):
-            dict_of_list[key] = list_to_dict([d[key] for d in list_of_dict])
-        else:
-            dict_of_list[key] = [d[key] for d in list_of_dict]
-    return dict_of_list
-
-def collate_fn(result_in: Sequence[Mapping[str, np.ndarray]]) -> Mapping[str, Sequence[np.ndarray]]:
-    """Convert sequence of dict into dict of sequence."""
-    
-    result_out = dict()
-    example = result_in[0]
-    if 'img' in example:
-        tensors = [dic['img'] for dic in result_in]
-        result_out['img'] = np.stack(tensors, axis = 0)
-    
-    if 'original_img' in example:
-        tensors = [dic['original_img'] for dic in result_in]
-        result_out['original_img'] = np.stack(tensors, axis = 0)
-    
-    action_names = ['action', 'prev_action', 'pos_act', 'neg_act', 'pos_prev_act', 'neg_prev_act', 
-                    'minecraft_action', 'minecraft_prev_action', 'minecraft_envaction', 'minecraft_prev_envaction', 'pos_minecraft_act', 'neg_minecraft_act', 
-                    'pos_prev_minecraft_act', 'neg_prev_minecraft_act']
-    
-    for key in action_names:
-        if key in example:
-            result_out[key] = flatten_collate_dict(
-                [dic[key] for dic in result_in], support_keys=None
-            )
-    
-    if 'contractor_info' in example:
-        result_out['contractor_info'] = flatten_collate_dict(
-            [dic['contractor_info'] for dic in result_in], support_keys=None
-        )
-
-    if 'mask' in example:
-        tensors = [dic['mask'] for dic in result_in]
-        result_out['mask'] = np.stack(tensors, axis = 0)
-    
-    if 'text' in example:
-        texts = [dic['text'] for dic in result_in]
-        result_out['text'] = texts
-
-    if 'obs_conf' in example:
-        result_out['obs_conf'] = list_to_dict(
-            [dic['obs_conf'] for dic in result_in]
-        )
-    
-    if 'segment' in example:
-        result_out['segment'] = flatten_collate_dict(
-            [ dic['segment'] for dic in result_in ], support_keys=None
-        )
-    
-    return result_out
-
 
 class LMDBDriver(object):
     
@@ -677,13 +607,9 @@ if __name__ == '__main__':
     win_len = 128
     
     result = kernel.read(demo_eps, start, win_len, 1)
-    
     frames = kernel.get_num_frames()
-    
     print(frames)
     
-    # videos, video_mask   = kernel.read_frames(demo_eps, start, win_len, 1, 'video')
-    # actions, action_mask = kernel.read_frames(demo_eps, start, win_len, 1, 'action')
-    # contractor_infos, contractor_info_mask = kernel.read_frames(demo_eps, start, win_len, 1, 'contractor_info')
-    
-    import ipdb; ipdb.set_trace()
+    videos, video_mask   = kernel.read_frames(demo_eps, start, win_len, 1, 'video')
+    actions, action_mask = kernel.read_frames(demo_eps, start, win_len, 1, 'action')
+    contractor_infos, contractor_info_mask = kernel.read_frames(demo_eps, start, win_len, 1, 'contractor_info')

@@ -1,3 +1,9 @@
+'''
+Date: 2024-11-10 10:26:52
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-10 12:06:25
+FilePath: /MineStudio/minestudio/data/minecraft/part_event.py
+'''
 import io
 import re
 import os
@@ -10,17 +16,6 @@ from rich.console import Console
 from pathlib import Path
 from typing import Union, Tuple, List, Dict, Callable, Sequence, Mapping, Any, Optional, Literal
 from minestudio.data.minecraft.core import BaseDataset
-
-# from jarvis.assets import DESCRIPTION_CONSTANTS
-# def generate_texts(tag: str, p = 0.8):
-#     tag = tag.replace('minecraft.', '')
-#     if random.random() < p:
-#         if tag in DESCRIPTION_CONSTANTS:
-#             text = random.choice(DESCRIPTION_CONSTANTS[tag])
-#             return text
-#     else:
-#         text = tag.replace(':', ' ').replace('_', ' ')
-#         return text
 
 class EventLMDBDriver:
     
@@ -195,8 +190,7 @@ class EventDataset(BaseDataset):
         episode, event_time, value = self.event_kernel.get_event_item(event, relative_idx)
         start = max(event_time - self.win_len + self.bias, 0)
         item = self.kernel.read(episode, start=start, win_len=self.win_len, skip_frame=self.skip_frame)
-        item['text'] = event
-        # item['text'] = generate_texts(event, p=0.0)
+        item['text'] = event.replace('minecraft.', '')
         return self.postprocess(item)
         
 if __name__ == '__main__':
