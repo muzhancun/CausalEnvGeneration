@@ -24,7 +24,7 @@ from typing import Union, Tuple, List, Dict, Callable, Sequence, Mapping, Any, O
 from minestudio.data.minecraft.part_event import EventDataset
 from minestudio.data.minecraft.part_raw import RawDataset
 from minestudio.data.minecraft.dataset import MinecraftDataset
-from minestudio.data.minecraft.utils import MineDistributedBatchSampler, write_video, collate_fn
+from minestudio.data.minecraft.utils import MineDistributedBatchSampler, write_video, batchify
 
 def write_to_frame(frame: np.ndarray, txt: str, row: int, col: int, color=(255, 0, 0)) -> None:
     cv2.putText(frame, txt, (col, row), cv2.FONT_HERSHEY_SIMPLEX, 2.0, color, 1)
@@ -81,7 +81,7 @@ def read_dataloader(
             break
         action = data['env_action']
         prev_action = data.get("env_prev_action", None)
-        image = data['image']
+        image = data['image'].numpy()
         text = data['text']
 
         color = (255, 0, 0)
@@ -170,7 +170,7 @@ def visualize_raw_dataset(args):
         dataset=raw_dataset,
         batch_sampler=batch_sampler,
         num_workers=args.num_workers,
-        collate_fn=collate_fn,
+        collate_fn=batchify,
     )
     
     read_dataloader(
@@ -205,7 +205,7 @@ def visualize_event_dataset(args):
         batch_size=args.batch_size, 
         num_workers=args.num_workers,
         shuffle=args.shuffle,
-        collate_fn=collate_fn,
+        collate_fn=batchify,
     )
     
     # dump_trajectories(

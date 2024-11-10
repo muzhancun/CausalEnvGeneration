@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:25:38
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 11:44:16
+LastEditTime: 2024-11-10 13:40:24
 FilePath: /MineStudio/minestudio/data/minecraft/dataset.py
 '''
 import torch
@@ -12,11 +12,9 @@ from typing import Dict, List, Union, Sequence, Mapping, Any, Optional, Literal
 
 from minestudio.data.minecraft.part_event import EventDataset
 from minestudio.data.minecraft.part_raw import RawDataset
-from minestudio.data.minecraft.utils import write_video, collate_fn
+from minestudio.data.minecraft.utils import write_video, batchify
 
 class MinecraftDataset(Dataset):
-    
-    collate_fn = collate_fn
     
     def __init__(
         self, 
@@ -93,6 +91,10 @@ class MinecraftDataset(Dataset):
 
     def __len__(self):
         return len(self.dataset)
+    
+    @property
+    def episodes_with_items(self):
+        return self.dataset.episodes_with_items
     
     @classmethod
     def build_state_space(cls, params: Dict):

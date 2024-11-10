@@ -1,12 +1,13 @@
 '''
 Date: 2024-11-10 10:06:28
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 11:42:43
+LastEditTime: 2024-11-10 13:41:10
 FilePath: /MineStudio/minestudio/data/minecraft/utils.py
 '''
 import av
 import cv2
 import numpy as np
+import torch
 import torch.distributed as dist
 from torch.utils.data import Sampler
 from typing import Union, Tuple, List, Dict, Callable, Sequence, Mapping, Any, Optional
@@ -30,73 +31,22 @@ def write_video(
         for packet in stream.encode():
             container.mux(packet)
 
-def flatten_collate_dict(
-    dic: List[Dict[str, np.ndarray]], support_keys: Optional[List[str]] = None
-) -> Dict[str, np.ndarray]:
-    """Flatten dict of tensors into tensor of dict."""
-    result = dict()
-    if support_keys is None:
-        support_keys = dic[0].keys()
-    for key, val in dic[0].items():
-        if key not in support_keys:
-            continue
-        if isinstance(val, np.ndarray):
-            result[key] = np.stack([d.get(key, np.zeros_like(val)) for d in dic], axis=0)
-        else:
-            result[key] = [d.get(key, None) for d in dic]
-    return result
-
-def list_to_dict(
-    list_of_dict: List[Dict],
-) -> Dict[str, List]:
-    dict_of_list = dict()
-    for key, val in list_of_dict[0].items():
-        if isinstance(val, Dict):
-            dict_of_list[key] = list_to_dict([d[key] for d in list_of_dict])
-        else:
-            dict_of_list[key] = [d[key] for d in list_of_dict]
-    return dict_of_list
-
-def collate_fn(result_in: Sequence[Mapping[str, np.ndarray]]) -> Mapping[str, Sequence[np.ndarray]]:
-    """Convert sequence of dict into dict of sequence."""
-    
-    result_out = dict()
-    example = result_in[0]
-    if 'image' in example:
-        tensors = [dic['image'] for dic in result_in]
-        result_out['image'] = np.stack(tensors, axis = 0)
-    
-    action_names = ['env_action', 'agent_action', 'env_prev_action', 'agent_prev_action']
-    for key in action_names:
-        if key in example:
-            result_out[key] = flatten_collate_dict(
-                [dic[key] for dic in result_in], support_keys=None
-            )
-    
-    if 'contractor_info' in example:
-        result_out['contractor_info'] = flatten_collate_dict(
-            [dic['contractor_info'] for dic in result_in], support_keys=None
-        )
-
-    if 'mask' in example:
-        tensors = [dic['mask'] for dic in result_in]
-        result_out['mask'] = np.stack(tensors, axis = 0)
-    
-    if 'text' in example:
-        texts = [dic['text'] for dic in result_in]
-        result_out['text'] = texts
-
-    if 'obs_conf' in example:
-        result_out['obs_conf'] = list_to_dict(
-            [dic['obs_conf'] for dic in result_in]
-        )
-    
-    if 'segment' in example:
-        result_out['segment'] = flatten_collate_dict(
-            [ dic['segment'] for dic in result_in ], support_keys=None
-        )
-    
-    return result_out
+def batchify(batch_in: Sequence[Dict[str, Any]]) -> Any:
+    example = batch_in[0]
+    if isinstance(example, Dict):
+        batch_out = {
+            k: batchify([item[k] for item in batch_in]) \
+                for k in example.keys()
+        }
+    elif isinstance(example, torch.Tensor):
+        batch_out = torch.stack(batch_in, dim=0)
+    elif isinstance(example, int):
+        batch_out = torch.tensor(batch_in, dtype=torch.int32)
+    elif isinstance(example, float):
+        batch_out = torch.tensor(batch_in, dtype=torch.float32)
+    else:
+        batch_out = batch_in
+    return batch_out
 
 class MineDistributedBatchSampler(Sampler):
 
@@ -120,7 +70,7 @@ class MineDistributedBatchSampler(Sampler):
         
         assert shuffle is False, "shuffle must be False in sampler."
         assert drop_last is True, "drop_last must be True in sampler."
-        
+        print(f"{rank = }, {num_replicas = }")
         self.batch_size = batch_size
         self.num_total_samples = len(dataset)
         self.num_samples_per_replica = self.num_total_samples // num_replicas

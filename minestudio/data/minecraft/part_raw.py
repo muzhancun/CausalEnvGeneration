@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:32
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 10:28:56
+LastEditTime: 2024-11-10 13:32:52
 FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
 '''
 import io
@@ -113,15 +113,12 @@ if __name__ == '__main__':
         **kernel_kwargs, 
     )
     
-    item = dataset[128]
-    
-    from minestudio.data.minecraft.samplers import MineDistributedBatchSampler
-    sampler = MineDistributedBatchSampler(dataset, batch_size=4, num_replicas=2, rank=0, shuffle=False, drop_last=True)
+    from minestudio.data.minecraft.utils import MineDistributedBatchSampler
+    sampler = MineDistributedBatchSampler(dataset, batch_size=4, num_replicas=1, rank=0, shuffle=False, drop_last=True)
     from torch.utils.data import DataLoader
     from tqdm import tqdm
-    loader = DataLoader(dataset, batch_sampler=sampler)
+    loader = DataLoader(dataset, batch_sampler=sampler, num_workers=4)
     for batch in loader:
-        print(f"{len(batch['episode']) = }")
         print(
             "\t".join(
                 [f"{a} {b}" for a, b in zip(batch['episode'], batch['progress'])]
