@@ -29,7 +29,9 @@ dependencies = [
     "cuda-python",
     "diskcache", 
     "albumentations", 
-    "einops"
+    "einops", 
+    "timm",
+    "transformers", 
 ]
 authors = [
     {name="CraftJarvis", email="craftjarvis@outlook.com"},

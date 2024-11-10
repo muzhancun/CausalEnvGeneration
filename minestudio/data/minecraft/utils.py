@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:06:28
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 13:41:10
+LastEditTime: 2024-11-10 14:25:53
 FilePath: /MineStudio/minestudio/data/minecraft/utils.py
 '''
 import av
@@ -72,13 +72,14 @@ class MineDistributedBatchSampler(Sampler):
         assert drop_last is True, "drop_last must be True in sampler."
         print(f"{rank = }, {num_replicas = }")
         self.batch_size = batch_size
-        self.num_total_samples = len(dataset)
+        self.dataset = dataset
+        self.num_total_samples = len(self.dataset)
         self.num_samples_per_replica = self.num_total_samples // num_replicas
         replica_range = (self.num_samples_per_replica * rank, self.num_samples_per_replica * (rank + 1)) # [start, end)
         
         num_past_samples = 0
         episodes_within_replica = [] # (episode, epsode_start_idx, episode_end_idx, item_bias)
-        self.episodes_with_items = dataset.episodes_with_items
+        self.episodes_with_items = self.dataset.episodes_with_items
         for episode, length, item_bias in self.episodes_with_items:
             if num_past_samples + length > replica_range[0] and num_past_samples < replica_range[1]:
                 episode_start_idx = max(0, replica_range[0] - num_past_samples)

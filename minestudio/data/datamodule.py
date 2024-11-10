@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 13:43:19
+LastEditTime: 2024-11-10 16:23:11
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 

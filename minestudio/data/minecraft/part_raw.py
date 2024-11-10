@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:32
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 13:32:52
+LastEditTime: 2024-11-10 14:27:11
 FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
 '''
 import io
