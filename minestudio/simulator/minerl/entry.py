@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 20:00:38
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/simulator/minerl/entry.py
+LastEditTime: 2024-11-11 20:22:19
+FilePath: /MineStudio/minestudio/simulator/minerl/entry.py
 '''
 
 import os
@@ -189,7 +189,7 @@ if __name__ == '__main__':
             SpeedTestCallback(50), 
             SummonMobsCallback([{'name': 'cow', 'number': 10, 'range_x': [-5, 5], 'range_z': [-5, 5]}]),
             MaskActionsCallback(inventory=0, camera=np.array([0., 0.])), 
-            RecordCallback(record_path="/nfs-shared-2/shaofei/output", fps=30),
+            RecordCallback(record_path="./output", fps=30),
             RewardsCallback([{
                 'event': 'kill_entity', 
                 'objects': ['cow', 'sheep'], 
