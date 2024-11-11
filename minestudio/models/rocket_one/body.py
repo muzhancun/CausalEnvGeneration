@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 15:52:16
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 16:10:53
+LastEditTime: 2024-11-11 04:52:42
 FilePath: /MineStudio/minestudio/models/rocket_one/body.py
 '''
 import torch
@@ -17,7 +17,7 @@ class RocketOnePolicy(nn.Module):
     
     def __init__(self, 
         backbone: str = 'efficientnet_b0.ra_in1k', 
-        hiddim: int = 1024, 
+        hiddim: int = 1024,
         num_heads: int = 16,
         num_layers: int = 12,
         mem_len: int = 128,
