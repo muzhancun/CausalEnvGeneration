@@ -1,11 +1,11 @@
 '''
 Date: 2024-11-11 19:31:53
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 19:33:46
-FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/commands.py
+LastEditTime: 2024-11-12 00:11:52
+FilePath: /MineStudio/minestudio/simulator/callbacks/commands.py
 '''
 
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class CommandsCallback(MinecraftCallback):
     

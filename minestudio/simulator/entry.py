@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 20:22:19
-FilePath: /MineStudio/minestudio/simulator/minerl/entry.py
+LastEditTime: 2024-11-12 00:12:46
+FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/simulator/entry.py
 '''
 
 import os
@@ -18,7 +18,7 @@ from minestudio.utils.vpt_lib.actions import ActionTransformer
 from minestudio.utils.vpt_lib.action_mapping import CameraHierarchicalMapping
 from minestudio.simulator.minerl.utils.inventory import map_slot_number_to_cmd_slot
 from minestudio.simulator.minerl.herobraine.env_specs.human_survival_specs import HumanSurvival
-from minestudio.simulator.minerl.callbacks import MinecraftCallback
+from minestudio.simulator.callbacks import MinecraftCallback
 
 ACTION_TRANSFORMER_KWARGS = dict(
     camera_binsize=2,
@@ -30,7 +30,7 @@ ACTION_TRANSFORMER_KWARGS = dict(
 action_mapper = CameraHierarchicalMapping(n_camera_bins=11)
 action_transformer = ActionTransformer(**ACTION_TRANSFORMER_KWARGS)
 
-if not os.path.exists(os.path.join(os.path.dirname(__file__), "MCP-Reborn")):
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reborn")):
     print("Detecting missing MCP-Reborn, downloading...")
     import huggingface_hub, zipfile
     huggingface_hub.hf_hub_download(repo_id='phython96/ROCKET-MCP-Reborn', filename='MCP-Reborn.zip', local_dir='.')

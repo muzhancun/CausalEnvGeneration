@@ -14,14 +14,12 @@ from gym3.types import DictType, Discrete, Real, TensorType, ValType
 
 LOG0 = -100
 
-
 def fan_in_linear(module: nn.Module, scale=1.0, bias=True):
     """Fan-in init"""
     module.weight.data *= scale / module.weight.norm(dim=1, p=2, keepdim=True)
 
     if bias:
         module.bias.data *= 0
-
 
 class ActionHead(nn.Module):
     """Abstract base class for action heads compatible with forc"""

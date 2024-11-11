@@ -8,9 +8,9 @@ import torch as th
 from torch import nn
 from torch.nn import functional as F
 
-from jarvis.arm.utils.vpt_lib import misc, mlp
-from jarvis.arm.utils.vpt_lib import torch_util as tu
-from jarvis.arm.utils.vpt_lib import util
+from minestudio.utils.vpt_lib import misc, mlp
+from minestudio.utils.vpt_lib import torch_util as tu
+from minestudio.utils.vpt_lib import util
 
 SENTINEL = 0.1337
 

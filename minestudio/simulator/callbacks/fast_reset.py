@@ -6,7 +6,7 @@ FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/fast_reset.py
 '''
 import random
 import numpy as np
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class FastResetCallback(MinecraftCallback):
 

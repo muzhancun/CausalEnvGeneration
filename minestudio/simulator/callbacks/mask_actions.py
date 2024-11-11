@@ -1,11 +1,11 @@
 '''
 Date: 2024-11-11 17:37:06
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 17:42:04
-FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/mask_actions.py
+LastEditTime: 2024-11-12 00:11:57
+FilePath: /MineStudio/minestudio/simulator/callbacks/mask_actions.py
 '''
 
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class MaskActionsCallback(MinecraftCallback):
     

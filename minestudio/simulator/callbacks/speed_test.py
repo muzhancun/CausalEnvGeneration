@@ -5,7 +5,7 @@ LastEditTime: 2024-11-11 16:43:46
 FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/speed_test.py
 '''
 import time
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class SpeedTestCallback(MinecraftCallback):
     

@@ -1,11 +1,11 @@
 '''
 Date: 2024-11-11 17:44:15
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 19:27:54
-FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/rewards.py
+LastEditTime: 2024-11-12 00:12:03
+FilePath: /MineStudio/minestudio/simulator/callbacks/rewards.py
 '''
 
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class RewardsCallback(MinecraftCallback):
     

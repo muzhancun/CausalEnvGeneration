@@ -7,7 +7,7 @@ FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/simulat
 import av
 import cv2
 from pathlib import Path
-from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
+from minestudio.simulator.callbacks.callback import MinecraftCallback
 
 class RecordCallback(MinecraftCallback):
     

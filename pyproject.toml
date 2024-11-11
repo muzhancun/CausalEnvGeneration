@@ -1,11 +1,11 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "minestudio"
 version="1.0.0"
-description = "A simple and efficient Minecraft development kit."
+description = "A simple and efficient Minecraft development kit for AI research."
 dependencies = [
     "av",
     "opencv-python",
