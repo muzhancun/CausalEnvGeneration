@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "minestudio"
-version="0.0.1"
+version="1.0.0"
 description = "A simple and efficient Minecraft development kit."
 dependencies = [
     "av",
@@ -26,12 +26,17 @@ dependencies = [
     "lightning",
     "scipy",
     "rich",
+    "coloredlogs",
+    "daemoniker", 
+    "lxml", 
     "cuda-python",
     "diskcache", 
     "albumentations", 
     "einops", 
     "timm",
     "transformers", 
+    "Pyro4",
+    "xmltodict", 
 ]
 authors = [
     {name="CraftJarvis", email="craftjarvis@outlook.com"},

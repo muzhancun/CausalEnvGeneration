@@ -1,14 +1,17 @@
 '''
-author:        caishaofei-mus1 <1744260356@qq.com>
-date:          2023-05-05 15:44:33
-Copyright © Team CraftJarvis All rights reserved
+Date: 2024-11-11 05:09:47
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-11 05:19:41
+FilePath: /MineStudio/minestudio/simulator/minerl/minecraft.py
 '''
+
 import av
+import cv2
 import re
 import os
 import time
 import argparse
-import gymnasium as gym
+import gymnasium
 from gymnasium import spaces
 from pathlib import Path
 import hydra
@@ -17,15 +20,12 @@ from omegaconf import DictConfig, OmegaConf
 from collections import OrderedDict
 from typing import Dict, List, Tuple, Union, Sequence, Mapping, Any, Optional
 
-import cv2
 import torch
 import numpy as np
 
 from minestudio.simulator.minerl.entry import env_generator
-from jarvis.arm.utils.vpt_lib.actions import ActionTransformer
-from jarvis.arm.utils.vpt_lib.action_mapping import CameraHierarchicalMapping
-from minestudio.simulator.minerl.utils.hierarchical_action_space import HierarchicalActionSpace
-
+from minestudio.utils.vpt_lib.actions import ActionTransformer
+from minestudio.utils.vpt_lib.action_mapping import CameraHierarchicalMapping
 
 ENV_CONFIG_DIR = Path(__file__).parent.parent / "global_configs" / "envs"
 RELATIVE_ENV_CONFIG_DIR = "../global_configs/envs"
@@ -38,13 +38,17 @@ ACTION_TRANSFORMER_KWARGS = dict(
     camera_quantization_scheme="mu_law",
 )
 
-KEYS_TO_INFO = ['pov', 'inventory', 'equipped_items', 'life_stats', 'location_stats', 'use_item', 'drop', 'pickup', 'break_item', 'craft_item', 'mine_block', 'damage_dealt', 'entity_killed_by', 'kill_entity', 'full_stats', 'player_pos', 'is_gui_open']
+KEYS_TO_INFO = [
+    'pov', 'inventory', 'equipped_items', 'life_stats', 'location_stats', 'use_item', 'drop', 
+    'pickup', 'break_item', 'craft_item', 'mine_block', 'damage_dealt', 'entity_killed_by', 
+    'kill_entity', 'full_stats', 'player_pos', 'is_gui_open'
+]
 
 def resize_image(img, target_resolution = (224, 224)):
     return cv2.resize(img, dsize=target_resolution, interpolation=cv2.INTER_LINEAR)
 
 
-class MinecraftWrapper(gym.Env):
+class MinecraftSim(gymnasium.Env):
     
     ACTION_SPACE_TYPE = 'Hierarchical'
     action_mapper = CameraHierarchicalMapping(n_camera_bins=11)
