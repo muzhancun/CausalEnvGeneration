@@ -1,9 +1,16 @@
+'''
+Date: 2024-11-11 15:59:38
+LastEditors: caishaofei-mus1 1744260356@qq.com
+LastEditTime: 2024-11-11 16:43:46
+FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/speed_test.py
+'''
 import time
 from minestudio.simulator.minerl.callbacks.callback import MinecraftCallback
 
 class SpeedTestCallback(MinecraftCallback):
     
     def __init__(self, interval: int = 100):
+        super().__init__()
         self.interval = interval
         self.num_steps = 0
         self.total_times = 0
@@ -16,11 +23,11 @@ class SpeedTestCallback(MinecraftCallback):
         end_time = time.time()
         self.num_steps += 1
         self.total_times += end_time - self.start_time
-        if self.step % self.interval == 0:
+        if self.num_steps % self.interval == 0:
             print(
                 f'Speed Test Status: \n'
-                f'Average Time: {self.total_times / self.num_steps} \n'
-                f'Average FPS: {self.num_steps / self.total_times} \n'
+                f'Average Time: {self.total_times / self.num_steps :.2f} \n'
+                f'Average FPS: {self.num_steps / self.total_times :.2f} \n'
                 f'Total Steps: {self.num_steps} \n'
             )
         return obs, reward, terminated, truncated, info
