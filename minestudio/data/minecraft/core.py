@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-08 04:17:36
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 11:45:07
+LastEditTime: 2024-11-12 15:40:39
 FilePath: /MineStudio/minestudio/data/minecraft/core.py
 '''
 import io
@@ -551,7 +551,7 @@ class BaseDataset(Dataset):
                 frame_width=kernel_kwargs.get('frame_width', 224), 
                 frame_height=kernel_kwargs.get('frame_height', 224)
             )
-    
+
     def build_items(self) -> None:
         """Define how to load data from lmdb."""
         raise NotImplementedError("You have to implement this method.")
@@ -566,7 +566,7 @@ class BaseDataset(Dataset):
             return {key: self.to_tensor(val) for key, val in item.items()}
         else:
             return item
-    
+
     def postprocess(self, item: Dict) -> Dict:
         # rename the keys
         if 'action' in item:

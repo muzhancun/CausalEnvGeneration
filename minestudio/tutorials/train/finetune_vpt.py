@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 14:00:50
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 13:07:57
+LastEditTime: 2024-11-12 13:22:12
 FilePath: /MineStudio/minestudio/tutorials/train/finetune_vpt.py
 '''
 import torch
@@ -19,7 +19,7 @@ from minestudio.train.callbacks import BehaviorCloneCallback
 mine_lightning = MineLightning(
     mine_policy=load_openai_policy(
         model_path='/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model',
-        weights_path='/nfs-shared/jarvisbase/pretrained/rl-from-early-game-2x.weights',
+        weights_path='/nfs-shared/jarvisbase/pretrained/foundation-model-2x.weights',
     ),
     log_freq=20,
     learning_rate=1e-4,
@@ -45,6 +45,6 @@ mine_data = MineDataModule(
     prefetch_factor=4,
 )
 
-wandb_logger = WandbLogger(project="minestudio", id="finetune_vpt")
+wandb_logger = WandbLogger(project="minestudio", id="tune_vpt_fd_2x")
 trainer = L.Trainer(logger=wandb_logger, max_epochs=1, devices=1, precision=16, strategy='ddp_find_unused_parameters_true', use_distributed_sampler=False)
 trainer.fit(mine_lightning, datamodule=mine_data)

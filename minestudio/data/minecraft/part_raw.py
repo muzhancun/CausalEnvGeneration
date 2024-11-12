@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:32
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 14:27:11
+LastEditTime: 2024-11-12 15:56:15
 FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
 '''
 import io
@@ -12,6 +12,7 @@ import lmdb
 import pickle
 import random
 
+import numpy as np
 import torch
 from rich.console import Console
 from pathlib import Path
@@ -81,6 +82,7 @@ class RawDataset(BaseDataset):
         start = max(1, relative_idx * self.win_len) # start > 0 is the prequest for previous action
         item = self.kernel.read(episode, start, self.win_len, self.skip_frame)
         item['text'] = 'raw'
+        item['timestamp'] = np.arange(start, start+self.win_len, self.skip_frame)
         item['episode'] = episode
         episode_samples = math.ceil(self.episodes_with_length[episode] / self.win_len)
         item['progress'] = f"{relative_idx}/{episode_samples}"

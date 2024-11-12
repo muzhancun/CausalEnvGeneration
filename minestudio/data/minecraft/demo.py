@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 11:01:51
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 12:02:26
+LastEditTime: 2024-11-12 15:57:37
 FilePath: /MineStudio/minestudio/data/minecraft/demo.py
 '''
 import os
@@ -105,7 +105,11 @@ def read_dataloader(
                         segment_mask = (segment_mask[..., None] * colors).astype(np.uint8)
                         segment_mask = segment_mask[:, :, ::-1] # bgr -> rgb
                         frame = cv2.addWeighted(frame, 1.0, segment_mask, 0.5, 0.0)
-                
+
+                if 'timestamp' in data:
+                    timestamp = data['timestamp'][bidx][tidx]
+                    cv2.putText(frame, f"timestamp: {timestamp}", (150, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (200, 0, 55), 2)
+
                 if legend:
                     cv2.putText(frame, f"time: {tidx}", (10, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.75, color, 2)
                     cv2.putText(frame, txt, (200, 25), cv2.FONT_HERSHEY_SIMPLEX, 0.75, color, 2)
