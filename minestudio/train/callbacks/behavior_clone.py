@@ -1,12 +1,12 @@
 '''
 Date: 2024-11-12 13:59:08
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 18:06:55
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:37:48
 FilePath: /MineStudio/minestudio/train/callbacks/behavior_clone.py
 '''
 
 import torch
-from typings import Dict, Any
+from typing import Dict, Any
 from minestudio.models import MinePolicy
 from minestudio.train.callbacks.callback import ObjectiveCallback
 
@@ -39,10 +39,10 @@ class BehaviorCloneCallback(ObjectiveCallback):
         bc_loss = camera_loss + button_loss
         entropy = entropy_camera + entropy_buttons
         result = {
-            'loss': bc_loss,
-            'camera_loss': camera_loss,
-            'button_loss': button_loss,
-            'entropy': entropy,
+            'loss': bc_loss.mean(),
+            'camera_loss': camera_loss.mean(),
+            'button_loss': button_loss.mean(),
+            'entropy': entropy.mean(),
             'bc_weight': self.weight,
         }
         return result

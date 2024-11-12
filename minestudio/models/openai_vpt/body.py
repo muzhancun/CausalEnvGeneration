@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 20:54:15
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 14:08:32
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/models/openai_vpt/body.py
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:10:14
+FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
 '''
 import os
 import pickle

@@ -1,11 +1,18 @@
+'''
+Date: 2024-11-12 10:57:29
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:16:09
+FilePath: /MineStudio/minestudio/train/callbacks/callback.py
+'''
 import torch
-from typings import Dict, Any
+from typing import Dict, Any
 from minestudio.models import MinePolicy
+
 class ObjectiveCallback:
-    
+
     def __init__(self):
         ...
-    
+
     def __call__(
         self, 
         batch: Dict[str, Any], 

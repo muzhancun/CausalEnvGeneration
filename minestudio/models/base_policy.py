@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 15:59:37
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 14:09:08
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:18:41
 FilePath: /MineStudio/minestudio/models/base_policy.py
 '''
 from abc import ABC, abstractmethod
@@ -55,7 +55,7 @@ class MinePolicy(torch.nn.Module, ABC):
     @abstractmethod
     def forward(self, 
                 input: Dict[str, Any], 
-                state_in: Optional[List[torch.Tensor]],
+                state_in: Optional[List[torch.Tensor]] = None,
                 **kwargs
     ) -> Tuple[Dict[str, torch.Tensor], List[torch.Tensor]]:
         """

@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 13:44:13
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 17:21:53
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:37:10
 FilePath: /MineStudio/minestudio/train/trainer.py
 '''
 import torch
@@ -10,8 +10,9 @@ import lightning as L
 from minestudio.models import MinePolicy
 from minestudio.train.callbacks import ObjectiveCallback
 from typing import List
+
 class MineLightning(L.LightningModule):
-    
+
     def __init__(
         self, 
         mine_policy: MinePolicy, 
@@ -24,12 +25,13 @@ class MineLightning(L.LightningModule):
     ):
         super().__init__()
         self.mine_policy = mine_policy
+        self.callbacks = callbacks
         self.log_freq = log_freq
         self.learning_rate = learning_rate
         self.warmup_steps = warmup_steps 
         self.weight_decay = weight_decay
         self.memory = None #! ???
-    
+
     def _batch_step(self, batch, batch_idx, step_name):
         result = {'loss': 0}
         latents, self.memory = self.mine_policy(batch, self.memory)
@@ -44,13 +46,13 @@ class MineLightning(L.LightningModule):
                 self.log(f'{step_name}/{key}', val, sync_dist=False, prog_bar=prog_bar)
 
         return result
-    
+
     def training_step(self, batch, batch_idx):
         return self._batch_step(batch, batch_idx, 'train')
-    
+
     def validation_step(self, batch, batch_idx):
         return self._batch_step(batch, batch_idx, 'val')
-    
+
     def configure_optimizers(self):
         optimizer = torch.optim.AdamW(
             params=self.mine_policy.parameters(), 

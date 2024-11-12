@@ -1,16 +1,20 @@
 '''
 Date: 2024-11-12 14:00:50
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 14:21:59
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/train/example.py
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 11:40:36
+FilePath: /MineStudio/minestudio/train/example.py
 '''
 import torch
 import torch.nn as nn
 import lightning as L
 from einops import rearrange
+from typing import Dict, Any, Tuple
+
+
 from minestudio.data import MineDataModule
 from minestudio.train import MineLightning
 from minestudio.models import MinePolicy
+from minestudio.train.callbacks import BehaviorCloneCallback
 
 class SimplePolicy(MinePolicy):
 
@@ -22,9 +26,14 @@ class SimplePolicy(MinePolicy):
             nn.Linear(hiddim, hiddim),
         )
 
-    def forward(self, input, state_in):
+    def forward(self, input: Dict[str, Any], state_in: Any) -> Tuple[Dict[str, torch.Tensor], Any]:
         x = rearrange(input['image'], 'b t h w c -> b t (h w c)')
-        return self.net(x), state_in
+        x = self.net(x.float())
+        result = {
+            'pi_logits': self.pi_head(x),
+            'vpred': self.value_head(x), 
+        }
+        return result, state_in
 
     def initial_state(self, batch_size):
         return None
@@ -50,11 +59,10 @@ mine_data = MineDataModule(
         frame_height=128,
         win_len=128,
     ),
-    batch_size=2,
+    batch_size=8,
     num_workers=4,
     prefetch_factor=2
 )
 
-trainer = L.Trainer(max_epochs=1, devices=1, precision=16, strategy='ddp', use_distributed_sampler=False)
-
+trainer = L.Trainer(max_epochs=1, devices=2, precision=16, strategy='ddp_find_unused_parameters_true', use_distributed_sampler=False)
 trainer.fit(mine_lightning, datamodule=mine_data)

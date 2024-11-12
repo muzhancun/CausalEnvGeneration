@@ -572,11 +572,15 @@ class BaseDataset(Dataset):
         if 'action' in item:
             action = item.pop('action')
             item['env_action'] = action
-            item['agent_action'] = action_transformer.env2policy(action)
+            item['agent_action'] = action_mapper.from_factored(
+                action_transformer.env2policy(action)
+            )
         if 'prev_action' in item:
             prev_action = item.pop('prev_action')
             item['env_prev_action'] = prev_action
-            item['agent_prev_action'] = action_transformer.env2policy(prev_action)
+            item['agent_prev_action'] = action_mapper.from_factored(
+                action_transformer.env2policy(action)
+            )
         if 'video' in item:
             item['image'] = item.pop('video')
         
