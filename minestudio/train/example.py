@@ -35,6 +35,9 @@ mine_lightning = MineLightning(
     learning_rate=1e-4,
     warmup_steps=1000,
     weight_decay=0.01,
+    callbacks=[
+        BehaviorCloneCallback(weight=1.0),
+    ]
 )
 
 mine_data = MineDataModule(

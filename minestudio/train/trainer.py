@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-10 13:44:13
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 14:20:51
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/train/trainer.py
+LastEditTime: 2024-11-12 17:21:53
+FilePath: /MineStudio/minestudio/train/trainer.py
 '''
 import torch
 import torch.nn as nn
@@ -26,7 +26,7 @@ class MineLightning(L.LightningModule):
         self.mine_policy = mine_policy
         self.log_freq = log_freq
         self.learning_rate = learning_rate
-        self.warmup_steps = warmup_steps
+        self.warmup_steps = warmup_steps 
         self.weight_decay = weight_decay
         self.memory = None #! ???
     
