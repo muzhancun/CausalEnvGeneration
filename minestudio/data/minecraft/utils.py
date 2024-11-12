@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:06:28
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 14:25:53
+LastEditTime: 2024-11-12 13:10:01
 FilePath: /MineStudio/minestudio/data/minecraft/utils.py
 '''
 import av
@@ -70,7 +70,7 @@ class MineDistributedBatchSampler(Sampler):
         
         assert shuffle is False, "shuffle must be False in sampler."
         assert drop_last is True, "drop_last must be True in sampler."
-        print(f"{rank = }, {num_replicas = }")
+        # print(f"{rank = }, {num_replicas = }")
         self.batch_size = batch_size
         self.dataset = dataset
         self.num_total_samples = len(self.dataset)

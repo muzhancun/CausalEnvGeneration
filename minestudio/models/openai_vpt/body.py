@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 20:54:15
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 11:10:14
+LastEditTime: 2024-11-12 12:37:14
 FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
 '''
 import os
@@ -266,4 +266,3 @@ if __name__ == '__main__':
         "image": torch.zeros(1, 1, 128, 128, 3), 
     }
     output, memory = policy(dummy_input, None)
-    # print(policy)

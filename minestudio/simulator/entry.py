@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 10:43:49
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-12 12:05:12
 FilePath: /MineStudio/minestudio/simulator/entry.py
 '''
 
@@ -31,7 +31,14 @@ action_mapper = CameraHierarchicalMapping(n_camera_bins=11)
 action_transformer = ActionTransformer(**ACTION_TRANSFORMER_KWARGS)
 
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reborn")):
-    print("Detecting missing MCP-Reborn, downloading...")
+    while True:
+        response = input("Detecting missing MCP-Reborn, do you want to download it from huggingface (Y/N)?")
+        if response == 'Y':
+            download_mcp_reborn()
+        elif response == 'N':
+            break
+
+def download_mcp_reborn():
     import huggingface_hub, zipfile
     huggingface_hub.hf_hub_download(repo_id='phython96/ROCKET-MCP-Reborn', filename='MCP-Reborn.zip', local_dir='.')
     with zipfile.ZipFile('MCP-Reborn.zip', 'r') as zip_ref:
@@ -171,52 +178,3 @@ class MinecraftSim(gymnasium.Env):
         return gymnasium.spaces.Dict({
             "image": gymnasium.spaces.Box(low=0, high=255, shape=(height, width, 3), dtype=np.uint8)
         })
-
-if __name__ == '__main__':
-    from minestudio.simulator.minerl.callbacks import (
-        SpeedTestCallback, 
-        RecordCallback, 
-        SummonMobsCallback, 
-        MaskActionsCallback, 
-        RewardsCallback, 
-        CommandsCallback, 
-        TaskCallback,
-        FastResetCallback
-    )
-    sim = MinecraftSim(
-        action_type="env",
-        callbacks=[
-            SpeedTestCallback(50), 
-            SummonMobsCallback([{'name': 'cow', 'number': 10, 'range_x': [-5, 5], 'range_z': [-5, 5]}]),
-            MaskActionsCallback(inventory=0, camera=np.array([0., 0.])), 
-            RecordCallback(record_path="./output", fps=30),
-            RewardsCallback([{
-                'event': 'kill_entity', 
-                'objects': ['cow', 'sheep'], 
-                'reward': 1.0, 
-                'identity': 'kill sheep or cow', 
-                'max_reward_times': 5, 
-            }]),
-            CommandsCallback(commands=[
-                '/give @p minecraft:iron_sword 1',
-                '/give @p minecraft:diamond 64',
-            ]), 
-            FastResetCallback(
-                biomes=['mountains'],
-                random_tp_range=1000,
-            ), 
-            TaskCallback([
-                {'name': 'chop', 'text': 'mine the oak logs'}, 
-                {'name': 'diamond', 'text': 'mine the diamond ore'},
-            ])
-        ]
-    )
-    obs, info = sim.reset()
-    print(sim.action_space)
-    for i in range(300):
-        action = sim.action_space.sample()
-        # action = sim.noop_action()
-        obs, reward, terminated, truncated, info = sim.step(action)
-        if (i+1) % 150 == 0:
-            obs, info = sim.reset()
-    sim.close()

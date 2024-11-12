@@ -11,6 +11,16 @@ from minestudio.models import MinePolicy
 from minestudio.train.callbacks import ObjectiveCallback
 from typing import List
 
+def tree_detach(tree):
+    if isinstance(tree, dict):
+        return {k: tree_detach(v) for k, v in tree.items()}
+    elif isinstance(tree, list):
+        return [tree_detach(v) for v in tree]
+    elif isinstance(tree, torch.Tensor):
+        return tree.detach()
+    else:
+        return tree
+
 class MineLightning(L.LightningModule):
 
     def __init__(
@@ -34,7 +44,8 @@ class MineLightning(L.LightningModule):
 
     def _batch_step(self, batch, batch_idx, step_name):
         result = {'loss': 0}
-        latents, self.memory = self.mine_policy(batch, self.memory)
+        latents, memory = self.mine_policy(batch, self.memory)
+        self.memory = tree_detach(memory)
         for callback in self.callbacks:
             call_result = callback(batch, batch_idx, step_name, latents, self.mine_policy)
             for key, val in call_result.items():
