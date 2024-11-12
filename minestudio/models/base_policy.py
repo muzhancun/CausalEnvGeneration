@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 15:59:37
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 23:54:47
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/models/base_policy.py
+LastEditTime: 2024-11-12 10:28:03
+FilePath: /MineStudio/minestudio/models/base_policy.py
 '''
 from abc import ABC, abstractmethod
 import numpy as np
@@ -71,16 +71,12 @@ class MinePolicy(torch.nn.Module, ABC):
                    input_shape: str = "BT*",
                    **kwargs, 
     ) -> Tuple[Dict[str, torch.Tensor], List[torch.Tensor]]:
-        '''
-        Get actions from raw observations (no batch and temporal dims).
-        '''
         if input_shape == "*":
             input = dict_map(self._batchify, input)
             if state_in is not None:
                 state_in = recursive_tensor_op(lambda x: x.unsqueeze(0), state_in)
         elif input_shape != "BT*":
             raise NotImplementedError
-        
         latents, state_out = self.forward(input, state_in, **kwargs)
         action = self.pi_head.sample(latents['pi_logits'], deterministic)
         self.vpred = latents['vpred']

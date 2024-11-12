@@ -14,7 +14,7 @@ if __name__ == '__main__':
         obs_size=(128, 128), 
         preferred_spawn_biome="forest", 
         callbacks=[
-            RecordCallback(record_path="./output", fps=30),
+            RecordCallback(record_path="./output", fps=30, frame_type="obs"),
             SpeedTestCallback(50),
         ]
     )

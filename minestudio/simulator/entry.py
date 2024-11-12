@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 00:12:46
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/simulator/entry.py
+LastEditTime: 2024-11-12 10:43:49
+FilePath: /MineStudio/minestudio/simulator/entry.py
 '''
 
 import os
@@ -212,12 +212,11 @@ if __name__ == '__main__':
         ]
     )
     obs, info = sim.reset()
-    action_space = sim.action_space
-    print(action_space)
+    print(sim.action_space)
     for i in range(300):
-        action = action_space.sample()
+        action = sim.action_space.sample()
         # action = sim.noop_action()
-        if (i+1) % 150 == 0:
-            sim.reset()
         obs, reward, terminated, truncated, info = sim.step(action)
+        if (i+1) % 150 == 0:
+            obs, info = sim.reset()
     sim.close()

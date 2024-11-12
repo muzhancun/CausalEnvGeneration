@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 20:54:15
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 00:03:02
-FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/models/openai_vpt/body.py
+LastEditTime: 2024-11-12 11:00:56
+FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
 '''
 import os
 import pickle
@@ -239,10 +239,6 @@ class OpenAIPolicy(MinePolicy):
                 self.cached_init_states[batch_size] = [t.to(self.device) for t in self.net.initial_state(batch_size)]
             return self.cached_init_states[batch_size]
 
-    def reset_parameters(self):
-        super().reset_parameters()
-        self.net.reset_parameters()
-
     def forward(self, input, state_in, **kwargs):
         B, T = input["image"].shape[:2]
         first = torch.tensor([[False]], device=self.device).repeat(B, T)
@@ -255,19 +251,23 @@ class OpenAIPolicy(MinePolicy):
 
 def load_openai_policy(model_path: str, weights_path: str):
     action_space = gymnasium.spaces.Dict({
+        "camera": gymnasium.spaces.MultiDiscrete([121]), 
         "buttons": gymnasium.spaces.MultiDiscrete([8641]),
-        "camera":  gymnasium.spaces.MultiDiscrete([121]), 
     })
     model = pickle.load(Path(model_path).open("rb"))
     policy_kwargs = model['model']['args']['net']['args']
     openai_policy = OpenAIPolicy(action_space=action_space, policy_kwargs=policy_kwargs)
-    weights = torch.load(weights_path, map_location='cpu')
+    weights = torch.load(weights_path, map_location='cpu', weights_only=True)
     weights = {k: v for k, v in weights.items() if k in openai_policy.state_dict()}
-    openai_policy.load_state_dict(weights)
+    openai_policy.load_state_dict(weights, strict=True)
     return openai_policy
 
 if __name__ == '__main__':
     model_path = '/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model'
     weights_path = '/nfs-shared/jarvisbase/pretrained/rl-from-early-game-2x.weights'
     policy = load_openai_policy(model_path, weights_path)
-    print(policy)
+    dummy_input = {
+        "image": torch.zeros(1, 1, 128, 128, 3), 
+    }
+    output, memory = policy(dummy_input, None)
+    # print(policy)

@@ -1,5 +1,5 @@
 # MineStudio
-A simple and efficient Minecraft development kit.
+A simple and efficient Minecraft development kit for AI research.
 
 ```sh
 conda create -n minestudio python=3.10 -y

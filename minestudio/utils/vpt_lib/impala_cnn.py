@@ -1,10 +1,10 @@
 import math
 from copy import deepcopy
 from typing import Dict, List, Optional
-from einops import rearrange, repeat
-import torch
+
 from torch import nn
 from torch.nn import functional as F
+
 from minestudio.utils.vpt_lib import misc
 from minestudio.utils.vpt_lib import torch_util as tu
 from minestudio.utils.vpt_lib.util import FanInInitReLULayer
@@ -45,16 +45,10 @@ class CnnBasicBlock(nn.Module):
             log_scope=f"{log_scope}/conv1",
             **init_norm_kwargs,
         )
-        self.film = None
 
-    def forward(self, x, cond=None):
-        if cond is not None and self.film is None:
-            raise ValueError("FiLM layer is not initialized but cond is not None")
-        if cond is None and self.film is not None:
-            raise ValueError("FiLM layer is initialized but cond is not provided")
-        out = self.conv1(self.conv0(x))
-        out = self.film(out, cond) if self.film is not None else out
-        return x + out
+    def forward(self, x):
+        x = x + self.conv1(self.conv0(x))
+        return x
 
 
 class CnnDownStack(nn.Module):
@@ -116,13 +110,13 @@ class CnnDownStack(nn.Module):
             ]
         )
 
-    def forward(self, x, cond=None):
+    def forward(self, x):
         x = self.firstconv(x)
         if self.pool:
             x = F.max_pool2d(x, kernel_size=3, stride=2, padding=1)
             if self.post_pool_groups is not None:
                 x = self.n(x)
-        x = tu.sequential(self.blocks, x, diag_name=self.name, cond=cond)
+        x = tu.sequential(self.blocks, x, diag_name=self.name)
         return x
 
     def output_shape(self, inshape):
@@ -158,14 +152,13 @@ class ImpalaCNN(nn.Module):
         nblock: int,
         init_norm_kwargs: Dict = {},
         dense_init_norm_kwargs: Dict = {},
-        first_conv_norm: bool = False,
-        pooling: bool = True,
+        first_conv_norm=False,
         **kwargs,
     ):
         super().__init__()
         h, w, c = inshape
         curshape = (c, h, w)
-        stacks = []
+        self.stacks = nn.ModuleList()
         for i, outchan in enumerate(chans):
             stack = CnnDownStack(
                 curshape[0],
@@ -177,18 +170,11 @@ class ImpalaCNN(nn.Module):
                 first_conv_norm=first_conv_norm if i == 0 else True,
                 **kwargs,
             )
-            stacks.append(stack)
+            self.stacks.append(stack)
             curshape = stack.output_shape(curshape)
-        
-        self.stacks = nn.ModuleList(stacks)
-        self.pooling = pooling
-        if pooling:
-            indim = misc.intprod(curshape)
-        else:
-            indim = curshape[0]
+
         self.dense = FanInInitReLULayer(
-            # misc.intprod(curshape), #!debug
-            indim, 
+            misc.intprod(curshape),
             outsize,
             layer_type="linear",
             log_scope="imapala_final_dense",
@@ -197,18 +183,12 @@ class ImpalaCNN(nn.Module):
         )
         self.outsize = outsize
 
-    def forward(self, x, cond=None):
+    def forward(self, x):
         b, t = x.shape[:-3]
         x = x.reshape(b * t, *x.shape[-3:])
-        if cond is not None:
-            cond = cond.reshape(b * t, *cond.shape[2:])
-        if x.shape[-1] == 3:
-            x = misc.transpose(x, "bhwc", "bchw") 
-        x = tu.sequential(self.stacks, x, diag_name=self.name, cond=cond)
-        x = x.reshape(b, t, *x.shape[1:]) 
-        if self.pooling:
-            x = tu.flatten_image(x) 
-        else:
-            x = rearrange(x, 'b t c h w -> b t h w c')
+        x = misc.transpose(x, "bhwc", "bchw")
+        x = tu.sequential(self.stacks, x, diag_name=self.name)
+        x = x.reshape(b, t, *x.shape[1:])
+        x = tu.flatten_image(x)
         x = self.dense(x)
-        return x 
+        return x
