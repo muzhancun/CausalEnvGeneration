@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 15:59:37
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 10:28:03
+LastEditTime: 2024-11-12 14:09:08
 FilePath: /MineStudio/minestudio/models/base_policy.py
 '''
 from abc import ABC, abstractmethod
@@ -10,6 +10,7 @@ import torch
 import typing
 from typing import Dict, List, Optional, Tuple, Any, Union
 from omegaconf import DictConfig, OmegaConf
+import gymnasium
 
 from minestudio.utils.vpt_lib.action_head import make_action_head
 from minestudio.utils.vpt_lib.normalize_ewma import NormalizeEwma
@@ -37,8 +38,13 @@ def recursive_tensor_op(fn, d: T) -> T:
         raise ValueError(f"Unexpected type {type(d)}")
 
 class MinePolicy(torch.nn.Module, ABC):
-    def __init__(self, action_space, hiddim) -> None:
+    def __init__(self, hiddim, action_space=None) -> None:
         torch.nn.Module.__init__(self)
+        if action_space is None:
+            action_space = gymnasium.spaces.Dict({
+                "camera": gymnasium.spaces.MultiDiscrete([121]), 
+                "buttons": gymnasium.spaces.MultiDiscrete([8641]),
+            })
         self.pi_head = make_action_head(action_space, hiddim, temperature=2.0)
         self.value_head = ScaledMSEHead(hiddim, 1, norm_type="ewma", norm_kwargs=None)
 

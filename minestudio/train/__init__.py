@@ -1,0 +1,1 @@
+from minestudio.train.trainer import MineLightning

@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
-LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 16:23:11
+LastEditors: caishaofei-mus1 1744260356@qq.com
+LastEditTime: 2024-11-12 14:02:52
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 
@@ -22,7 +22,7 @@ import lightning.pytorch as pl
 from minestudio.data.minecraft.dataset import MinecraftDataset
 from minestudio.data.minecraft.utils import MineDistributedBatchSampler, batchify
 
-class MinecraftDataModule(pl.LightningDataModule):
+class MineDataModule(pl.LightningDataModule):
     
     def __init__(
         self, 
@@ -103,7 +103,7 @@ if __name__ == '__main__':
     import lightning as L
     fabric = L.Fabric(accelerator="cuda", devices=4, strategy="ddp")
     fabric.launch()
-    data_module = MinecraftDataModule(
+    data_module = MineDataModule(
         data_params=dict(
             mode='raw',
             dataset_dirs=[

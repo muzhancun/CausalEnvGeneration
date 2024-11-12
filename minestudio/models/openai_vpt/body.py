@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 20:54:15
 LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 11:00:56
-FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
+LastEditTime: 2024-11-12 14:08:32
+FilePath: /MineStudio/scratch/caishaofei/workspace/MineStudio/minestudio/models/openai_vpt/body.py
 '''
 import os
 import pickle
@@ -226,8 +226,8 @@ class MinecraftPolicy(nn.Module):
 
 class OpenAIPolicy(MinePolicy):
 
-    def __init__(self, action_space, policy_kwargs):
-        super().__init__(action_space=action_space, hiddim=policy_kwargs["hidsize"])
+    def __init__(self, policy_kwargs, action_space=None):
+        super().__init__(hiddim=policy_kwargs["hidsize"], action_space=action_space)
         self.net = MinecraftPolicy(**policy_kwargs)
         self.cached_init_states = dict()
 
@@ -250,13 +250,9 @@ class OpenAIPolicy(MinePolicy):
         return latents, state_out
 
 def load_openai_policy(model_path: str, weights_path: str):
-    action_space = gymnasium.spaces.Dict({
-        "camera": gymnasium.spaces.MultiDiscrete([121]), 
-        "buttons": gymnasium.spaces.MultiDiscrete([8641]),
-    })
     model = pickle.load(Path(model_path).open("rb"))
     policy_kwargs = model['model']['args']['net']['args']
-    openai_policy = OpenAIPolicy(action_space=action_space, policy_kwargs=policy_kwargs)
+    openai_policy = OpenAIPolicy(policy_kwargs=policy_kwargs)
     weights = torch.load(weights_path, map_location='cpu', weights_only=True)
     weights = {k: v for k, v in weights.items() if k in openai_policy.state_dict()}
     openai_policy.load_state_dict(weights, strict=True)
