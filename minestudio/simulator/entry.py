@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-14 19:52:30
+LastEditTime: 2024-11-14 19:57:24
 FilePath: /minestudio/simulator/entry.py
 '''
 
@@ -42,6 +42,7 @@ if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reb
     while True:
         if response == 'Y':
             download_mcp_reborn()
+            break
         elif response == 'N':
             break
         else:
