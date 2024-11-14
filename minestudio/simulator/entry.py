@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 05:20:17
-LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 12:05:12
-FilePath: /MineStudio/minestudio/simulator/entry.py
+LastEditors: muzhancun muzhancun@stu.pku.edu.cn
+LastEditTime: 2024-11-14 19:52:30
+FilePath: /minestudio/simulator/entry.py
 '''
 
 import os
@@ -30,20 +30,22 @@ ACTION_TRANSFORMER_KWARGS = dict(
 action_mapper = CameraHierarchicalMapping(n_camera_bins=11)
 action_transformer = ActionTransformer(**ACTION_TRANSFORMER_KWARGS)
 
-if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reborn")):
-    while True:
-        response = input("Detecting missing MCP-Reborn, do you want to download it from huggingface (Y/N)?")
-        if response == 'Y':
-            download_mcp_reborn()
-        elif response == 'N':
-            break
-
 def download_mcp_reborn():
     import huggingface_hub, zipfile
     huggingface_hub.hf_hub_download(repo_id='phython96/ROCKET-MCP-Reborn', filename='MCP-Reborn.zip', local_dir='.')
     with zipfile.ZipFile('MCP-Reborn.zip', 'r') as zip_ref:
         zip_ref.extractall('.')
     os.remove('MCP-Reborn.zip')
+
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reborn")):
+    response = input("Detecting missing MCP-Reborn, do you want to download it from huggingface (Y/N)?\n")
+    while True:
+        if response == 'Y':
+            download_mcp_reborn()
+        elif response == 'N':
+            break
+        else:
+            input("Please input Y or N:\n")
 
 class MinecraftSim(gymnasium.Env):
     
