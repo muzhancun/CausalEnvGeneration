@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-14 19:57:24
+LastEditTime: 2024-11-14 20:02:04
 FilePath: /minestudio/simulator/entry.py
 '''
 
@@ -32,18 +32,20 @@ action_transformer = ActionTransformer(**ACTION_TRANSFORMER_KWARGS)
 
 def download_mcp_reborn():
     import huggingface_hub, zipfile
-    huggingface_hub.hf_hub_download(repo_id='phython96/ROCKET-MCP-Reborn', filename='MCP-Reborn.zip', local_dir='.')
-    with zipfile.ZipFile('MCP-Reborn.zip', 'r') as zip_ref:
-        zip_ref.extractall('.')
-    os.remove('MCP-Reborn.zip')
+    local_dir = os.path.join(os.path.dirname(__file__), "minerl")
+    print(f"Downloading MCP-Reborn to {local_dir}")
+    huggingface_hub.hf_hub_download(repo_id='phython96/ROCKET-MCP-Reborn', filename='MCP-Reborn.zip', local_dir=local_dir)
+    with zipfile.ZipFile(os.path.join(local_dir, 'MCP-Reborn.zip'), 'r') as zip_ref:
+        zip_ref.extractall(local_dir)
+    os.remove(os.path.join(local_dir, 'MCP-Reborn.zip'))
 
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reborn")):
     response = input("Detecting missing MCP-Reborn, do you want to download it from huggingface (Y/N)?\n")
     while True:
-        if response == 'Y':
+        if response == 'Y' or response == 'y':
             download_mcp_reborn()
             break
-        elif response == 'N':
+        elif response == 'N' or response == 'n':
             break
         else:
             input("Please input Y or N:\n")
