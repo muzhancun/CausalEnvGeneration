@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
-LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-14 20:02:04
+LastEditors: muzhancun muzhancun@126.com
+LastEditTime: 2024-11-14 20:27:47
 FilePath: /minestudio/simulator/entry.py
 '''
 
@@ -48,7 +48,7 @@ if not os.path.exists(os.path.join(os.path.dirname(__file__), "minerl", "MCP-Reb
         elif response == 'N' or response == 'n':
             break
         else:
-            input("Please input Y or N:\n")
+            response = input("Please input Y or N:\n")
 
 class MinecraftSim(gymnasium.Env):
     
