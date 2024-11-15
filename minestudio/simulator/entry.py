@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
-LastEditors: muzhancun muzhancun@126.com
-LastEditTime: 2024-11-14 20:27:47
+LastEditors: muzhancun muzhancun@stu.pku.edu.cn
+LastEditTime: 2024-11-16 01:17:19
 FilePath: /minestudio/simulator/entry.py
 '''
 
@@ -83,13 +83,17 @@ class MinecraftSim(gymnasium.Env):
             preferred_spawn_biome = preferred_spawn_biome, 
         ).make()
         self.already_reset = False
+
+    def agent_action_to_env_action(self, action: Dict[str, Any]):
+        action = action_mapper.to_factored(action)
+        action = action_transformer.policy2env(action)
+        return action
     
     def step(self, action: Dict[str, Any]) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         for callback in self.callbacks:
             action = callback.before_step(self, action)
         if self.action_type == 'agent':
-            action = action_mapper.to_factored(action)
-            action = action_transformer.policy2env(action)
+            action = self.agent_action_to_env_action(action)
         obs, reward, done, info = self.env.step(action.copy()) 
         terminated, truncated = done, done
         obs, info = self._wrap_obs_info(obs, info)

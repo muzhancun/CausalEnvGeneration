@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 15:59:38
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-11 16:43:46
-FilePath: /MineStudio/minestudio/simulator/minerl/callbacks/speed_test.py
+LastEditors: muzhancun muzhancun@stu.pku.edu.cn
+LastEditTime: 2024-11-15 15:59:11
+FilePath: /minestudio/simulator/callbacks/speed_test.py
 '''
 import time
 from minestudio.simulator.callbacks.callback import MinecraftCallback
@@ -15,7 +15,7 @@ class SpeedTestCallback(MinecraftCallback):
         self.num_steps = 0
         self.total_times = 0
     
-    def before_step(self, sim, action):
+    def before_step(self, sim, obs, action):
         self.start_time = time.time()
         return action
     
