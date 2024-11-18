@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 20:54:15
-LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 12:37:14
-FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
+LastEditors: muzhancun muzhancun@stu.pku.edu.cn
+LastEditTime: 2024-11-18 17:32:46
+FilePath: /minestudio/models/openai_vpt/body.py
 '''
 import os
 import pickle
@@ -193,7 +193,6 @@ class MinecraftPolicy(nn.Module):
 
     def forward(self, ob, state_in, context):
         first = context["first"]
-
         x = self.img_preprocess(ob["image"])
         x = self.img_process(x)
 

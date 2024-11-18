@@ -1,3 +1,9 @@
+'''
+Date: 2024-11-14 19:42:09
+LastEditors: muzhancun muzhancun@stu.pku.edu.cn
+LastEditTime: 2024-11-18 17:40:02
+FilePath: /minestudio/inference/example.py
+'''
 
 from minestudio.simulator import MinecraftSim
 from minestudio.simulator.callbacks import RecordCallback, SpeedTestCallback
@@ -14,7 +20,7 @@ if __name__ == '__main__':
         obs_size=(128, 128), 
         preferred_spawn_biome="forest", 
         callbacks=[
-            RecordCallback(record_path="./output", fps=30, frame_type="obs"),
+            RecordCallback(record_path="./output", fps=30, frame_type="pov"),
             SpeedTestCallback(50),
         ]
     )

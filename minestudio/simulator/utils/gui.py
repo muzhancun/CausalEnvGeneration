@@ -1,31 +1,37 @@
 '''
 Date: 2024-11-15 15:15:22
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-16 02:10:22
+LastEditTime: 2024-11-17 22:51:25
 FilePath: /minestudio/simulator/utils/gui.py
 '''
-from minestudio.simulator.utils.constants import *
+from minestudio.simulator.utils.constants import GUIConstants   
 
-import pyglet
-import imgui
-from imgui.integrations.pyglet import PygletRenderer
 from collections import defaultdict
 from typing import List, Any
+import importlib
+import cv2
 
 class MinecraftGUI:
     def __init__(self):
+        self.constants = GUIConstants()
+        self.pyglet = importlib.import_module('pyglet')
+        self.imgui = importlib.import_module('imgui')
+        self.key = importlib.import_module('pyglet.window.key')
+        self.mouse = importlib.import_module('pyglet.window.mouse')
+        self.PygletRenderer = importlib.import_module('imgui.integrations.pyglet').PygletRenderer
+
         self.create_window()
     
     def create_window(self):
-        self.window = pyglet.window.Window(
-            width=WINDOW_WIDTH,
-            height=INFO_HEIGHT + FRAME_HEIGHT,
+        self.window = self.pyglet.window.Window(
+            width = self.constants.WINDOW_WIDTH,
+            height = self.constants.INFO_HEIGHT + self.constants.FRAME_HEIGHT,
             vsync=False,
             resizable=False
         )
-        imgui.create_context()
-        imgui.get_io().display_size = WINDOW_WIDTH, WINDOW_HEIGHT
-        self.renderer = PygletRenderer(self.window)
+        self.imgui.create_context()
+        self.imgui.get_io().display_size = self.constants.WINDOW_WIDTH, self.constants.WINDOW_HEIGHT
+        self.renderer = self.PygletRenderer(self.window)
         self.pressed_keys = defaultdict(lambda: False)
         self.released_keys = defaultdict(lambda: False)
         self.window.on_mouse_motion = self._on_mouse_motion
@@ -35,7 +41,7 @@ class MinecraftGUI:
         self.window.on_mouse_press = self._on_mouse_press
         self.window.on_mouse_release = self._on_mouse_release
         self.window.on_activate = self._on_window_activate
-        self.window.on_deactive = self._on_window_deactivate
+        self.window.on_deactivate = self._on_window_deactivate
         self.window.dispatch_events()
         self.window.switch_to()
         self.window.flip()
@@ -71,16 +77,16 @@ class MinecraftGUI:
 
     def _on_mouse_motion(self, x, y, dx, dy):
         # Inverted
-        self.last_mouse_delta[0] -= dy * MOUSE_MULTIPLIER
-        self.last_mouse_delta[1] += dx * MOUSE_MULTIPLIER
+        self.last_mouse_delta[0] -= dy * self.constants.MOUSE_MULTIPLIER
+        self.last_mouse_delta[1] += dx * self.constants.MOUSE_MULTIPLIER
 
     def _on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         # Inverted
-        self.last_mouse_delta[0] -= dy * MOUSE_MULTIPLIER
-        self.last_mouse_delta[1] += dx * MOUSE_MULTIPLIER
+        self.last_mouse_delta[0] -= dy * self.constants.MOUSE_MULTIPLIER
+        self.last_mouse_delta[1] += dx * self.constants.MOUSE_MULTIPLIER
         
     def _show_message(self, text):
-        label = pyglet.text.Label(
+        label = self.pyglet.text.Label(
             text,
             font_size=32,
             x=self.window.width // 2,
@@ -96,31 +102,31 @@ class MinecraftGUI:
         self.window.clear()
         # Based on scaled_image_display.py
         arr = cv2.resize(arr, dsize=(WINDOW_WIDTH, FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
-        image = pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
+        image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
         texture = image.get_texture()
-        texture.blit(0, INFO_HEIGHT)
+        texture.blit(0, self.constants.INFO_HEIGHT)
         self._show_additional_message(message)
         
-        imgui.new_frame()
+        self.imgui.new_frame()
 
         if self.extra_draw_call:
             self.extra_draw_call()
         
-        imgui.begin("Chat", False, imgui.WINDOW_ALWAYS_AUTO_RESIZE)
-        changed, command = imgui.input_text("Message", "")
-        if imgui.button("Send"):
+        self.imgui.begin("Chat", False, self.imgui.WINDOW_ALWAYS_AUTO_RESIZE)
+        changed, command = self.imgui.input_text("Message", "")
+        if self.imgui.button("Send"):
             self.chat_message = command
-        imgui.end()
+        self.imgui.end()
 
-        imgui.render()
-        self.renderer.render(imgui.get_draw_data())
+        self.imgui.render()
+        self.renderer.render(self.imgui.get_draw_data())
         self.window.flip()
 
     def _get_human_action(self):
         """Read keyboard and mouse state for a new action"""
         # Keyboard actions
         action: dict[str, Any] = {
-            name: int(self.pressed_keys[key]) for name, key in MINERL_ACTION_TO_KEYBOARD.items()
+            name: int(self.pressed_keys[key]) for name, key in self.constants.MINERL_ACTION_TO_KEYBOARD.items()
         }
 
         if not self.capture_mouse:
@@ -135,27 +141,30 @@ class MinecraftGUI:
         self._show_message("Resetting environment...")
 
     def capture_mouse(self):
-        release_C = self.released_keys[key.C]     
+        release_C = self.released_keys[self.key.C]     
         if release_C:
-            self.released_keys[key.C] = False
+            self.released_keys[self.key.C] = False
             self.capture_mouse = not self.capture_mouse
             self.window.set_mouse_visible(not self.capture_mouse)
             self.window.set_exclusive_mouse(self.capture_mouse)
         return release_C
     
     def capture_control(self):
-        release_L = self.released_keys[key.L]
+        release_L = self.released_keys[self.key.L]
         if release_L:
-            self.released_keys[key.L] = False
+            self.released_keys[self.key.L] = False
         return release_L
 
     def capture_recording(self):
-        release_R = self.released_keys[key.R]
-        if self.released_keys[key.R]:
-            self.released_keys[key.R] = False
+        release_R = self.released_keys[self.key.R]
+        if self.released_keys[self.key.R]:
+            self.released_keys[self.key.R] = False
         return release_R
             
     def close_gui(self):
         #! WARNING: This should be checked
         self.window.close()
-        pyglet.app.exit()
+        self.pyglet.app.exit()
+
+if __name__ == "__main__":
+    gui = MinecraftGUI()

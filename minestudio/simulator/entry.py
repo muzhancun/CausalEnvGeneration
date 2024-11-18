@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-16 01:17:19
+LastEditTime: 2024-11-18 17:39:36
 FilePath: /minestudio/simulator/entry.py
 '''
 
@@ -9,6 +9,7 @@ import os
 import cv2
 import argparse
 import numpy as np
+import torch
 import gymnasium
 from gymnasium import spaces
 from copy import deepcopy
@@ -76,7 +77,7 @@ class MinecraftSim(gymnasium.Env):
             fov_range = [70, 70],
             gamma_range = [2, 2],
             guiscale_range = [1, 1],
-            cursor_size_range=[16.0, 16.0],
+            cursor_size_range = [16.0, 16.0],
             frameskip = 1,
             resolution = render_size, 
             inventory = inventory,
@@ -85,6 +86,20 @@ class MinecraftSim(gymnasium.Env):
         self.already_reset = False
 
     def agent_action_to_env_action(self, action: Dict[str, Any]):
+        #! This is quite important step (for some reason).
+        #! For the sake of your sanity, remember to do this step (manual conversion to numpy)
+        #! before proceeding. Otherwise, your agent might be a little derp.
+        if isinstance(action, tuple):
+            action = {
+                'buttons': action[0], 
+                'camera': action[1], 
+            }
+        # Second, convert the action to the type of numpy
+        if isinstance(action["buttons"], torch.Tensor):
+            action = {
+                "buttons": action["buttons"].cpu().numpy(),
+                "camera": action["camera"].cpu().numpy()
+        }
         action = action_mapper.to_factored(action)
         action = action_transformer.policy2env(action)
         return action

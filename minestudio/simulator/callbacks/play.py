@@ -1,12 +1,11 @@
 '''
 Date: 2024-11-14 20:10:54
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-16 02:06:38
+LastEditTime: 2024-11-17 22:32:45
 FilePath: /minestudio/simulator/callbacks/play.py
 '''
 from minestudio.simulator.callbacks import RecordCallback
-from minestudio.simulator.utils.constants import *
-from minestudio.simulator.utils import MinecraftGUI
+from minestudio.simulator.utils import MinecraftGUI, GUIConstants
 
 import time
 from typing import Dict, Literal, Optional
@@ -22,6 +21,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         policy: Optional[Dict] = None,
     ):
         super().__init__(record_path, fps, frame_type, recording=False)
+        self.constants = GUIConstants()
         self.start_time = time.time()
         self.end_time = time.time()
         self.enable_bot = enable_bot
@@ -102,7 +102,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         self.timestep += 1
         self.last_obs = obs
         self.end_time = time.time()
-        time.sleep(max(0, MINERL_FRAME_TIME - (self.end_time - self.start_time)))
+        time.sleep(max(0, self.constants.MINERL_FRAME_TIME - (self.end_time - self.start_time)))
         fps = 1 / (self.end_time - self.start_time)
         self.start_time = time.time()
         message = [
