@@ -2,7 +2,7 @@
 Date: 2024-11-15 15:15:22
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-17 22:51:25
-FilePath: /minestudio/simulator/utils/gui.py
+FilePath: /Minestudio/minestudio/simulator/utils/gui.py
 '''
 from minestudio.simulator.utils.constants import GUIConstants   
 
@@ -97,11 +97,26 @@ class MinecraftGUI:
         label.draw()
         self.window.flip()
 
+    def _show_additional_message(self, message: List):
+        if len(message) == 0:
+            return
+        line_height = self.constants.INFO_HEIGHT // len(message)
+        y = line_height // 2
+        for i, row in enumerate(message):
+            line = ' | '.join(row)
+            self.pyglet.text.Label(
+                line,
+                font_size = 7 * self.constants.SCALE, 
+                x = self.window.width // 2, y = y, 
+                anchor_x = 'center', anchor_y = 'center',
+            ).draw()
+            y += line_height
+
     def _update_image(self, arr, message: List = [], **kwargs):
         self.window.switch_to()
         self.window.clear()
         # Based on scaled_image_display.py
-        arr = cv2.resize(arr, dsize=(WINDOW_WIDTH, FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
+        arr = cv2.resize(arr, dsize=(self.constants.WINDOW_WIDTH, self.constants.FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
         image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
         texture = image.get_texture()
         texture.blit(0, self.constants.INFO_HEIGHT)
@@ -109,8 +124,8 @@ class MinecraftGUI:
         
         self.imgui.new_frame()
 
-        if self.extra_draw_call:
-            self.extra_draw_call()
+        # if self.extra_draw_call:
+        #     self.extra_draw_call() @TODO: Add extra draw call
         
         self.imgui.begin("Chat", False, self.imgui.WINDOW_ALWAYS_AUTO_RESIZE)
         changed, command = self.imgui.input_text("Message", "")
@@ -140,7 +155,7 @@ class MinecraftGUI:
         self.pressed_keys = defaultdict(lambda: False)
         self._show_message("Resetting environment...")
 
-    def capture_mouse(self):
+    def _capture_mouse(self):
         release_C = self.released_keys[self.key.C]     
         if release_C:
             self.released_keys[self.key.C] = False
@@ -149,13 +164,13 @@ class MinecraftGUI:
             self.window.set_exclusive_mouse(self.capture_mouse)
         return release_C
     
-    def capture_control(self):
+    def _capture_control(self):
         release_L = self.released_keys[self.key.L]
         if release_L:
             self.released_keys[self.key.L] = False
         return release_L
 
-    def capture_recording(self):
+    def _capture_recording(self):
         release_R = self.released_keys[self.key.R]
         if self.released_keys[self.key.R]:
             self.released_keys[self.key.R] = False

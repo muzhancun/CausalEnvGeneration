@@ -2,7 +2,7 @@
 Date: 2024-11-11 15:59:37
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-18 16:13:28
-FilePath: /minestudio/models/base_policy.py
+FilePath: /Minestudio/minestudio/models/base_policy.py
 '''
 from abc import ABC, abstractmethod
 import numpy as np

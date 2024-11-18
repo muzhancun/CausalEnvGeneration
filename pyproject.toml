@@ -36,7 +36,11 @@ dependencies = [
     "timm",
     "transformers", 
     "Pyro4",
-    "xmltodict", 
+    "xmltodict",
+    "pyrender==0.1.25",
+    "pyglet",
+    "imgui",
+    "pyopengl",
 ]
 authors = [
     {name="CraftJarvis", email="craftjarvis@outlook.com"}

@@ -2,7 +2,7 @@
 Date: 2024-11-14 19:42:09
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-18 17:40:02
-FilePath: /minestudio/inference/example.py
+FilePath: /Minestudio/minestudio/inference/example.py
 '''
 
 from minestudio.simulator import MinecraftSim

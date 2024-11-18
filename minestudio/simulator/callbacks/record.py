@@ -2,7 +2,7 @@
 Date: 2024-11-11 16:40:57
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-16 02:04:54
-FilePath: /minestudio/simulator/callbacks/record.py
+FilePath: /Minestudio/minestudio/simulator/callbacks/record.py
 '''
 import av
 from pathlib import Path

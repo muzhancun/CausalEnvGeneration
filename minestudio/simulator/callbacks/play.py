@@ -2,7 +2,7 @@
 Date: 2024-11-14 20:10:54
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-17 22:32:45
-FilePath: /minestudio/simulator/callbacks/play.py
+FilePath: /Minestudio/minestudio/simulator/callbacks/play.py
 '''
 from minestudio.simulator.callbacks import RecordCallback
 from minestudio.simulator.utils import MinecraftGUI, GUIConstants
@@ -35,6 +35,8 @@ class PlayCallback(RecordCallback, MinecraftGUI):
             assert policy is not None, 'Policy must be specified if enable_bot is True'
             self.policy = load_policy(policy) #! TODO: load policy with a dict of name and weights
             self.reset_policy()
+        else:
+            self.policy = None
 
         # print a table of key bindings
         print(
@@ -80,7 +82,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
 
         self.window.dispatch_events()
         if isinstance(action, str) or action is None:
-            if action == 'human':
+            if action != "policy":
                 human_action = self._get_human_action()
                 action = human_action
             else:
@@ -121,16 +123,16 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         self._update_image(info["pov"], message=message)
 
         # press 'C' to capture mouse
-        release_C = self.capture_mouse()
+        release_C = self._capture_mouse()
 
         # press 'L' to switch control
-        switch_control = self.capture_control()
+        switch_control = self._capture_control()
         if switch_control:
             self.switch = 'human' if self.switch == 'bot' else 'bot'
             print(f'[red]Switch to {self.switch} control[/red]')
 
         # press 'R' to start/stop recording\
-        switch_recording = self.capture_recording()
+        switch_recording = self._capture_recording()
         if switch_recording:
             if self.recording:
                 print(f'[red]Stop recording[/red]')

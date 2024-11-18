@@ -2,7 +2,7 @@
 Date: 2024-11-11 20:54:15
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-18 17:32:46
-FilePath: /minestudio/models/openai_vpt/body.py
+FilePath: /Minestudio/minestudio/models/openai_vpt/body.py
 '''
 import os
 import pickle

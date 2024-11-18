@@ -2,7 +2,7 @@
 Date: 2024-11-11 07:53:19
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-14 20:31:01
-FilePath: /minestudio/simulator/callbacks/__init__.py
+FilePath: /Minestudio/minestudio/simulator/callbacks/__init__.py
 '''
 from minestudio.simulator.callbacks.callback import MinecraftCallback
 from minestudio.simulator.callbacks.speed_test import SpeedTestCallback

@@ -2,7 +2,7 @@
 Date: 2024-11-11 05:20:17
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
 LastEditTime: 2024-11-18 17:39:36
-FilePath: /minestudio/simulator/entry.py
+FilePath: /Minestudio/minestudio/simulator/entry.py
 '''
 
 import os
