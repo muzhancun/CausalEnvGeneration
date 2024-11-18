@@ -41,10 +41,13 @@ class PlayCallback(RecordCallback, MinecraftGUI):
 
         # print a table of key bindings
         print(
-            f'[yellow]Extra Key Bindings Besides Minecraft Controls: \n'
+            f'[yellow]Extra Key Bindings Besides Minecraft Controls:[/yellow]\n'
             f'  [white]C[/white]: Capture Mouse \n'
             f'  [white]L[/white]: Switch Control \n'
             f'  [white]R[/white]: Start/Stop Recording \n'
+            f'  [white]Left Ctrl + C[/white]: [red]Close Window[/red] \n'
+            f'  [white]Esc[/white]: [green]Enter Command Mode[/green] \n'
+            f'  [white]Esc + M[/white]: [green]Enter Mask Mode[/green] \n' 
         )
     
     def reset_policy(self):
@@ -109,7 +112,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         fps = 1 / (self.end_time - self.start_time)
         self.start_time = time.time()
         message = [
-            [f"Role: {self.switch}"], 
+            [f"Role: {self.switch}", f"Mode: {self.mode}"],
             [f"Record: {self.recording}", f"Record Step: {len(self.frames)}", f"Timestep: {self.timestep}", f"FPS: {fps:.2f}"], 
             [f"X: {info['player_pos']['x']:.2f}", f"Y: {info['player_pos']['y']:.2f}", f"Z: {info['player_pos']['z']:.2f}"],
         ]
@@ -143,7 +146,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
             self.recording = not self.recording
 
         # press ESC to close the window and stop the simulation
-        close_window = self._capture_escape()
+        close_window = self._capture_close()
         if close_window:
             print(f'[red]Close the window![/red]')
             self.terminated = True

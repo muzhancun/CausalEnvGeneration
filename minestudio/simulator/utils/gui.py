@@ -27,8 +27,10 @@ def RecordDrawCallback(arr, **kwargs):
         cv2.circle(arr, (20, 20), 10, (0, 255, 0), -1)
         cv2.putText(arr, 'Rec', (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     return arr
-    
 
+def MaskDrawCallback(arr, **kwargs):
+    pass
+    
 class MinecraftGUI:
     def __init__(self, extra_draw_call: List[Callable] = None, **kwargs):
         super().__init__(**kwargs)
@@ -39,6 +41,7 @@ class MinecraftGUI:
         self.mouse = importlib.import_module('pyglet.window.mouse')
         self.PygletRenderer = importlib.import_module('imgui.integrations.pyglet').PygletRenderer
         self.extra_draw_call = extra_draw_call
+        self.mode = "normal"
         self.create_window()
     
     def create_window(self):
@@ -74,6 +77,12 @@ class MinecraftGUI:
         self._show_message("Waiting for reset.")
 
     def _on_key_press(self, symbol, modifiers):
+        if symbol == self.key.ESCAPE:
+            if self.mode == "normal":
+                self.mode = "command"
+        else:
+            if self.mode == "command":
+                self.mode = "normal"
         self.pressed_keys[symbol] = True
 
     def _on_key_release(self, symbol, modifiers):
@@ -196,13 +205,11 @@ class MinecraftGUI:
         if self.released_keys[self.key.R]:
             self.released_keys[self.key.R] = False
         return release_R
-    
-    def _capture_escape(self):
-        release_Escape = self.released_keys[self.key.ESCAPE]
-        if release_Escape:
-            self.released_keys[self.key.ESCAPE] = False
-        return release_Escape
-            
+
+    def _capture_close(self):
+        # press ctrl + c to close the window
+        return (self.pressed_keys[self.key.LCTRL] and self.pressed_keys[self.key.C])
+
     def close_gui(self):
         #! WARNING: This should be checked
         self.window.close()
