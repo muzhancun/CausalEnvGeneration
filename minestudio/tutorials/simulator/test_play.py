@@ -3,12 +3,13 @@ from minestudio.simulator import MinecraftSim
 from minestudio.simulator.callbacks import (
     PlayCallback
 )
+from minestudio.simulator.utils.gui import RecordDrawCallback
 
 if __name__ == '__main__':
     sim = MinecraftSim(
         action_type="env",
         callbacks=[
-            PlayCallback(record_path="./output", fps=30, frame_type="pov", enable_bot=False, policy=None)
+            PlayCallback(record_path="./output", fps=30, frame_type="pov", enable_bot=False, policy=None, extra_draw_call=[RecordDrawCallback])
         ]
     )
     obs, info = sim.reset()

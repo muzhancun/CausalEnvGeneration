@@ -8,7 +8,7 @@ from minestudio.simulator.callbacks import RecordCallback
 from minestudio.simulator.utils import MinecraftGUI, GUIConstants
 
 import time
-from typing import Dict, Literal, Optional
+from typing import Dict, Literal, Optional, Callable
 from rich import print
 
 class PlayCallback(RecordCallback, MinecraftGUI):
@@ -19,8 +19,9 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         frame_type: Literal['pov', 'obs'] = 'pov',
         enable_bot: bool = False,
         policy: Optional[Dict] = None,
+        extra_draw_call: Optional[list[Callable]] = None
     ):
-        super().__init__(record_path, fps, frame_type, recording=False)
+        super().__init__(record_path=record_path, fps=fps, frame_type=frame_type, recording=False, extra_draw_call=extra_draw_call)
         self.constants = GUIConstants()
         self.start_time = time.time()
         self.end_time = time.time()
@@ -47,7 +48,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
         )
     
     def reset_policy(self):
-        self.memory = self.policy.initial_state()
+        self.memory = self.policy.initial_state(1)
 
     def before_reset(self, sim, reset_flag):
         super().before_reset(sim, reset_flag)
@@ -120,7 +121,7 @@ class PlayCallback(RecordCallback, MinecraftGUI):
                 continue
             action_items.append(f"{k}: {v}")
         message.append(action_items)
-        self._update_image(info["pov"], message=message)
+        self._update_image(info["pov"], message=message, recording=self.recording)
 
         # press 'C' to capture mouse
         release_C = self._capture_mouse()
@@ -140,6 +141,13 @@ class PlayCallback(RecordCallback, MinecraftGUI):
             else:
                 print(f'[green]Start recording[/green]')
             self.recording = not self.recording
+
+        # press ESC to close the window and stop the simulation
+        close_window = self._capture_escape()
+        if close_window:
+            print(f'[red]Close the window![/red]')
+            self.terminated = True
+            return obs, reward, True, True, info
         
         if terminated:
             self._show_message("Episode terminated.")

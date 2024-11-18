@@ -7,19 +7,38 @@ FilePath: /Minestudio/minestudio/simulator/utils/gui.py
 from minestudio.simulator.utils.constants import GUIConstants   
 
 from collections import defaultdict
-from typing import List, Any
+from typing import List, Any, Optional, Callable
 import importlib
 import cv2
+import time
+
+def RecordDrawCallback(arr, **kwargs):
+    if 'recording' not in kwargs:
+        return arr
+    recording = kwargs['recording']
+    if not recording:
+        return arr
+    # show a red circle (with cv2) and `Rec` text on the left top corner of the screen
+    # only show when time seconds is even
+    if int(time.time()) % 2 == 0:
+        cv2.circle(arr, (20, 20), 10, (255, 0, 0), -1)
+        cv2.putText(arr, 'Rec', (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+    else:
+        cv2.circle(arr, (20, 20), 10, (0, 255, 0), -1)
+        cv2.putText(arr, 'Rec', (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    return arr
+    
 
 class MinecraftGUI:
-    def __init__(self):
+    def __init__(self, extra_draw_call: List[Callable] = None, **kwargs):
+        super().__init__(**kwargs)
         self.constants = GUIConstants()
         self.pyglet = importlib.import_module('pyglet')
         self.imgui = importlib.import_module('imgui')
         self.key = importlib.import_module('pyglet.window.key')
         self.mouse = importlib.import_module('pyglet.window.mouse')
         self.PygletRenderer = importlib.import_module('imgui.integrations.pyglet').PygletRenderer
-
+        self.extra_draw_call = extra_draw_call
         self.create_window()
     
     def create_window(self):
@@ -117,15 +136,17 @@ class MinecraftGUI:
         self.window.clear()
         # Based on scaled_image_display.py
         arr = cv2.resize(arr, dsize=(self.constants.WINDOW_WIDTH, self.constants.FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
+        
+        if self.extra_draw_call is not None:
+            for draw_call in self.extra_draw_call:
+                arr = draw_call(arr, **kwargs)
+
         image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
         texture = image.get_texture()
         texture.blit(0, self.constants.INFO_HEIGHT)
         self._show_additional_message(message)
         
         self.imgui.new_frame()
-
-        # if self.extra_draw_call:
-        #     self.extra_draw_call() @TODO: Add extra draw call
         
         self.imgui.begin("Chat", False, self.imgui.WINDOW_ALWAYS_AUTO_RESIZE)
         changed, command = self.imgui.input_text("Message", "")
@@ -175,6 +196,12 @@ class MinecraftGUI:
         if self.released_keys[self.key.R]:
             self.released_keys[self.key.R] = False
         return release_R
+    
+    def _capture_escape(self):
+        release_Escape = self.released_keys[self.key.ESCAPE]
+        if release_Escape:
+            self.released_keys[self.key.ESCAPE] = False
+        return release_Escape
             
     def close_gui(self):
         #! WARNING: This should be checked

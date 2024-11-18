@@ -11,9 +11,8 @@ from typing import Literal
 from rich import print
 
 class RecordCallback(MinecraftCallback):
-    
-    def __init__(self, record_path: str, fps: int = 20, frame_type: Literal['pov', 'obs'] = 'pov', recording: bool = True):
-        super().__init__()
+    def __init__(self, record_path: str, fps: int = 20, frame_type: Literal['pov', 'obs'] = 'pov', recording: bool = True, **kwargs):
+        super().__init__(**kwargs)
         self.record_path = Path(record_path)
         self.record_path.mkdir(parents=True, exist_ok=True)
         self.recording = recording
