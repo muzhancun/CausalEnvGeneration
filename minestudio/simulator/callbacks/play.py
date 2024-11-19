@@ -44,7 +44,6 @@ class PlayCallback(MinecraftCallback):
             f'  [white]R[/white]: Start/Stop Recording \n'
             f'  [white]Left Ctrl + C[/white]: [red]Close Window[/red] \n'
             f'  [white]Esc[/white]: [green]Enter Command Mode[/green] \n'
-            f'  [white]Esc + M[/white]: [green]Enter Mask Mode[/green] \n' 
         )
     
     def reset_policy(self):
@@ -102,7 +101,7 @@ class PlayCallback(MinecraftCallback):
         fps = 1 / (self.end_time - self.start_time)
         self.start_time = time.time()
         message = [
-            [f"Role: {self.switch}", f"Mode: {self.gui.mode}, "f"Timestep: {self.timestep}", f"FPS: {fps:.2f}"], 
+            [f"Role: {self.switch}", f"Mode: {self.gui.mode}", f"Timestep: {self.timestep}", f"FPS: {fps:.2f}"], 
             [f"X: {info['player_pos']['x']:.2f}", f"Y: {info['player_pos']['y']:.2f}", f"Z: {info['player_pos']['z']:.2f}"],
         ]
         for message_item in sim.info.get('message', []):
@@ -120,6 +119,10 @@ class PlayCallback(MinecraftCallback):
         # press 'C' to capture mouse
         switch_mouse = self.gui._capture_mouse()
 
+        # press 'ESC' to enter command mode
+        switch_command = self.gui._capture_command()
+        info['switch_command'] = switch_command
+
         # press 'L' to switch control
         switch_control = self.gui._capture_control()
         if switch_control:
@@ -130,7 +133,7 @@ class PlayCallback(MinecraftCallback):
         switch_recording = self.gui._capture_recording()
         info['switch_recording'] = switch_recording
 
-        # press ESC to close the window and stop the simulation
+        # press ctrl+C to close the window and stop the simulation
         close_window = self.gui._capture_close()
         if close_window:
             print(f'[red]Close the window![/red]')

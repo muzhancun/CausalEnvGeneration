@@ -72,6 +72,7 @@ class MinecraftSim(gymnasium.Env):
         self.seed = seed
         self.num_empty_frames = num_empty_frames
         self.callbacks = callbacks
+        self.callback_messages = set() # record messages from callbacks, for example the help messages
         
         self.env = HumanSurvival(
             fov_range = [70, 70],

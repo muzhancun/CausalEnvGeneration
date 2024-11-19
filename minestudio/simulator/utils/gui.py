@@ -11,6 +11,7 @@ from typing import List, Any, Optional, Callable
 import importlib
 import cv2
 import time
+from rich import print
 
 def RecordDrawCall(info, **kwargs):
     if 'recording' not in info.keys():
@@ -28,6 +29,20 @@ def RecordDrawCall(info, **kwargs):
     info['pov'] = arr
     return info
 
+def CommandModeDrawCall(info, **kwargs):
+    if 'switch_command' not in info.keys():
+        return info
+    mode = info['switch_command']
+    if not mode:
+        return info
+    # Draw a grey overlay on the screen
+    arr = info['pov']
+    arr = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
+    arr = cv2.cvtColor(arr, cv2.COLOR_GRAY2RGB)
+    info['pov'] = arr
+    return info
+
+
 def MaskDrawCallback(arr, **kwargs):
     pass
     
@@ -41,7 +56,7 @@ class MinecraftGUI:
         self.mouse = importlib.import_module('pyglet.window.mouse')
         self.PygletRenderer = importlib.import_module('imgui.integrations.pyglet').PygletRenderer
         self.extra_draw_call = extra_draw_call
-        self.mode = "normal"
+        self.mode = 'normal'
         self.create_window()
     
     def create_window(self):
@@ -77,12 +92,6 @@ class MinecraftGUI:
         self._show_message("Waiting for reset.")
 
     def _on_key_press(self, symbol, modifiers):
-        if symbol == self.key.ESCAPE:
-            if self.mode == "normal":
-                self.mode = "command"
-        else:
-            if self.mode == "command":
-                self.mode = "normal"
         self.pressed_keys[symbol] = True
 
     def _on_key_release(self, symbol, modifiers):
@@ -112,7 +121,11 @@ class MinecraftGUI:
         # Inverted
         self.last_mouse_delta[0] -= dy * self.constants.MOUSE_MULTIPLIER
         self.last_mouse_delta[1] += dx * self.constants.MOUSE_MULTIPLIER
-        
+
+    def _show_command_mode(self):
+        # FIXME
+        pass
+
     def _show_message(self, text):
         label = self.pyglet.text.Label(
             text,
@@ -208,6 +221,14 @@ class MinecraftGUI:
         if self.released_keys[self.key.R]:
             self.released_keys[self.key.R] = False
         return release_R
+    
+    def _capture_command(self):
+        release_ESC = self.released_keys[self.key.ESCAPE]
+        if release_ESC:
+            self.released_keys[self.key.ESCAPE] = False
+            print(f'[red]Command Mode Activated[/red]')
+            self.mode = 'command'
+
 
     def _capture_close(self):
         # press ctrl + c to close the window
