@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-15 15:15:22
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-17 22:51:25
-FilePath: /Minestudio/minestudio/simulator/utils/gui.py
+LastEditTime: 2024-11-20 01:02:18
+FilePath: /MineStudio/minestudio/simulator/utils/gui.py
 '''
 from minestudio.simulator.utils.constants import GUIConstants   
 
@@ -14,9 +14,9 @@ import time
 from rich import print
 
 def RecordDrawCall(info, **kwargs):
-    if 'recording' not in info.keys():
+    if 'R' not in info.keys():
         return info
-    recording = info['recording']
+    recording = info['R']
     if not recording:
         return info
     arr = info['pov']
@@ -30,9 +30,9 @@ def RecordDrawCall(info, **kwargs):
     return info
 
 def CommandModeDrawCall(info, **kwargs):
-    if 'switch_command' not in info.keys():
+    if 'ESC' not in info.keys():
         return info
-    mode = info['switch_command']
+    mode = info['ESC']
     if not mode:
         return info
     # Draw a grey overlay on the screen
@@ -201,6 +201,15 @@ class MinecraftGUI:
         self.pressed_keys = defaultdict(lambda: False)
         self._show_message("Resetting environment...")
 
+    def _capture_all_keys(self):
+        released_keys = set()
+        for key in self.released_keys.keys():
+            if self.released_keys[key]:
+                self.released_keys[key] = False
+                released_keys.add(self.key.symbol_string(key))
+        return released_keys
+
+
     def _capture_mouse(self):
         release_C = self.released_keys[self.key.C]     
         if release_C:
@@ -210,29 +219,29 @@ class MinecraftGUI:
             self.window.set_exclusive_mouse(self.capture_mouse)
         return release_C
     
-    def _capture_control(self):
-        release_L = self.released_keys[self.key.L]
-        if release_L:
-            self.released_keys[self.key.L] = False
-        return release_L
+    # def _capture_control(self):
+    #     release_L = self.released_keys[self.key.L]
+    #     if release_L:
+    #         self.released_keys[self.key.L] = False
+    #     return release_L
 
-    def _capture_recording(self):
-        release_R = self.released_keys[self.key.R]
-        if self.released_keys[self.key.R]:
-            self.released_keys[self.key.R] = False
-        return release_R
+    # def _capture_recording(self):
+    #     release_R = self.released_keys[self.key.R]
+    #     if self.released_keys[self.key.R]:
+    #         self.released_keys[self.key.R] = False
+    #     return release_R
     
-    def _capture_command(self):
-        release_ESC = self.released_keys[self.key.ESCAPE]
-        if release_ESC:
-            self.released_keys[self.key.ESCAPE] = False
-            print(f'[red]Command Mode Activated[/red]')
-            self.mode = 'command'
+    # def _capture_command(self):
+    #     release_ESC = self.released_keys[self.key.ESCAPE]
+    #     if release_ESC:
+    #         self.released_keys[self.key.ESCAPE] = False
+    #         print(f'[red]Command Mode Activated[/red]')
+    #         self.mode = 'command'
 
 
-    def _capture_close(self):
-        # press ctrl + c to close the window
-        return (self.pressed_keys[self.key.LCTRL] and self.pressed_keys[self.key.C])
+    # def _capture_close(self):
+    #     # press ctrl + c to close the window
+    #     return (self.pressed_keys[self.key.LCTRL] and self.pressed_keys[self.key.C])
 
     def close_gui(self):
         #! WARNING: This should be checked

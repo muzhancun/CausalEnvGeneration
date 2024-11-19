@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-14 20:10:54
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-17 22:32:45
-FilePath: /Minestudio/minestudio/simulator/callbacks/play.py
+LastEditTime: 2024-11-20 01:06:35
+FilePath: /MineStudio/minestudio/simulator/callbacks/play.py
 '''
 from minestudio.simulator.callbacks import MinecraftCallback
 from minestudio.simulator.utils import MinecraftGUI, GUIConstants
@@ -114,32 +114,22 @@ class PlayCallback(MinecraftCallback):
                 continue
             action_items.append(f"{k}: {v}")
         message.append(action_items)
-        self.gui._update_image(sim.info, message=message)
 
-        # press 'C' to capture mouse
-        switch_mouse = self.gui._capture_mouse()
+        released_keys = self.gui._capture_all_keys()
+        self.gui._update_image(info, message=message)
+        released_keys = self.process_keys(sim, released_keys)
 
-        # press 'ESC' to enter command mode
-        switch_command = self.gui._capture_command()
-        info['switch_command'] = switch_command
+        for key in released_keys:
+            info[key] = True
+
+        terminated = self.terminated
 
         # press 'L' to switch control
-        switch_control = self.gui._capture_control()
-        if switch_control:
+        if 'L' in released_keys:
+            switch_control = True
             self.switch = 'human' if self.switch == 'bot' else 'bot'
             print(f'[red]Switch to {self.switch} control[/red]')
 
-        # press 'R' to start/stop recording\
-        switch_recording = self.gui._capture_recording()
-        info['switch_recording'] = switch_recording
-
-        # press ctrl+C to close the window and stop the simulation
-        close_window = self.gui._capture_close()
-        if close_window:
-            print(f'[red]Close the window![/red]')
-            self.terminated = True
-            return obs, reward, True, True, info
-        
         if terminated:
             self.gui._show_message("Episode terminated.")
 
@@ -159,7 +149,34 @@ class PlayCallback(MinecraftCallback):
 
         return obs, reward, terminated, truncated, info
 
-    def before_close(self, sim):
+    def before_close(self):
         self.gui.close_gui()
+
+    def process_keys(self, sim, released_keys):
+        # press 'C' to set mouse visibility
+        if 'C' in released_keys:
+            self.gui.window.set_mouse_visible(not self.gui.capture_mouse)
+            self.gui.window.set_exclusive_mouse(self.gui.capture_mouse)
+            
+        # press ctrl+C to close the window and stop the simulation
+        if 'LEFT_CTRL' in released_keys and 'C' in released_keys:
+            print(f'[red]Close the window![/red]')
+            self.terminated = True
+
+        # press 'ESC' to enter command mode
+        if 'ESCAPE' in released_keys:
+            self.gui.mode = 'command'
+            print(f'[green]Command Mode Activated[/green]')
+            for message_item in sim.callback_messages:
+                self.gui._show_message(message_item)
+
+            while True:
+                released_keys = self.gui._capture_all_keys()
+                if len(released_keys) > 0:
+                    break
+            self.gui.mode = 'normal'
+        
+        return released_keys
+        
 
         

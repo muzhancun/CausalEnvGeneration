@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-11 16:40:57
 LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-16 02:04:54
-FilePath: /Minestudio/minestudio/simulator/callbacks/record.py
+LastEditTime: 2024-11-20 00:30:51
+FilePath: /MineStudio/minestudio/simulator/callbacks/record.py
 '''
 import av
 from pathlib import Path
@@ -43,7 +43,7 @@ class RecordCallback(MinecraftCallback):
         return obs, info
     
     def after_step(self, sim, obs, reward, terminated, truncated, info):
-        if info.get('switch_recording', False):
+        if info.get('R', False):
             self.recording = not self.recording
             if self.recording:
                 print(f'[green]Start recording[/green]')
