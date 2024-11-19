@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 13:44:13
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 11:37:10
+LastEditTime: 2024-11-19 11:14:58
 FilePath: /MineStudio/minestudio/train/trainer.py
 '''
 import torch
@@ -40,12 +40,35 @@ class MineLightning(L.LightningModule):
         self.learning_rate = learning_rate
         self.warmup_steps = warmup_steps 
         self.weight_decay = weight_decay
-        self.memory = None #! ???
+        self.memory_dict = {
+            "memory": None, 
+            "init_memory": None, 
+            "last_timestamp": None,
+        }
+
+    def _make_memory(self, batch):
+        if self.memory_dict["init_memory"] is None:
+            self.memory_dict["init_memory"] = self.mine_policy.initial_state(batch['image'].shape[0])
+        if self.memory_dict["memory"] is None:
+            self.memory_dict["memory"] = self.memory_dict["init_memory"]
+        if self.memory_dict["last_timestamp"] is None:
+            self.memory_dict["last_timestamp"] = torch.zeros(batch['image'].shape[0], dtype=torch.long).to(self.device)
+        boe = batch["timestamp"][:, 0].eq(self.memory_dict["last_timestamp"] + 1)
+        self.memory_dict["last_timestamp"] = batch["timestamp"][:, -1]
+        # if boe's item is True, then we keep the original memory, otherwise we reset the memory
+        mem_cache = []
+        for om, im in zip(self.memory_dict["memory"], self.memory_dict["init_memory"]):
+            boe_f = boe[:, None, None].expand_as(om)
+            mem_line = torch.where(boe_f, om, im)
+            mem_cache.append(mem_line)
+        self.memory_dict["memory"] = mem_cache
+        return self.memory_dict["memory"]
 
     def _batch_step(self, batch, batch_idx, step_name):
         result = {'loss': 0}
-        latents, memory = self.mine_policy(batch, self.memory)
-        self.memory = tree_detach(memory)
+        memory_in = self._make_memory(batch)
+        latents, memory_out = self.mine_policy(batch, memory_in)
+        self.memory_dict["memory"] = tree_detach(memory_out)
         for callback in self.callbacks:
             call_result = callback(batch, batch_idx, step_name, latents, self.mine_policy)
             for key, val in call_result.items():
