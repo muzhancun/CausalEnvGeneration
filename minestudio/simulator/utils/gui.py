@@ -12,21 +12,21 @@ import importlib
 import cv2
 import time
 
-def RecordDrawCallback(arr, **kwargs):
-    if 'recording' not in kwargs:
-        return arr
-    recording = kwargs['recording']
+def RecordDrawCall(info, **kwargs):
+    if 'recording' not in info.keys():
+        return info
+    recording = info['recording']
     if not recording:
-        return arr
-    # show a red circle (with cv2) and `Rec` text on the left top corner of the screen
-    # only show when time seconds is even
+        return info
+    arr = info['pov']
     if int(time.time()) % 2 == 0:
         cv2.circle(arr, (20, 20), 10, (255, 0, 0), -1)
         cv2.putText(arr, 'Rec', (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
     else:
         cv2.circle(arr, (20, 20), 10, (0, 255, 0), -1)
         cv2.putText(arr, 'Rec', (40, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    return arr
+    info['pov'] = arr
+    return info
 
 def MaskDrawCallback(arr, **kwargs):
     pass
@@ -140,16 +140,19 @@ class MinecraftGUI:
             ).draw()
             y += line_height
 
-    def _update_image(self, arr, message: List = [], **kwargs):
+    def _update_image(self, info, message: List = [], **kwargs):
         self.window.switch_to()
         self.window.clear()
         # Based on scaled_image_display.py
+        arr = info['pov']
         arr = cv2.resize(arr, dsize=(self.constants.WINDOW_WIDTH, self.constants.FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
+        info['pov'] = arr
         
         if self.extra_draw_call is not None:
             for draw_call in self.extra_draw_call:
-                arr = draw_call(arr, **kwargs)
+                info = draw_call(info, **kwargs)
 
+        arr = info['pov']
         image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
         texture = image.get_texture()
         texture.blit(0, self.constants.INFO_HEIGHT)

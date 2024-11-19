@@ -114,7 +114,7 @@ class MinecraftSim(gymnasium.Env):
         obs, info = self._wrap_obs_info(obs, info)
         for callback in self.callbacks:
             obs, reward, terminated, truncated, info = callback.after_step(self, obs, reward, terminated, truncated, info)
-        self.obs, self.info = obs, info
+            self.obs, self.info = obs, info
         return obs, reward, terminated, truncated, info
 
     def reset(self) -> Tuple[np.ndarray, Dict]:
@@ -130,7 +130,7 @@ class MinecraftSim(gymnasium.Env):
         obs, info = self._wrap_obs_info(obs, info)
         for callback in self.callbacks:
             obs, info = callback.after_reset(self, obs, info)
-        self.obs, self.info = obs, info
+            self.obs, self.info = obs, info
         return obs, info
 
     def _wrap_obs_info(self, obs: Dict, info: Dict) -> Dict:

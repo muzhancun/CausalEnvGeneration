@@ -23,13 +23,33 @@ class RecordCallback(MinecraftCallback):
         self.episode_id = 0
         self.frames = []
     
+    def _get_message(self, info):
+        message = info.get('message', [])
+        message.append(
+            [f'Recording: {"On" if self.recording else "Off"}', f'Recording Time: {len(self.frames)}']
+        )
+        return message
+
     def before_reset(self, sim, reset_flag: bool) -> bool:
         if self.recording:
             self._save_episode()
             self.episode_id += 1
         return reset_flag
+
+    def after_reset(self, sim, obs, info):
+        info['message'] = self._get_message(info)
+        return obs, info
     
     def after_step(self, sim, obs, reward, terminated, truncated, info):
+        if info.get('switch_recording', False):
+            self.recording = not self.recording
+            if self.recording:
+                print(f'[green]Start recording[/green]')
+            else:
+                print(f'[red]Stop recording[/red]')
+                self._save_episode()
+                self.episode_id += 1
+        info['recording'] = self.recording
         if self.recording:
             if self.frame_type == 'obs':
                 self.frames.append(obs['image'])
@@ -37,6 +57,7 @@ class RecordCallback(MinecraftCallback):
                 self.frames.append(info['pov'])
             else:
                 raise ValueError(f'Invalid frame_type: {self.frame_type}')
+        info['message'] = self._get_message(info)
         return obs, reward, terminated, truncated, info
     
     def before_close(self, sim):
