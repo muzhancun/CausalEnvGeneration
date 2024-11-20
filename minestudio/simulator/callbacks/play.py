@@ -57,6 +57,7 @@ class PlayCallback(MinecraftCallback):
         return reset_flag
     
     def after_reset(self, sim, obs, info):
+        sim.callback_messages.add("Press 'L' to switch control.")
         self.gui._update_image(info)
         self.last_obs = obs
         self.timestep = 0
@@ -102,7 +103,7 @@ class PlayCallback(MinecraftCallback):
         self.start_time = time.time()
 
         released_keys = self.gui._capture_all_keys()
-        
+
         if 'ESCAPE' in released_keys:
             info['ESCAPE'] = True
             self.gui.mode = 'command'
@@ -125,8 +126,10 @@ class PlayCallback(MinecraftCallback):
         self.gui._update_image(info, message=message)
 
         if self.gui.mode == 'command':
+            help_message = ""
             for message_item in sim.callback_messages:
-                self.gui._show_message(message_item)
+                help_message += message_item + '\n'
+            self.gui._show_message(help_message)
 
         released_keys = self.process_keys(sim, released_keys)
 

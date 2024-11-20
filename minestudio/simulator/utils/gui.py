@@ -124,15 +124,22 @@ class MinecraftGUI:
         self.last_mouse_delta[1] += dx * self.constants.MOUSE_MULTIPLIER
 
     def _show_message(self, text):
-        label = self.pyglet.text.Label(
-            text,
-            font_size=32,
-            x=self.window.width // 2,
-            y=self.window.height // 2,
-            anchor_x='center',
-            anchor_y='center'
+        document = self.pyglet.text.document.FormattedDocument(text)
+        document.set_style(0, len(document.text), dict(font_name='Arial', font_size=32, color=(255, 255, 255, 255)))
+        document.set_paragraph_style(0,100,dict(align = 'center'))
+        layout = self.pyglet.text.layout.TextLayout(
+            document,
+            width=self.window.width//2,
+            height=self.window.height//2,
+            multiline=True,
+            wrap_lines=True,
         )
-        label.draw()
+        layout.update(x=self.window.width//2, y=self.window.height//2)
+        layout.anchor_x = 'center'
+        layout.anchor_y = 'center'
+        layout.content_valign = 'center'
+        layout.draw()
+
         self.window.flip()
 
     def _show_additional_message(self, message: List):
