@@ -37,7 +37,7 @@ class RecordCallback(MinecraftCallback):
         return reset_flag
 
     def after_reset(self, sim, obs, info):
-        sim.callback_messages.add("Press 'R' to start/stop recording.\n")
+        sim.callback_messages.add("Press 'R' to start/stop recording.")
         # this message would be displayed in the GUI when command mode is on
         info['message'] = self._get_message(info)
         return obs, info

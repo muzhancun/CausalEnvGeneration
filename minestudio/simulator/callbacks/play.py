@@ -100,10 +100,18 @@ class PlayCallback(MinecraftCallback):
         time.sleep(max(0, self.constants.MINERL_FRAME_TIME - (self.end_time - self.start_time)))
         fps = 1 / (self.end_time - self.start_time)
         self.start_time = time.time()
+
+        released_keys = self.gui._capture_all_keys()
+        
+        if 'ESCAPE' in released_keys:
+            info['ESCAPE'] = True
+            self.gui.mode = 'command'
+            print(f'[green]Command Mode Activated[/green]')
         message = [
             [f"Role: {self.switch}", f"Mode: {self.gui.mode}", f"Timestep: {self.timestep}", f"FPS: {fps:.2f}"], 
             [f"X: {info['player_pos']['x']:.2f}", f"Y: {info['player_pos']['y']:.2f}", f"Z: {info['player_pos']['z']:.2f}"],
         ]
+
         for message_item in sim.info.get('message', []):
             message.append(message_item)
         action_items = []
@@ -114,9 +122,12 @@ class PlayCallback(MinecraftCallback):
                 continue
             action_items.append(f"{k}: {v}")
         message.append(action_items)
-
-        released_keys = self.gui._capture_all_keys()
         self.gui._update_image(info, message=message)
+
+        if self.gui.mode == 'command':
+            for message_item in sim.callback_messages:
+                self.gui._show_message(message_item)
+
         released_keys = self.process_keys(sim, released_keys)
 
         for key in released_keys:
@@ -129,6 +140,8 @@ class PlayCallback(MinecraftCallback):
             switch_control = True
             self.switch = 'human' if self.switch == 'bot' else 'bot'
             print(f'[red]Switch to {self.switch} control[/red]')
+        else:
+            switch_control = False
 
         if terminated:
             self.gui._show_message("Episode terminated.")
@@ -149,7 +162,7 @@ class PlayCallback(MinecraftCallback):
 
         return obs, reward, terminated, truncated, info
 
-    def before_close(self):
+    def before_close(self, sim):
         self.gui.close_gui()
 
     def process_keys(self, sim, released_keys):
@@ -159,22 +172,25 @@ class PlayCallback(MinecraftCallback):
             self.gui.window.set_exclusive_mouse(self.gui.capture_mouse)
             
         # press ctrl+C to close the window and stop the simulation
-        if 'LEFT_CTRL' in released_keys and 'C' in released_keys:
+        if 'LCTRL' in released_keys and 'C' in released_keys:
             print(f'[red]Close the window![/red]')
             self.terminated = True
 
         # press 'ESC' to enter command mode
         if 'ESCAPE' in released_keys:
-            self.gui.mode = 'command'
-            print(f'[green]Command Mode Activated[/green]')
-            for message_item in sim.callback_messages:
-                self.gui._show_message(message_item)
-
+            time = 0
             while True:
+                self.gui.window.dispatch_events()
+                self.gui.window.switch_to()
+                self.gui.window.flip()
                 released_keys = self.gui._capture_all_keys()
+                time += 1
                 if len(released_keys) > 0:
                     break
             self.gui.mode = 'normal'
+        else:
+            # delete all keys in the released_keys except 'C', 'LEFT_CTRL'
+            released_keys = set([key for key in released_keys if key in ['C', 'LCTRL']])
         
         return released_keys
         

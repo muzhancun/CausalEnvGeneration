@@ -30,15 +30,16 @@ def RecordDrawCall(info, **kwargs):
     return info
 
 def CommandModeDrawCall(info, **kwargs):
-    if 'ESC' not in info.keys():
+    if 'ESCAPE' not in info.keys():
         return info
-    mode = info['ESC']
+    mode = info['ESCAPE']
     if not mode:
         return info
     # Draw a grey overlay on the screen
     arr = info['pov']
-    arr = cv2.cvtColor(arr, cv2.COLOR_RGB2GRAY)
-    arr = cv2.cvtColor(arr, cv2.COLOR_GRAY2RGB)
+    arr = cv2.cvtColor(arr, cv2.COLOR_BGR2GRAY)
+    arr = cv2.cvtColor(arr, cv2.COLOR_GRAY2BGR)
+    cv2.putText(arr, 'Command Mode', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
     info['pov'] = arr
     return info
 
@@ -121,10 +122,6 @@ class MinecraftGUI:
         # Inverted
         self.last_mouse_delta[0] -= dy * self.constants.MOUSE_MULTIPLIER
         self.last_mouse_delta[1] += dx * self.constants.MOUSE_MULTIPLIER
-
-    def _show_command_mode(self):
-        # FIXME
-        pass
 
     def _show_message(self, text):
         label = self.pyglet.text.Label(
@@ -210,14 +207,14 @@ class MinecraftGUI:
         return released_keys
 
 
-    def _capture_mouse(self):
-        release_C = self.released_keys[self.key.C]     
-        if release_C:
-            self.released_keys[self.key.C] = False
-            self.capture_mouse = not self.capture_mouse
-            self.window.set_mouse_visible(not self.capture_mouse)
-            self.window.set_exclusive_mouse(self.capture_mouse)
-        return release_C
+    # def _capture_mouse(self):
+    #     release_C = self.released_keys[self.key.C]     
+    #     if release_C:
+    #         self.released_keys[self.key.C] = False
+    #         self.capture_mouse = not self.capture_mouse
+    #         self.window.set_mouse_visible(not self.capture_mouse)
+    #         self.window.set_exclusive_mouse(self.capture_mouse)
+    #     return release_C
     
     # def _capture_control(self):
     #     release_L = self.released_keys[self.key.L]
