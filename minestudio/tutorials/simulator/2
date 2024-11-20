@@ -1,2 +1,0 @@
-Requirement already satisfied: pyglet in /home/zhwang/miniconda3/envs/minestudio/lib/python3.10/site-packages (1.4.0b1)
-Requirement already satisfied: future in /home/zhwang/miniconda3/envs/minestudio/lib/python3.10/site-packages (from pyglet) (1.0.0)
