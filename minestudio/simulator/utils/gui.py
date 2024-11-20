@@ -43,12 +43,22 @@ def CommandModeDrawCall(info, **kwargs):
     info['pov'] = arr
     return info
 
+def PointDrawCall(info, **kwargs):
+    if 'point' not in info.keys():
+        return info
+    point = info['point']
+    arr  = info['pov']
+    # draw a red circle at the point, the position is relative to the bottom-left corner of arr
+    cv2.circle(arr, (point[0], arr.shape[0] - point[1]), 10, (0, 0, 255), -1)
+    cv2.putText(arr, f'Pointing at {point}', (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    info['pov'] = arr
+    return info
 
-def MaskDrawCallback(arr, **kwargs):
+def MaskDrawCall(arr, **kwargs):
     pass
     
 class MinecraftGUI:
-    def __init__(self, extra_draw_call: List[Callable] = None, **kwargs):
+    def __init__(self, extra_draw_call: List[Callable] = None, show_info = True, **kwargs):
         super().__init__(**kwargs)
         self.constants = GUIConstants()
         self.pyglet = importlib.import_module('pyglet')
@@ -57,21 +67,31 @@ class MinecraftGUI:
         self.mouse = importlib.import_module('pyglet.window.mouse')
         self.PygletRenderer = importlib.import_module('imgui.integrations.pyglet').PygletRenderer
         self.extra_draw_call = extra_draw_call
+        self.show_info = show_info
         self.mode = 'normal'
         self.create_window()
     
     def create_window(self):
-        self.window = self.pyglet.window.Window(
-            width = self.constants.WINDOW_WIDTH,
-            height = self.constants.INFO_HEIGHT + self.constants.FRAME_HEIGHT,
-            vsync=False,
-            resizable=False
-        )
+        if self.show_info:
+            self.window = self.pyglet.window.Window(
+                width = self.constants.WINDOW_WIDTH,
+                height = self.constants.INFO_HEIGHT + self.constants.FRAME_HEIGHT,
+                vsync=False,
+                resizable=False
+            )
+        else:
+            self.window = self.pyglet.window.Window(
+                width = self.constants.WINDOW_WIDTH,
+                height = self.constants.FRAME_HEIGHT,
+                vsync=False,
+                resizable=False
+            )
         self.imgui.create_context()
         self.imgui.get_io().display_size = self.constants.WINDOW_WIDTH, self.constants.WINDOW_HEIGHT
         self.renderer = self.PygletRenderer(self.window)
         self.pressed_keys = defaultdict(lambda: False)
         self.released_keys = defaultdict(lambda: False)
+        self.modifiers = None
         self.window.on_mouse_motion = self._on_mouse_motion
         self.window.on_mouse_drag = self._on_mouse_drag
         self.window.on_key_press = self._on_key_press
@@ -87,20 +107,25 @@ class MinecraftGUI:
         self.last_pov = None
         self.last_mouse_delta = [0, 0]
         self.capture_mouse = True
+        self.mouse_position = None
         self.chat_message = None
+        self.command = None
 
         self.window.clear()
-        self._show_message("Waiting for reset.")
+        self._show_message("Waiting for start.")
 
     def _on_key_press(self, symbol, modifiers):
         self.pressed_keys[symbol] = True
+        self.modifiers = modifiers
 
     def _on_key_release(self, symbol, modifiers):
         self.pressed_keys[symbol] = False
         self.released_keys[symbol] = True
+        self.modifiers = modifiers
 
     def _on_mouse_press(self, x, y, button, modifiers):
         self.pressed_keys[button] = True
+        self.mouse_position = (x, y)
 
     def _on_mouse_release(self, x, y, button, modifiers):
         self.pressed_keys[button] = False
@@ -161,6 +186,7 @@ class MinecraftGUI:
         self.window.switch_to()
         self.window.clear()
         # Based on scaled_image_display.py
+        info = info.copy()
         arr = info['pov']
         arr = cv2.resize(arr, dsize=(self.constants.WINDOW_WIDTH, self.constants.FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC) # type: ignore
         info['pov'] = arr
@@ -173,18 +199,38 @@ class MinecraftGUI:
         image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
         texture = image.get_texture()
         texture.blit(0, self.constants.INFO_HEIGHT)
-        self._show_additional_message(message)
+
+        if self.show_info:
+            self._show_additional_message(message)
         
         self.imgui.new_frame()
         
         self.imgui.begin("Chat", False, self.imgui.WINDOW_ALWAYS_AUTO_RESIZE)
         changed, command = self.imgui.input_text("Message", "")
+        self.command = command
         if self.imgui.button("Send"):
             self.chat_message = command
+            self.command = None
         self.imgui.end()
 
         self.imgui.render()
         self.renderer.render(self.imgui.get_draw_data())
+        self.window.flip()
+
+    def _show_image(self, info, **kwargs):
+        self.window.switch_to()
+        self.window.clear()
+        info = info.copy()
+        arr = info['pov']
+        arr = cv2.resize(arr, dsize=(self.constants.WINDOW_WIDTH, self.constants.FRAME_HEIGHT), interpolation=cv2.INTER_CUBIC)
+        info['pov'] = arr
+        if self.extra_draw_call is not None:
+            for draw_call in self.extra_draw_call:
+                info = draw_call(info, **kwargs)
+        arr = info['pov']
+        image = self.pyglet.image.ImageData(arr.shape[1], arr.shape[0], 'RGB', arr.tobytes(), pitch=arr.shape[1] * -3)
+        texture = image.get_texture()
+        texture.blit(0, 0)
         self.window.flip()
 
     def _get_human_action(self):
@@ -212,40 +258,6 @@ class MinecraftGUI:
                 self.released_keys[key] = False
                 released_keys.add(self.key.symbol_string(key))
         return released_keys
-
-
-    # def _capture_mouse(self):
-    #     release_C = self.released_keys[self.key.C]     
-    #     if release_C:
-    #         self.released_keys[self.key.C] = False
-    #         self.capture_mouse = not self.capture_mouse
-    #         self.window.set_mouse_visible(not self.capture_mouse)
-    #         self.window.set_exclusive_mouse(self.capture_mouse)
-    #     return release_C
-    
-    # def _capture_control(self):
-    #     release_L = self.released_keys[self.key.L]
-    #     if release_L:
-    #         self.released_keys[self.key.L] = False
-    #     return release_L
-
-    # def _capture_recording(self):
-    #     release_R = self.released_keys[self.key.R]
-    #     if self.released_keys[self.key.R]:
-    #         self.released_keys[self.key.R] = False
-    #     return release_R
-    
-    # def _capture_command(self):
-    #     release_ESC = self.released_keys[self.key.ESCAPE]
-    #     if release_ESC:
-    #         self.released_keys[self.key.ESCAPE] = False
-    #         print(f'[red]Command Mode Activated[/red]')
-    #         self.mode = 'command'
-
-
-    # def _capture_close(self):
-    #     # press ctrl + c to close the window
-    #     return (self.pressed_keys[self.key.LCTRL] and self.pressed_keys[self.key.C])
 
     def close_gui(self):
         #! WARNING: This should be checked

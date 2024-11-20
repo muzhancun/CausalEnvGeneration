@@ -40,8 +40,6 @@ class PlayCallback(MinecraftCallback):
         print(
             f'[yellow]Extra Key Bindings Besides Minecraft Controls:[/yellow]\n'
             f'  [white]C[/white]: Capture Mouse \n'
-            f'  [white]L[/white]: Switch Control \n'
-            f'  [white]R[/white]: Start/Stop Recording \n'
             f'  [white]Left Ctrl + C[/white]: [red]Close Window[/red] \n'
             f'  [white]Esc[/white]: [green]Enter Command Mode[/green] \n'
         )
@@ -78,15 +76,18 @@ class PlayCallback(MinecraftCallback):
         self.gui.window.dispatch_events()
         if isinstance(action, str) or action is None:
             if action != "policy":
-                human_action = self.gui._get_human_action()
-                action = human_action
+                if self.gui.command != "":
+                    action = sim.noop_action()
+                else:
+                    human_action = self.gui._get_human_action()
+                    action = human_action
             else:
                 assert self.enable_bot, "Policy is not specified."
                 policy_action = self.policy.get_action(self.last_obs, self.memory, input_shape = "*")
                 policy_action = sim.agent_action_to_env_action(policy_action)
                 action = policy_action
         
-        if self.gui.chat_message is not None:
+        if self.gui.chat_message is not None: #!WARNING: should stop the game when chat message is not None 
             action["chat"] = self.gui.chat_message
             self.gui.chat_message = None
 
@@ -171,13 +172,15 @@ class PlayCallback(MinecraftCallback):
     def process_keys(self, sim, released_keys):
         # press 'C' to set mouse visibility
         if 'C' in released_keys:
-            self.gui.window.set_mouse_visible(not self.gui.capture_mouse)
-            self.gui.window.set_exclusive_mouse(self.gui.capture_mouse)
-            
-        # press ctrl+C to close the window and stop the simulation
-        if 'LCTRL' in released_keys and 'C' in released_keys:
-            print(f'[red]Close the window![/red]')
-            self.terminated = True
+            # print('shit')
+            if not (self.gui.modifiers & self.gui.key.MOD_CTRL):
+                self.gui.capture_mouse = not self.gui.capture_mouse
+                self.gui.window.set_mouse_visible(not self.gui.capture_mouse)
+                self.gui.window.set_exclusive_mouse(self.gui.capture_mouse)
+            else:
+                # press ctrl+C to close the window and stop the simulation
+                print(f'[red]Close the window![/red]')
+                self.terminated = True
 
         # press 'ESC' to enter command mode
         if 'ESCAPE' in released_keys:

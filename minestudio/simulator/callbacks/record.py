@@ -51,7 +51,7 @@ class RecordCallback(MinecraftCallback):
                 print(f'[red]Stop recording[/red]')
                 self._save_episode()
                 self.episode_id += 1
-        info['recording'] = self.recording
+        # info['recording'] = self.recording
         if self.recording:
             if self.frame_type == 'obs':
                 self.frames.append(obs['image'])

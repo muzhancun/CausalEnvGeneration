@@ -1,7 +1,7 @@
 import numpy as np
 from minestudio.simulator import MinecraftSim
 from minestudio.simulator.callbacks import (
-    PlayCallback, RecordCallback
+    PlayCallback, RecordCallback, PointCallback
 )
 from minestudio.simulator.utils.gui import RecordDrawCall, CommandModeDrawCall
 
@@ -11,6 +11,7 @@ if __name__ == '__main__':
         callbacks=[
             PlayCallback(extra_draw_call=[RecordDrawCall, CommandModeDrawCall]),
             RecordCallback(record_path='./output', recording=False),
+            PointCallback()
         ]
     )
     obs, info = sim.reset()
