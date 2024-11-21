@@ -138,8 +138,13 @@ class MinecraftSim(gymnasium.Env):
         _info = info.copy()
         _info.update(obs)
         _obs = {'image': cv2.resize(obs['pov'], dsize=self.obs_size, interpolation=cv2.INTER_LINEAR)}
+        if getattr(self, 'info', None) is None:
+            self.info = {}
+        for key, value in _info.items():
+            self.info[key] = value
+        _info = self.info.copy()
         return _obs, _info
-
+    
     def noop_action(self) -> Dict[str, Any]:
         if self.action_type == 'agent':
             return {

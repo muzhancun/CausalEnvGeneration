@@ -14,7 +14,7 @@ import time
 from rich import print
 
 def RecordDrawCall(info, **kwargs):
-    if 'R' not in info.keys():
+    if 'R' not in info.keys() or info.get('ESCAPE', False):
         return info
     recording = info['R']
     if not recording:

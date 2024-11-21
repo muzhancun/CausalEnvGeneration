@@ -11,6 +11,7 @@ import time
 from typing import Dict, Literal, Optional, Callable
 from rich import print
 
+DEBUG = False
 class PlayCallback(MinecraftCallback):
     def __init__(
         self,
@@ -114,8 +115,17 @@ class PlayCallback(MinecraftCallback):
             [f"X: {info['player_pos']['x']:.2f}", f"Y: {info['player_pos']['y']:.2f}", f"Z: {info['player_pos']['z']:.2f}"],
         ]
 
-        for message_item in sim.info.get('message', []):
-            message.append(message_item)
+        if DEBUG:
+            print(f'[yellow]Debug Information:[/yellow]')
+            ignored_keys = ['location_stats', 'voxels', 'mobs', 'health', 'food_level', 'pov', 'inventory', 'equipped_items', 'use_item', 'pickup', 'break_item', 'craft_item', 'mine_block', 'damage_dealt', 'kill_entity', 'player_pos', 'is_gui_open', 'isGuiOpen']
+            for k, v in info.items():
+                if k not in ignored_keys:
+                    print(f'{k}: {v}')
+            print(f'[End of Debug Information]')
+
+        for name, message_item in info.get('message', {}).items():
+            message.append([message_item])
+
         action_items = []
         for k, v in self.last_action.items():
             if k == 'camera':
@@ -124,7 +134,9 @@ class PlayCallback(MinecraftCallback):
                 continue
             action_items.append(f"{k}: {v}")
         message.append(action_items)
+         
         self.gui._update_image(info, message=message)
+        info['ESCAPE'] = False # don't forget to reset the key
 
         if self.gui.mode == 'command':
             help_message = ""
@@ -135,7 +147,10 @@ class PlayCallback(MinecraftCallback):
         released_keys = self.process_keys(sim, released_keys)
 
         for key in released_keys:
-            info[key] = True
+            if key in info:
+                info[key] = not info[key]
+            else:
+                info[key] = True
 
         terminated = self.terminated
 
@@ -194,9 +209,14 @@ class PlayCallback(MinecraftCallback):
                 if len(released_keys) > 0:
                     break
             self.gui.mode = 'normal'
+            # delete ESCAPE in released keys
+            released_keys = set(released_keys) - {'ESCAPE'}
+            if 'C' in released_keys and (self.gui.modifiers & self.gui.key.MOD_CTRL):
+                print(f'[red]Close the window![/red]')
+                self.terminated = True
         else:
-            # delete all keys in the released_keys except 'C', 'LEFT_CTRL'
-            released_keys = set([key for key in released_keys if key in ['C', 'LCTRL']])
+            # delete all keys in the released_keys
+            released_keys = set()
         
         return released_keys
         

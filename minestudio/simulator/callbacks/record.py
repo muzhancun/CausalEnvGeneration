@@ -24,10 +24,8 @@ class RecordCallback(MinecraftCallback):
         self.frames = []
     
     def _get_message(self, info):
-        message = info.get('message', [])
-        message.append(
-            [f'Recording: {"On" if self.recording else "Off"}', f'Recording Time: {len(self.frames)}']
-        )
+        message = info.get('message', {})
+        message['RecordCallback'] = f'Recording: {"On" if self.recording else "Off"}, Recording Time: {len(self.frames)}'
         return message
 
     def before_reset(self, sim, reset_flag: bool) -> bool:
@@ -43,15 +41,16 @@ class RecordCallback(MinecraftCallback):
         return obs, info
     
     def after_step(self, sim, obs, reward, terminated, truncated, info):
-        if info.get('R', False):
-            self.recording = not self.recording
-            if self.recording:
-                print(f'[green]Start recording[/green]')
-            else:
-                print(f'[red]Stop recording[/red]')
-                self._save_episode()
-                self.episode_id += 1
-        # info['recording'] = self.recording
+        if self.recording and not info.get('R', False):
+            self.recording = False
+            print(f'[red]Recording stopped[/red]')
+            self._save_episode()
+            self.episode_id += 1
+
+        if not self.recording and info.get('R', False):
+            self.recording = True
+            print(f'[green]Start recording[/green]')
+
         if self.recording:
             if self.frame_type == 'obs':
                 self.frames.append(obs['image'])

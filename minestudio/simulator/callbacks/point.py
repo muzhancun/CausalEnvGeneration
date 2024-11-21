@@ -47,6 +47,7 @@ class PointCallback(MinecraftCallback):
 
         if info['point'] is not None:
             print(f'[red]Stop pointing at {info["point"]}[/red]')
+        info['P'] = False
         return obs, reward, terminated, truncated, info
         
 
