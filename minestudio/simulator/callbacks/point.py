@@ -105,6 +105,11 @@ class SegmentCallback(MinecraftCallback):
         sim.callback_messages.add("Press 'S' to start segmenting.")
         info['message'] = self._get_message(info)
         return obs, info
+
+    def before_step(self, sim, action):
+        if sim.info.get('S', False) and not self.tracking:
+            return sim.noop_action()
+        return action
     
     def after_step(self, sim, obs, reward, terminated, truncated, info):
         if self.tracking and (not info.get('S', False)):
