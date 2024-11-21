@@ -9,11 +9,11 @@ python rule_generation.py
 ## Evaluating videos with VLM
 ```bash
 #Compare two videos
-python video_comparison.py --video_path_a='xxx/xxx.mp4' --video_path_b='xxx/xxx.mp4' --criteria_path='xxx/xxx.txt' 
+python video_comparison.py --video_path_a='./eval_video/build_pillar/build_pillar_0.mp4' --video_path_b='./eval_video/build_pillar/build_pillar_6.mp4' --criteria_path='./auto_eval/criteria_files/build_pillar.txt' 
 #Individual video evaluation
-python individual_video_rating.py --video_path='xxx/xxx/' --criteria_path='xxx/xxx/' 
+python individual_video_rating.py --video_path='./eval_video/build_pillar/build_pillar_0.mp4' --criteria_path='./auto_eval/criteria_files/build_pillar.txt' 
 #Batch video evaluation
-python batch_video_rating.py --videos_path='xxx/xxx/' --criteria_files_path='xxx/xxx/' 
+python batch_video_rating.py --videos_path='./eval_video/' --criteria_files_path='./auto_eval/criteria_files/' 
 ```
 
 For batch video rating, you should organize video files and criteria files with the following structure:
