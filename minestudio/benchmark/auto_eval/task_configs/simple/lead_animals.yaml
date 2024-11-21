@@ -1,0 +1,8 @@
+custom_init_commands:
+- /give @s minecraft:string 10
+- /give @s minecraft:slime_ball 5
+- /setblock ~2 ~ ~ minecraft:crafting_table
+defaults:
+- base
+- _self_
+text: Lead animals using a lead.

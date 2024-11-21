@@ -1,0 +1,12 @@
+custom_init_commands:
+- /give @s minecraft:water_bucket 10
+- /give @s minecraft:stone 64
+- /give @s minecraft:dirt 64
+- /setblock ~2 ~5 ~ minecraft:stone
+- /setblock ~2 ~4 ~ minecraft:stone
+- /setblock ~2 ~3 ~ minecraft:stone
+- /setblock ~2 ~2 ~ minecraft:stone
+defaults:
+- base
+- _self_
+text: Create a flowing waterfall using water sources and blocks.

@@ -1,0 +1,9 @@
+custom_init_commands:
+- /replaceitem entity @s weapon.mainhand minecraft:diamond_pickaxe
+- /give @s minecraft:bucket 1
+- /setblock ~2 ~ ~ minecraft:lava
+- /setblock ~3 ~ ~ minecraft:water
+defaults:
+- base
+- _self_
+text: Mine obsidian blocks for various crafting or building purposes.

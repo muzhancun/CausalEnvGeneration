@@ -1,0 +1,9 @@
+custom_init_commands:
+- /give @s minecraft:diamond_pickaxe
+- /give @s minecraft:obsidian 15
+- /execute as @p at @s run fill ~2 ~ ~ ~5 ~1 ~5 stone
+- /give @s minecraft:stone 64
+defaults:
+- base
+- _self_
+text: Build a structure using obsidian blocks.

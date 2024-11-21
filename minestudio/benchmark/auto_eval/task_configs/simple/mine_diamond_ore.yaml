@@ -1,0 +1,9 @@
+custom_init_commands:
+- /replaceitem entity @s weapon.mainhand minecraft:stone_pickaxe
+- /give @s minecraft:torch 16
+- /give @s minecraft:cooked_beef 10
+- /execute as @p at @s run fill ~ ~ ~ ~1 ~ ~ diamond_ore
+defaults:
+- base
+- _self_
+text: Find and mine the diamond ore.
