@@ -12,6 +12,7 @@ import importlib
 import cv2
 import time
 from rich import print
+import numpy as np
 
 def RecordDrawCall(info, **kwargs):
     if 'R' not in info.keys() or info.get('ESCAPE', False):
@@ -54,8 +55,41 @@ def PointDrawCall(info, **kwargs):
     info['pov'] = arr
     return info
 
-def MaskDrawCall(arr, **kwargs):
-    pass
+def MultiPointDrawCall(info, **kwargs):
+    if 'positive_points' not in info.keys() or 'negative_points' not in info.keys():
+        return info
+    positive_points = info['positive_points']
+    negative_points = info['negative_points']
+    if len(positive_points) == 0:
+        return info
+    arr = info['pov']
+    remap_points = kwargs.get('remap_points', (1, 1, 1, 1))
+    for point in positive_points:
+        point = (int(point[0] * remap_points[0] / remap_points[1]), int(point[1] * remap_points[2] / remap_points[3]))
+        cv2.circle(arr, (point[0], point[1]), 10, (0, 255, 0), -1)
+
+    for point in negative_points:
+        point = (int(point[0] * remap_points[0] / remap_points[1]), int(point[1] * remap_points[2] / remap_points[3]))
+        cv2.circle(arr, (point[0], point[1]), 10, (255, 0, 0), -1)
+
+    info['pov'] = arr
+    return info
+
+def MaskDrawCall(info, **kwargs):
+    if 'mask' not in info.keys():
+        return info
+    mask = info['mask']
+    if mask is None:
+        return info
+    arr = info['pov']
+    color = (0, 255, 0)
+    color = np.array(color).reshape(1, 1, 3)[:, :, ::-1]
+    mask = (mask[..., None] * color).astype(np.uint8)
+    # resize the mask to the size of the obs
+    mask = cv2.resize(mask, dsize=(arr.shape[1], arr.shape[0]), interpolation=cv2.INTER_CUBIC)
+    arr = cv2.addWeighted(arr, 1.0, mask, 0.5, 0.0)
+    info['pov'] = arr
+    return info
     
 class MinecraftGUI:
     def __init__(self, extra_draw_call: List[Callable] = None, show_info = True, **kwargs):
@@ -100,18 +134,20 @@ class MinecraftGUI:
         self.window.on_mouse_release = self._on_mouse_release
         self.window.on_activate = self._on_window_activate
         self.window.on_deactivate = self._on_window_deactivate
-        self.window.dispatch_events()
-        self.window.switch_to()
-        self.window.flip()
 
         self.last_pov = None
         self.last_mouse_delta = [0, 0]
         self.capture_mouse = True
         self.mouse_position = None
+        self.mouse_pressed = None
         self.chat_message = None
         self.command = None
 
+        self.window.dispatch_events()
+        self.window.switch_to()
+        self.window.flip()
         self.window.clear()
+
         self._show_message("Waiting for start.")
 
     def _on_key_press(self, symbol, modifiers):
@@ -125,6 +161,7 @@ class MinecraftGUI:
 
     def _on_mouse_press(self, x, y, button, modifiers):
         self.pressed_keys[button] = True
+        self.mouse_pressed = button
         self.mouse_position = (x, y)
 
     def _on_mouse_release(self, x, y, button, modifiers):

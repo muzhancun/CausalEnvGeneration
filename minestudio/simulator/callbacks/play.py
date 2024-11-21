@@ -50,12 +50,12 @@ class PlayCallback(MinecraftCallback):
 
     def before_reset(self, sim, reset_flag):
         self.gui.reset_gui()
-        self.terminated = False
-        if self.enable_bot:
-            self.reset_policy()
         return reset_flag
     
     def after_reset(self, sim, obs, info):
+        self.terminated = False
+        if self.enable_bot:
+            self.reset_policy()
         sim.callback_messages.add("Press 'L' to switch control.")
         self.gui._update_image(info)
         self.last_obs = obs
