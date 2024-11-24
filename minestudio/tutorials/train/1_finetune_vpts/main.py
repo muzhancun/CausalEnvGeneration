@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 14:00:50
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 08:46:19
+LastEditTime: 2024-11-24 14:53:34
 FilePath: /MineStudio/minestudio/tutorials/train/1_finetune_vpts/main.py
 '''
 import hydra
@@ -17,8 +17,11 @@ from minestudio.train import MineLightning
 from minestudio.models import load_openai_policy
 from minestudio.train.callbacks import BehaviorCloneCallback
 
+logger = WandbLogger(project="minestudio", prefix="finetune_vpt_")
+
 @hydra.main(config_path='.', config_name='vpt_2x')
 def main(args):
+    
     mine_lightning = MineLightning(
         mine_policy=load_openai_policy(
             model_path=args.model_path,
@@ -47,10 +50,6 @@ def main(args):
         split_ratio=args.split_ratio, 
     )
 
-    if args.logger == 'wandb':
-        logger = WandbLogger(project="minestudio", id=args.project_id)
-    else:
-        logger = None
     trainer = L.Trainer(logger=logger, devices=args.devices, precision=16, strategy='ddp_find_unused_parameters_true', use_distributed_sampler=False)
     trainer.fit(mine_lightning, datamodule=mine_data)
 

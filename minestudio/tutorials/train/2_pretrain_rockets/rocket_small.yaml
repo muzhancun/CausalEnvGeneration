@@ -5,9 +5,6 @@ hydra:
 hydra/job_logging: colorlog
 hydra/hydra_logging: colorlog
 
-model_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model'
-weights_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-2x.weights'
-
 dataset_dirs: 
   - '/nfs-shared-2/data/contractors/dataset_6xx'
   - '/nfs-shared-2/data/contractors/dataset_7xx'
@@ -23,3 +20,12 @@ devices: 8
 learning_rate: 0.0000181
 warmup_steps: 1000
 weight_decay: 0.000181
+save_freq: 10000
+
+model:
+  backbone: 'efficientnet_b0.ra_in1k'
+  hiddim: 1024
+  num_heads: 16
+  num_layers: 4
+  timesteps: 128
+  mem_len: 128
