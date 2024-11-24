@@ -1,15 +1,13 @@
 '''
 Date: 2024-11-18 20:37:50
-LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-18 22:32:45
-FilePath: /Minestudio/minestudio/simulator/callbacks/point.py
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-24 08:23:45
+FilePath: /MineStudio/minestudio/simulator/callbacks/point.py
 '''
 
 from minestudio.simulator.callbacks import MinecraftCallback
 from minestudio.simulator.utils import MinecraftGUI, GUIConstants
 from minestudio.simulator.utils.gui import PointDrawCall, MaskDrawCall, MultiPointDrawCall
-
-from sam2.build_sam import build_sam2_camera_predictor
 
 import time
 from typing import Dict, Literal, Optional, Callable
@@ -83,6 +81,7 @@ class SegmentCallback(MinecraftCallback):
         # first realease the old predictor
         if hasattr(self, "predictor"):
             del self.predictor
+        from sam2.build_sam import build_sam2_camera_predictor
         self.predictor = build_sam2_camera_predictor(model_cfg, sam_ckpt)
         print(f"Successfully loaded SAM2 from {sam_ckpt}")
         self.able_to_track = False

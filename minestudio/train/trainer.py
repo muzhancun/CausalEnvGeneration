@@ -1,15 +1,26 @@
 '''
 Date: 2024-11-10 13:44:13
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 05:31:43
+LastEditTime: 2024-11-24 08:59:55
 FilePath: /MineStudio/minestudio/train/trainer.py
 '''
+import os
 import torch
 import torch.nn as nn
 import lightning as L
+from lightning.pytorch.core.mixins import HyperparametersMixin
 from minestudio.models import MinePolicy
 from minestudio.train.callbacks import ObjectiveCallback
 from typing import List
+
+IMPORTANT_VARIABLES = [
+    "MINESTUDIO_SAVE_DIR", 
+    "MINESTUDIO_DATABASE_DIR", 
+]
+
+for var in IMPORTANT_VARIABLES:
+    val = os.environ.get(var, "not found")
+    print(f"VAR - {var}: {val}")
 
 def tree_detach(tree):
     if isinstance(tree, dict):
@@ -21,7 +32,7 @@ def tree_detach(tree):
     else:
         return tree
 
-class MineLightning(L.LightningModule):
+class MineLightning(L.LightningModule, HyperparametersMixin):
 
     def __init__(
         self, 
@@ -45,6 +56,7 @@ class MineLightning(L.LightningModule):
             "init_memory": None, 
             "last_timestamp": None,
         }
+        self.save_hyperparameters()
 
     def _make_memory(self, batch):
         if self.memory_dict["init_memory"] is None:
@@ -53,13 +65,13 @@ class MineLightning(L.LightningModule):
             self.memory_dict["memory"] = self.memory_dict["init_memory"]
         if self.memory_dict["last_timestamp"] is None:
             self.memory_dict["last_timestamp"] = torch.zeros(batch['image'].shape[0], dtype=torch.long).to(self.device)
-        boe = batch["timestamp"][:, 0].eq(self.memory_dict["last_timestamp"] + 1)
+        boe = batch["timestamp"][:, 0].ne(self.memory_dict["last_timestamp"] + 1)
         self.memory_dict["last_timestamp"] = batch["timestamp"][:, -1]
-        # if boe's item is True, then we keep the original memory, otherwise we reset the memory
+        # if boe's (begin-of-episode) item is True, then we keep the original memory, otherwise we reset the memory
         mem_cache = []
         for om, im in zip(self.memory_dict["memory"], self.memory_dict["init_memory"]):
             boe_f = boe[:, None, None].expand_as(om)
-            mem_line = torch.where(boe_f, om, im)
+            mem_line = torch.where(boe_f, im, om)
             mem_cache.append(mem_line)
         self.memory_dict["memory"] = mem_cache
         return self.memory_dict["memory"]

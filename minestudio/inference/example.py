@@ -1,8 +1,8 @@
 '''
 Date: 2024-11-14 19:42:09
-LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-18 17:40:02
-FilePath: /Minestudio/minestudio/inference/example.py
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-24 08:20:17
+FilePath: /MineStudio/minestudio/inference/example.py
 '''
 
 from minestudio.simulator import MinecraftSim
@@ -13,7 +13,7 @@ if __name__ == '__main__':
     
     policy = load_openai_policy(
         model_path="/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model",
-        weights_path="/nfs-shared/jarvisbase/pretrained/rl-from-early-game-2x.weights"
+        weights_path="/nfs-shared/jarvisbase/pretrained/foundation-model-2x.weights"
     ).to("cuda")
     
     env = MinecraftSim(
