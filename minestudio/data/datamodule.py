@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
-LastEditors: caishaofei-mus1 1744260356@qq.com
-LastEditTime: 2024-11-12 14:02:52
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-24 06:41:44
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 
@@ -101,13 +101,14 @@ class MineDataModule(pl.LightningDataModule):
 
 if __name__ == '__main__':
     import lightning as L
-    fabric = L.Fabric(accelerator="cuda", devices=4, strategy="ddp")
+    from tqdm import tqdm
+    fabric = L.Fabric(accelerator="cuda", devices=8, strategy="ddp")
     fabric.launch()
     data_module = MineDataModule(
         data_params=dict(
             mode='raw',
             dataset_dirs=[
-                '/nfs-shared-2/data/contractors/dataset_7xx',
+                '/nfs-shared-2/data/contractors/dataset_10xx',
             ],
             enable_contractor_info=False,
             enable_segment=True,
@@ -115,20 +116,20 @@ if __name__ == '__main__':
             frame_height=224,
             win_len=128,
             skip_frame=1,
-            split_ratio=0.8,
+            split_ratio=0.2,
         ),
-        batch_size=4,
-        num_workers=4,
+        batch_size=8,
+        num_workers=8,
         train_shuffle=True,
-        prefetch_factor=2,
+        prefetch_factor=4,
     )
     data_module.setup()
     train_loader = data_module.train_dataloader()
     train_loader = fabric.setup_dataloaders(train_loader, use_distributed_sampler=False)
     rank = fabric.local_rank
-    for idx, batch in enumerate(train_loader):
+    for idx, batch in enumerate(tqdm(train_loader, disable=True)):
         print(
             f"{rank = } \t" + "\t".join(
-                [f"{a} {b}" for a, b in zip(batch['episode'], batch['progress'])]
+                [f"{a[-20:]} {b}" for a, b in zip(batch['episode'], batch['progress'])]
             )
         )

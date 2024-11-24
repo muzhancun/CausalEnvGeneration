@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:06:28
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 13:10:01
+LastEditTime: 2024-11-24 06:11:07
 FilePath: /MineStudio/minestudio/data/minecraft/utils.py
 '''
 import av
@@ -93,10 +93,10 @@ class MineDistributedBatchSampler(Sampler):
         Build batch of episodes, each batch is consisted of `self.batch_size` episodes.
         Only if one episodes runs out of samples, the batch is filled with the next episode.
         """
-        batch = []
-        reading_episodes = [ None for _ in range(self.batch_size) ]
         next_episode_idx = 0
+        reading_episodes = [ None for _ in range(self.batch_size) ]
         while True:
+            batch = [ None for _ in range(self.batch_size) ]
             # feed `reading_episodes` with the next episode
             for i in range(self.batch_size):
                 if reading_episodes[i] is None:
@@ -105,21 +105,30 @@ class MineDistributedBatchSampler(Sampler):
                     reading_episodes[i] = self.episodes_within_replica[next_episode_idx]
                     next_episode_idx += 1
             # use while loop to build batch
-            while len(batch) < self.batch_size:
-                record_batch_length = len(batch)
-                for i in range(self.batch_size):
-                    if reading_episodes[i] is not None:
-                        episode, start_idx, end_idx, item_bias = reading_episodes[i]
-                        batch.append(item_bias + start_idx)
-                        if start_idx+1 < end_idx:
-                            reading_episodes[i] = (episode, start_idx + 1, end_idx, item_bias)
-                        else:
-                            reading_episodes[i] = None
-                if record_batch_length == len(batch):
-                    # stop iteration if no new samples are added to the batch
+            while any([x is None for x in batch]):
+                record_batch_length = sum([x is not None for x in batch])
+                # get the position that needs to be filled
+                for cur in range(self.batch_size):
+                    if batch[cur] is None:
+                        break
+                # get the episode that has the next sample
+                if reading_episodes[cur] is not None:
+                    use_eps_idx = cur
+                else:
+                    for use_eps_idx in range(self.batch_size):
+                        if reading_episodes[use_eps_idx] is not None:
+                            break
+                # if all episodes are None, then stop iteration
+                if reading_episodes[use_eps_idx] is None:
                     return None
+                # fill the batch with the next sample
+                episode, start_idx, end_idx, item_bias = reading_episodes[use_eps_idx]
+                batch[cur] = item_bias + start_idx
+                if start_idx+1 < end_idx:
+                    reading_episodes[use_eps_idx] = (episode, start_idx + 1, end_idx, item_bias)
+                else:
+                    reading_episodes[use_eps_idx] = None
             yield batch
-            batch = []
 
     def __len__(self):
         return self.num_samples_per_replica // self.batch_size

@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 14:00:50
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-19 11:13:32
+LastEditTime: 2024-11-24 07:06:49
 FilePath: /MineStudio/minestudio/tutorials/train/finetune_vpt.py
 '''
 import torch
@@ -18,8 +18,8 @@ from minestudio.train.callbacks import BehaviorCloneCallback
 
 mine_lightning = MineLightning(
     mine_policy=load_openai_policy(
-        model_path='/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model',
-        weights_path='/nfs-shared/jarvisbase/pretrained/foundation-model-2x.weights',
+        model_path='/nfs-shared/jarvisbase/pretrained/foundation-model-1x.model',
+        weights_path='/nfs-shared/jarvisbase/pretrained/foundation-model-1x.weights',
     ),
     log_freq=20,
     learning_rate=1e-4,
@@ -34,6 +34,10 @@ mine_data = MineDataModule(
     data_params=dict(
         mode='raw',
         dataset_dirs=[
+            '/nfs-shared-2/data/contractors/dataset_6xx',
+            '/nfs-shared-2/data/contractors/dataset_7xx',
+            '/nfs-shared-2/data/contractors/dataset_8xx',
+            '/nfs-shared-2/data/contractors/dataset_9xx',
             '/nfs-shared-2/data/contractors/dataset_10xx',
         ],
         frame_width=128,
@@ -43,9 +47,10 @@ mine_data = MineDataModule(
     batch_size=8,
     num_workers=8,
     prefetch_factor=4,
+    split_ratio=0.9, 
 )
 
-wandb_logger = WandbLogger(project="minestudio", id="tune_vpt_fd_2x_new")
 # wandb_logger = None
-trainer = L.Trainer(logger=wandb_logger, devices=4, precision=16, strategy='ddp_find_unused_parameters_true', use_distributed_sampler=False)
+wandb_logger = WandbLogger(project="minestudio", id="new_tune_vpt_fd_1x")
+trainer = L.Trainer(logger=wandb_logger, devices=8, precision=16, strategy='ddp_find_unused_parameters_true', use_distributed_sampler=False)
 trainer.fit(mine_lightning, datamodule=mine_data)

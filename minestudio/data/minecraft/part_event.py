@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:52
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-10 12:06:25
+LastEditTime: 2024-11-24 06:51:29
 FilePath: /MineStudio/minestudio/data/minecraft/part_event.py
 '''
 import io
@@ -114,7 +114,7 @@ class EventDataset(BaseDataset):
     def __init__(self, 
         win_len: int = 1, 
         skip_frame: int = 1,
-        split_type: Literal['train', 'val'] = 'train',
+        split: Literal['train', 'val'] = 'train',
         split_ratio: float = 0.8, 
         verbose: bool = True,
         # below are event dataset specific parameters
@@ -127,7 +127,7 @@ class EventDataset(BaseDataset):
         super(EventDataset, self).__init__(verbose=verbose, **kernel_kwargs)
         self.win_len = win_len
         self.skip_frame = skip_frame
-        self.split_type = split_type
+        self.split = split
         self.split_ratio = split_ratio
         self.verbose = verbose
         self.bias = bias
@@ -149,14 +149,14 @@ class EventDataset(BaseDataset):
         event_with_items = []
         for event in self.event_list:
             num_event_items = self.event_kernel.get_event_size(event)
-            if self.split_type == 'train':
+            if self.split == 'train':
                 bias = 0
                 num_event_items = int(num_event_items * self.split_ratio)
-            elif self.split_type == 'val':
+            elif self.split == 'val':
                 bias = int(num_event_items * self.split_ratio)
                 num_event_items = num_event_items - bias
             else:
-                raise ValueError(f"Split type <{self.split_type}> not supported. ")
+                raise ValueError(f"Split type <{self.split}> not supported. ")
             self.num_items += num_event_items
             event_with_items.append((self.num_items, event, bias))
         self.items = event_with_items
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     event_dataset = EventDataset(
         win_len=128, 
         skip_frame=1, 
-        split_type='train', 
+        split='train', 
         split_ratio=0.8, 
         verbose=True, 
         event_regex='minecraft.kill_entity:.*', 

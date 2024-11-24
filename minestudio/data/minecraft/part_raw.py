@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:32
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 15:56:15
+LastEditTime: 2024-11-24 06:50:48
 FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
 '''
 import io
@@ -25,7 +25,7 @@ class RawDataset(BaseDataset):
     def __init__(self, 
         win_len: int = 1, 
         skip_frame: int = 1, 
-        split_type: Literal['train', 'val'] = 'train',
+        split: Literal['train', 'val'] = 'train',
         split_ratio: float = 0.8,
         verbose: bool = True,
         **kernel_kwargs, 
@@ -33,7 +33,7 @@ class RawDataset(BaseDataset):
         super(RawDataset, self).__init__(verbose=verbose, **kernel_kwargs)
         self.win_len = win_len
         self.skip_frame = skip_frame
-        self.split_type = split_type
+        self.split = split
         self.split_ratio = split_ratio
         self.verbose = verbose
         self.build_items()
@@ -43,7 +43,7 @@ class RawDataset(BaseDataset):
         self.episodes_with_length = self.kernel.get_episodes_with_length()
         _episodes_with_length = list(self.episodes_with_length.items())
         divider = int(len(_episodes_with_length) * self.split_ratio)
-        if self.split_type == 'train':
+        if self.split == 'train':
             _episodes_with_length = _episodes_with_length[:divider]
         else:
             _episodes_with_length = _episodes_with_length[divider:]
@@ -109,7 +109,7 @@ if __name__ == '__main__':
         frame_height=224,
         win_len=128, 
         skip_frame=1,
-        split_type='train',
+        split='train',
         split_ratio=0.8,
         verbose=True,
         **kernel_kwargs, 
