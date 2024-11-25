@@ -57,9 +57,10 @@ class PointCallback(MinecraftCallback):
         info['P'] = False
         return obs, reward, terminated, truncated, info
         
-class SegmentCallback(MinecraftCallback):
+class PlaySegmentCallback(MinecraftCallback):
     """
-    Callback for generating mask using segment anything 2.
+    Callback for generating mask using segment anything 2 with human
+    @Notice: This callback should be put before the play callback
     """
     def __init__(self, sam_path, sam_choice='base'):
         super().__init__()
