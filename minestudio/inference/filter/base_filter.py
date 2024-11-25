@@ -1,17 +1,16 @@
 '''
 Date: 2024-11-25 07:36:18
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 07:38:19
+LastEditTime: 2024-11-25 12:07:23
 FilePath: /MineStudio/minestudio/inference/filter/base_filter.py
 '''
 from abc import abstractmethod
-from typing import List, Dict
+from typing import List, Dict, Generator
 
 class EpisodeFilter:
 
     def __init__(self):
         pass
 
-    @abstractmethod
-    def filter(self, episodes: List) -> List:
-        raise NotImplementedError
+    def filter(self, episode_generator: Generator) -> Generator:
+        raise episode_generator
