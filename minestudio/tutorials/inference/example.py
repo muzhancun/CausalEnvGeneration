@@ -1,40 +1,49 @@
 '''
 Date: 2024-11-25 08:11:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 08:18:44
+LastEditTime: 2024-11-25 13:19:55
 FilePath: /MineStudio/minestudio/tutorials/inference/example.py
 '''
 import ray
-import time
-from minestudio.inference import EpisodePipeline
-from minestudio.inference.generator import EpisodeGenerator
-from minestudio.inference.filter import EpisodeFilter
-from minestudio.inference.summarizer import EpisodeSummarizer
-from minestudio.inference.recorder import EpisodeRecorder
+from rich import print
+from minestudio.inference import EpisodePipeline, MineGenerator, InfoBaseFilter
 
-class MyGenerator(EpisodeGenerator):
-    def generate(self):
-        for i in range(10):
-            time.sleep(0.5)
-            yield i
-
-class MyFilter(EpisodeFilter):
-    def filter(self, episodes):
-        return [e for e in episodes if e % 2 == 0]
-
-class MySummarizer(EpisodeSummarizer):
-    def summarize(self, episodes):
-        return episodes, {"sum": sum(episodes)}
-
-class MyRecoder(EpisodeRecorder):
-    def record(self, episodes, summary):
-        print(episodes, summary)
+from functools import partial
+from minestudio.models import load_openai_policy
+from minestudio.simulator import MinecraftSim
 
 if __name__ == '__main__':
-    pipeline = EpisodePipeline(
-        episode_generator=MyGenerator(),
-        episode_filter=MyFilter(),
-        episode_summarizer=MySummarizer(),
-        episode_recoder=MyRecoder(),
+    ray.init()
+    env_generator = partial(
+        MinecraftSim, 
+        obs_size=(128, 128), 
+        preferred_spawn_biome="forest", 
     )
-    pipeline.run()
+    agent_generator = partial(
+        load_openai_policy,
+        model_path="/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model",
+        weights_path="/nfs-shared/jarvisbase/pretrained/rl-from-house-2x.weights"
+    )
+    worker_kwargs = dict(
+        env_generator=env_generator, 
+        agent_generator=agent_generator,
+        num_max_steps=1200,
+        num_episodes=3,
+        tmpdir="./output",
+        image_media="h264",
+    )
+    pipeline = EpisodePipeline(
+        episode_generator=MineGenerator(
+            num_workers=8,
+            num_gpus=0.25,
+            max_restarts=3,
+            **worker_kwargs, 
+        ), 
+        episode_filter=InfoBaseFilter(
+            key="mine_block",
+            val="oak_log",
+            num=1,
+        ),
+    )
+    summary = pipeline.run()
+    print(summary)

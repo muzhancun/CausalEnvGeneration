@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-25 07:36:18
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 12:07:23
+LastEditTime: 2024-11-25 12:33:00
 FilePath: /MineStudio/minestudio/inference/filter/base_filter.py
 '''
 from abc import abstractmethod
@@ -13,4 +13,4 @@ class EpisodeFilter:
         pass
 
     def filter(self, episode_generator: Generator) -> Generator:
-        raise episode_generator
+        return episode_generator

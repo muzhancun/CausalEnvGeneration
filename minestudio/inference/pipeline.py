@@ -1,36 +1,41 @@
 '''
 Date: 2024-11-25 07:29:21
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 12:13:17
+LastEditTime: 2024-11-25 12:40:22
 FilePath: /MineStudio/minestudio/inference/pipeline.py
 '''
 
 import ray
+from typing import Union, List, Optional
 from minestudio.inference.generator.base_generator import EpisodeGenerator
 from minestudio.inference.filter.base_filter import EpisodeFilter
-from minestudio.inference.summarizer.base_summarizer import EpisodeSummarizer
 from minestudio.inference.recorder.base_recorder import EpisodeRecorder
 
 class EpisodePipeline:
     """
-    EpisodeGenerator -> EpisodeFilter -> EpisodeSummarizer -> EpisodeRecoder
+    EpisodeGenerator -> EpisodeFilter -> EpisodeRecoder
     """
 
     def __init__(
         self, 
         episode_generator: EpisodeGenerator,
-        episode_filter: EpisodeFilter,
-        episode_summarizer: EpisodeSummarizer,
-        episode_recorder: EpisodeRecorder,
+        episode_filter: Optional[Union[EpisodeFilter, List[EpisodeFilter]]] = None,
+        episode_recorder: Optional[EpisodeRecorder] = None,
     ):
-        self.episode_generator = episode_generator
+        if episode_filter is None:
+            episode_filter = EpisodeFilter()
+        if episode_recorder is None:
+            episode_recorder = EpisodeRecorder()
+        if not isinstance(episode_filter, List):
+            episode_filter = [episode_filter]
+
         self.episode_filter = episode_filter
-        self.episode_summarizer = episode_summarizer
-        self.episode_recorder = episode_recorder
+        self.episode_generator = episode_generator
+        self.episode_recorder = episode_recorder 
 
     def run(self):
         _generator = self.episode_generator.generate()
-        _generator = self.episode_filter.filter(_generator)
-        _generator = self.episode_summarizer.summarize(_generator)
-        records = self.episode_recorder.record(_generator)
-        return records
+        for episode_filter in self.episode_filter:
+            _generator = episode_filter.filter(_generator)
+        summary = self.episode_recorder.record(_generator)
+        return summary
