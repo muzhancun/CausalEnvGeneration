@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-08 04:17:36
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 15:40:39
+LastEditTime: 2024-11-25 06:32:48
 FilePath: /MineStudio/minestudio/data/minecraft/core.py
 '''
 import io
@@ -143,13 +143,13 @@ def extract_action_chunks(
     return result
 
 def decode_video_chunk(
-    chunk: bytes, width: int = 128, height: int = 128, enable_resize: bool = True
+    chunk: bytes, width: int = 128, height: int = 128
 ) -> np.ndarray:
     """Decode bytes to video frames."""
 
-    def convert_and_resize(frame, enable_resize, width, height):
+    def convert_and_resize(frame, width, height):
         frame = frame.to_ndarray(format="rgb24")
-        if enable_resize:
+        if frame.shape[0] != height or frame.shape[1] != width:
             frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
         return frame
     
@@ -162,7 +162,7 @@ def decode_video_chunk(
             packet_generator = container.demux(stream)
             for packet in packet_generator:
                 for av_frame in packet.decode():
-                    future = executor.submit(convert_and_resize, av_frame, enable_resize, width, height)
+                    future = executor.submit(convert_and_resize, av_frame, width, height)
                     future_frames.append(future)
             frames = [future.result() for future in future_frames]
             stream.close()
@@ -176,11 +176,10 @@ def merge_video_chunks(
     chunks: Sequence[bytes],
     width: int = 128,
     height: int = 128,
-    enable_resize: bool = True,
     **kwargs,
 ) -> Sequence[np.ndarray]:
     with ThreadPoolExecutor(max_workers=4) as executor:
-        frames = list(executor.map(partial(decode_video_chunk, width=width, height=height, enable_resize=enable_resize), chunks))
+        frames = list(executor.map(partial(decode_video_chunk, width=width, height=height), chunks))
     continuous_chunks = np.concatenate(frames, axis=0)
     return continuous_chunks
 
@@ -398,7 +397,6 @@ class Kernel:
         enable_segment: bool = False,
         frame_width: int = 128, 
         frame_height: int = 128,
-        enable_resize: bool = True, 
         verbose: bool = True,
         **kwargs, 
     ) -> Any:
@@ -412,7 +410,6 @@ class Kernel:
             enable_action (bool): indicate whether the output should contain actions.
             frame_width (int, optional): width of output video frames. Defaults to 128.
             frame_height (int, optional): height of output video frames. Defaults to 128.
-            enable_resize (bool, optional): whether to resize the video frames. Defaults to True.
         """
         self.dataset_dirs = [Path(dataset_dir) for dataset_dir in sorted(dataset_dirs)]
         
@@ -426,9 +423,7 @@ class Kernel:
         
         self.frame_width = frame_width
         self.frame_height = frame_height
-        self.enable_resize = enable_resize
         self.verbose = verbose
-        Console().log(f"[Minecraft Dataset Kernel] {enable_resize = }")
         self.load_drivers()
 
     def load_drivers(self):

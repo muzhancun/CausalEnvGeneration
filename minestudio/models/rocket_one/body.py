@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 15:52:16
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 14:47:34
+LastEditTime: 2024-11-25 07:03:56
 FilePath: /MineStudio/minestudio/models/rocket_one/body.py
 '''
 import torch
@@ -58,7 +58,7 @@ class RocketOnePolicy(MinePolicy):
         b, t = input['image'].shape[:2]
         rgb = rearrange(input['image'], 'b t h w c -> (b t) c h w')
         rgb = self.transforms(rgb)
-        
+
         obj_mask = input['segment']['obj_mask']
         obj_mask = rearrange(obj_mask, 'b t h w -> (b t) 1 h w')
         x = torch.cat([rgb, obj_mask], dim=1)
@@ -70,7 +70,7 @@ class RocketOnePolicy(MinePolicy):
         y = self.interaction(y + 1) # add 1 to avoid -1 index
         z = torch.cat([x, y], dim=1)
         z = z + self.pos_bias[:, :z.shape[1]] # add positional embedding
-        z, _ = self.pooling(z, z, z)
+        z, _ = self.pooling(z, z, z) # (b t) p c
         z = rearrange(z.mean(dim=1), '(b t) c -> b t c', b=b, t=t)
 
         if not hasattr(self, 'first'):
