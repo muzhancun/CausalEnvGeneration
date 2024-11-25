@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-24 08:23:02
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 14:52:39
+LastEditTime: 2024-11-24 15:40:42
 FilePath: /MineStudio/minestudio/tutorials/train/2_pretrain_rockets/main.py
 '''
 import hydra
@@ -18,7 +18,7 @@ from minestudio.train import MineLightning
 from minestudio.models import RocketOnePolicy
 from minestudio.train.callbacks import BehaviorCloneCallback
 
-logger = WandbLogger(project="minestudio", prefix="rocket_")
+logger = WandbLogger(project="minestudio")
 
 @hydra.main(config_path='.', config_name='rocket_small')
 def main(args):
@@ -42,6 +42,8 @@ def main(args):
             BehaviorCloneCallback(weight=1.0),
         ]
     )
+    
+    mine_lightning.save_hyperparameters(args)
 
     mine_data = MineDataModule(
         data_params=dict(

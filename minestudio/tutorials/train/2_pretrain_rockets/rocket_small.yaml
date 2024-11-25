@@ -15,7 +15,7 @@ dataset_dirs:
 batch_size: 8
 num_workers: 8
 prefetch_factor: 4
-split_ratio: 0.9
+split_ratio: 0.95
 devices: 8
 learning_rate: 0.0000181
 warmup_steps: 1000
