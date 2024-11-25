@@ -15,27 +15,25 @@ DEBUG = False
 class PlayCallback(MinecraftCallback):
     def __init__(
         self,
-        enable_bot: bool = False,
-        policy: Optional[Dict] = None,
+        agent_generator: Callable = None,
         extra_draw_call: Optional[list[Callable]] = None
     ):
         self.gui = MinecraftGUI(extra_draw_call=extra_draw_call)
         self.constants = GUIConstants()
         self.start_time = time.time()
         self.end_time = time.time()
-        self.enable_bot = enable_bot
+        if agent_generator is not None:
+            print(f'[green]Load agent with name: {agent_generator.func.__name__}, args: {agent_generator.keywords}[/green]')
+            self.agent = agent_generator().to("cuda")
+        else:
+            self.agent = None
         self.switch = 'human'
         self.terminated = False
-        self.last_obs = None
         self.last_action = None
         self.timestep = 0
 
-        if enable_bot:
-            assert policy is not None, 'Policy must be specified if enable_bot is True'
-            self.policy = load_policy(policy) #! TODO: load policy with a dict of name and weights
-            self.reset_policy()
-        else:
-            self.policy = None
+        if self.agent is not None:
+            self.reset_agent()
 
         # print a table of key bindings
         print(
@@ -45,8 +43,8 @@ class PlayCallback(MinecraftCallback):
             f'  [white]Esc[/white]: [green]Enter Command Mode[/green] \n'
         )
     
-    def reset_policy(self):
-        self.memory = self.policy.initial_state(1)
+    def reset_agent(self):
+        self.memory = None
 
     def before_reset(self, sim, reset_flag):
         self.gui.reset_gui()
@@ -54,11 +52,10 @@ class PlayCallback(MinecraftCallback):
     
     def after_reset(self, sim, obs, info):
         self.terminated = False
-        if self.enable_bot:
-            self.reset_policy()
+        if self.agent is not None:
+            self.reset_agent()
         sim.callback_messages.add("Press 'L' to switch control.")
         self.gui._update_image(info)
-        self.last_obs = obs
         self.timestep = 0
         return obs, info
     
@@ -68,7 +65,7 @@ class PlayCallback(MinecraftCallback):
 
         If `action` is not str or None, assume it is a valid action and pass it to the environment.
         If `action` is `human`, read action from player (current keyboard/mouse state).
-        Else, assume it is a policy and execute the action from the policy.
+        Else, assume it is a agent and execute the action from the agent.
 
         The executed action will be added to the info dict as "taken_action".
         """
@@ -76,17 +73,26 @@ class PlayCallback(MinecraftCallback):
 
         self.gui.window.dispatch_events()
         if isinstance(action, str) or action is None:
-            if action != "policy":
+            if isinstance(action, str) and action != self.switch:
+                self.switch = action
+                if self.switch == "agent":
+                    if self.agent is None:
+                        print('[red]agent is not specified, switch to human control[/red]')
+                        self.switch = 'human'
+                    else:
+                        self.reset_agent()
+
+            if self.switch != "agent":
                 if self.gui.command != "":
                     action = sim.noop_action()
                 else:
                     human_action = self.gui._get_human_action()
                     action = human_action
             else:
-                assert self.enable_bot, "Policy is not specified."
-                policy_action = self.policy.get_action(self.last_obs, self.memory, input_shape = "*")
-                policy_action = sim.agent_action_to_env_action(policy_action)
-                action = policy_action
+                assert self.agent is not None, "Agent is not specified."
+                agent_action, self.memory = self.agent.get_action(sim.obs, self.memory, input_shape = "*")
+                agent_action = sim.agent_action_to_env_action(agent_action)
+                action = agent_action
         
         if self.gui.chat_message is not None: #!WARNING: should stop the game when chat message is not None 
             action["chat"] = self.gui.chat_message
@@ -98,7 +104,6 @@ class PlayCallback(MinecraftCallback):
     def after_step(self, sim, obs, reward, terminated, truncated, info):
         self.terminated = terminated
         self.timestep += 1
-        self.last_obs = obs
         self.end_time = time.time()
         time.sleep(max(0, self.constants.MINERL_FRAME_TIME - (self.end_time - self.start_time)))
         fps = 1 / (self.end_time - self.start_time)
@@ -157,7 +162,7 @@ class PlayCallback(MinecraftCallback):
         # press 'L' to switch control
         if 'L' in released_keys:
             switch_control = True
-            self.switch = 'human' if self.switch == 'bot' else 'bot'
+            self.switch = 'human' if self.switch == 'agent' else 'agent'
             print(f'[red]Switch to {self.switch} control[/red]')
         else:
             switch_control = False
@@ -171,13 +176,16 @@ class PlayCallback(MinecraftCallback):
 
         if switch_control:
             #? TODO: add more features after switching control
-            if self.switch == 'bot':
-                if not self.enable_bot:
-                    print('[red]Policy is not specified, switch to human control[/red]')
+            if self.switch == 'agent':
+                if self.agent is None:
+                    print('[red]agent is not specified, switch to human control[/red]')
                     self.switch = 'human'
                 else:
-                    self.reset_policy()
+                    self.reset_agent()
             obs, reward, terminated, truncated, info = sim.step(sim.noop_action())
+            self.last_action = sim.noop_action()
+            self.terminated = terminated
+            self.timestep += 1
 
         return obs, reward, terminated, truncated, info
 
