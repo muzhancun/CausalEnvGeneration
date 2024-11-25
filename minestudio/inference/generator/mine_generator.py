@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-25 08:35:59
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 12:06:46
+LastEditTime: 2024-11-25 12:36:07
 FilePath: /MineStudio/minestudio/inference/generator/mine_generator.py
 '''
 import os
@@ -127,42 +127,3 @@ class MineGenerator(EpisodeGenerator):
                 if episode is not None:
                     yield episode
                     pools[worker.get_next.remote()] = worker
-
-
-if __name__ == '__main__':
-    from functools import partial
-    from minestudio.models import load_openai_policy
-    from minestudio.simulator import MinecraftSim
-    env_generator = partial(
-        MinecraftSim, 
-        obs_size=(128, 128), 
-        preferred_spawn_biome="plains", 
-    )
-    agent_generator = partial(
-        load_openai_policy,
-        model_path="/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model",
-        weights_path="/nfs-shared/jarvisbase/pretrained/rl-from-house-2x.weights"
-    )
-    worker_kwargs = dict(
-        env_generator=env_generator, 
-        agent_generator=agent_generator,
-        num_max_steps=600,
-        num_episodes=3,
-        tmpdir="./output",
-        image_media="h264",
-    )
-    # worker_generator = partial(Worker, **worker_kwargs)
-    # worker = worker_generator()
-    # for episode in worker.run():
-    #     print(episode)
-    ray.init()
-    mine_generator = MineGenerator(
-        num_workers=4,
-        num_gpus_per_worker=0.25,
-        max_retries_per_worker=3,
-        **worker_kwargs, 
-    )
-    for episode in mine_generator.generate():
-        print(episode)
-    
-    ray.shutdown()
