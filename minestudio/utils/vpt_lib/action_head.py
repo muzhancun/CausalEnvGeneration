@@ -195,7 +195,7 @@ class CategoricalActionHead(ActionHead):
         return entropy
 
     # minecraft domain should directly use this sample function
-    def sample(self, logits: torch.Tensor, deterministic: bool = False, **kwargs) -> Any:
+    def vanilla_sample(self, logits: torch.Tensor, deterministic: bool = False, **kwargs) -> Any:
         """The original sample function from VPT library. """
         if deterministic:
             return torch.argmax(logits, dim=-1)
@@ -211,23 +211,23 @@ class CategoricalActionHead(ActionHead):
             
             return torch.argmax(logits - torch.log(-torch.log(u)), dim=-1)
     
-    # def sample(self, logits: torch.Tensor, deterministic: bool = False, p: float = 0.80, **kwargs) -> Any:
-    #     """The nucleus sample function. """
-    #     # assert not deterministic, "Not deterministic"
-    #     if random.randint(0, 99) < 5 or deterministic:
-    #         # this is to introduce some randomness to avoid deterministic behavior
-    #         return self.vanilla_sample(logits, deterministic)
-    #     probs = torch.exp(logits)
-    #     sorted_probs, indices = torch.sort(probs, dim=-1, descending=True)
-    #     cum_sum_probs = torch.cumsum(sorted_probs, dim=-1) 
-    #     # print(f"{p = }, {cum_sum_probs = }")
-    #     nucleus = cum_sum_probs < p 
-    #     nucleus = torch.cat([nucleus.new_ones(nucleus.shape[:-1] + (1,)), nucleus[..., :-1]], dim=-1)
-    #     sorted_log_probs = torch.log(sorted_probs)
-    #     sorted_log_probs[~nucleus] = float('-inf')
-    #     sampled_sorted_indexes = self.vanilla_sample(sorted_log_probs, deterministic=False)
-    #     res = indices.gather(-1, sampled_sorted_indexes.unsqueeze(-1))
-    #     return res.squeeze(-1)
+    def sample(self, logits: torch.Tensor, deterministic: bool = False, p: float = 0.80, **kwargs) -> Any:
+        """The nucleus sample function. """
+        # assert not deterministic, "Not deterministic"
+        if random.randint(0, 99) < 5 or deterministic:
+            # this is to introduce some randomness to avoid deterministic behavior
+            return self.vanilla_sample(logits, deterministic)
+        probs = torch.exp(logits)
+        sorted_probs, indices = torch.sort(probs, dim=-1, descending=True)
+        cum_sum_probs = torch.cumsum(sorted_probs, dim=-1) 
+        # print(f"{p = }, {cum_sum_probs = }")
+        nucleus = cum_sum_probs < p 
+        nucleus = torch.cat([nucleus.new_ones(nucleus.shape[:-1] + (1,)), nucleus[..., :-1]], dim=-1)
+        sorted_log_probs = torch.log(sorted_probs)
+        sorted_log_probs[~nucleus] = float('-inf')
+        sampled_sorted_indexes = self.vanilla_sample(sorted_log_probs, deterministic=False)
+        res = indices.gather(-1, sampled_sorted_indexes.unsqueeze(-1))
+        return res.squeeze(-1)
 
     def kl_divergence(self, logits_q: torch.Tensor, logits_p: torch.Tensor) -> torch.Tensor:
         """

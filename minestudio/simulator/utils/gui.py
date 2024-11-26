@@ -75,10 +75,10 @@ def MultiPointDrawCall(info, **kwargs):
     info['pov'] = arr
     return info
 
-def MaskDrawCall(info, **kwargs):
-    if 'mask' not in info.keys():
+def SegmentDrawCall(info, **kwargs):
+    if 'segment' not in info.keys():
         return info
-    mask = info['mask']
+    mask = info['segment']
     if mask is None:
         return info
     arr = info['pov']

@@ -7,7 +7,7 @@ FilePath: /MineStudio/minestudio/simulator/callbacks/point.py
 
 from minestudio.simulator.callbacks import MinecraftCallback
 from minestudio.simulator.utils import MinecraftGUI, GUIConstants
-from minestudio.simulator.utils.gui import PointDrawCall, MaskDrawCall, MultiPointDrawCall
+from minestudio.simulator.utils.gui import PointDrawCall, SegmentDrawCall, MultiPointDrawCall
 
 import time
 from typing import Dict, Literal, Optional, Callable
@@ -59,7 +59,7 @@ class PointCallback(MinecraftCallback):
         
 class PlaySegmentCallback(MinecraftCallback):
     """
-    Callback for generating mask using segment anything 2 with human
+    Callback for generating segment using segment anything 2 with human
     @Notice: This callback should be put before the play callback
     """
     def __init__(self, sam_path, sam_choice='base'):
@@ -69,7 +69,7 @@ class PlaySegmentCallback(MinecraftCallback):
         self.sam_choice = 'base'
         self._load_sam()
 
-        # TODO: add different mask types
+        # TODO: add different segment types
 
     def _load_sam(self):
         ckpt_mapping = {
@@ -102,7 +102,7 @@ class PlaySegmentCallback(MinecraftCallback):
 
     def after_reset(self, sim, obs, info):
         self._clear()
-        sim.callback_messages.add("Press 'S' to start segmenting.")
+        sim.callback_messages.add("Press 'S' to start/stop segmenting.")
         info['message'] = self._get_message(info)
         return obs, info
 
@@ -135,14 +135,18 @@ class PlaySegmentCallback(MinecraftCallback):
             segment = cv2.resize(info['segment'].astype(np.uint8), dsize=(obs['image'].shape[0], obs['image'].shape[1]), interpolation=cv2.INTER_NEAREST)
             obs['segment'] = {}
             obs['segment']['obj_mask'] = segment
-            obs['segment']['obj_id'] = 6
+            obs['segment']['obj_id'] = 3
+        else:
+            obs['segment'] = {}
+            obs['segment']['obj_mask'] = np.zeros((obs['image'].shape[0], obs['image'].shape[1]), dtype=np.uint8)
+            obs['segment']['obj_id'] = -1
         
         info['message'] = self._get_message(info)
         return obs, reward, terminated, truncated, info
         
     def _segment_gui(self, info):
         info = info.copy()
-        gui = MinecraftGUI(extra_draw_call=[MaskDrawCall, MultiPointDrawCall], show_info=True)
+        gui = MinecraftGUI(extra_draw_call=[SegmentDrawCall, MultiPointDrawCall], show_info=True)
         help_message = [["Press 'C' to clear points."], ["Press mouse left button to add points."], ["Press mouse right button to add negative points."], ["Press 'Enter' to start tracking."], ["Press 'ESC' to exit."]]
 
         gui.window.activate()
@@ -207,12 +211,13 @@ class PlaySegmentCallback(MinecraftCallback):
             if len(self.positive_points) > 0:
                 self.able_to_track = True
 
+            print(self.able_to_track)
             if self.able_to_track:
                 self._segment(info, refresh)
                 info['segment'] = self.segment
                 refresh = False
 
-            gui._show_image(info, message=help_message, remap_points=(gui.constants.WINDOW_WIDTH, info['pov'].shape[1], gui.constants.FRAME_HEIGHT, info['pov'].shape[0]))
+            gui._update_image(info, message=help_message, remap_points=(gui.constants.WINDOW_WIDTH, info['pov'].shape[1], gui.constants.FRAME_HEIGHT, info['pov'].shape[0]))
 
         gui.close_gui()
         return info
@@ -229,9 +234,9 @@ class PlaySegmentCallback(MinecraftCallback):
                 labels=[1] * len(self.positive_points) + [0] * len(self.negative_points),
             )
         else:
-            out_obj_ids, out_mask_logits = self.predictor.track(info['pov'])
-        self.mask = (out_mask_logits[0, 0] > 0.0).cpu().numpy() # 360 * 640
-        return self.mask
+            out_obj_ids, out_segment_logits = self.predictor.track(info['pov'])
+        self.segment = (out_segment_logits[0, 0] > 0.0).cpu().numpy() # 360 * 640
+        return self.segment
 
 
 
