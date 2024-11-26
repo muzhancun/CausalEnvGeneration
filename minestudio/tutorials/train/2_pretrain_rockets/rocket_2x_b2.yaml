@@ -1,0 +1,31 @@
+hydra:
+  run:
+    dir: ${oc.env:MINESTUDIO_SAVE_DIR}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+hydra/job_logging: colorlog
+hydra/hydra_logging: colorlog
+
+dataset_dirs: 
+  - '/nfs-shared-2/data/contractors/dataset_6xx'
+  - '/nfs-shared-2/data/contractors/dataset_7xx'
+  - '/nfs-shared-2/data/contractors/dataset_8xx'
+  - '/nfs-shared-2/data/contractors/dataset_9xx'
+  - '/nfs-shared-2/data/contractors/dataset_10xx'
+
+batch_size: 8
+num_workers: 4
+prefetch_factor: 2
+split_ratio: 0.95
+devices: 8
+learning_rate: 0.0000181
+warmup_steps: 1000
+weight_decay: 0.000181
+save_freq: 10000
+
+model:
+  backbone: 'efficientnet_b2.ra_in1k'
+  hiddim: 2048
+  num_heads: 16
+  num_layers: 4
+  timesteps: 128
+  mem_len: 128

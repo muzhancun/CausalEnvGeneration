@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-25 08:11:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 13:19:55
+LastEditTime: 2024-11-25 14:47:30
 FilePath: /MineStudio/minestudio/tutorials/inference/example.py
 '''
 import ray
@@ -22,13 +22,13 @@ if __name__ == '__main__':
     agent_generator = partial(
         load_openai_policy,
         model_path="/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model",
-        weights_path="/nfs-shared/jarvisbase/pretrained/rl-from-house-2x.weights"
+        weights_path="/nfs-shared/jarvisbase/pretrained/rl-from-early-game-2x.weights"
     )
     worker_kwargs = dict(
         env_generator=env_generator, 
         agent_generator=agent_generator,
-        num_max_steps=1200,
-        num_episodes=3,
+        num_max_steps=12000,
+        num_episodes=2,
         tmpdir="./output",
         image_media="h264",
     )
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         ), 
         episode_filter=InfoBaseFilter(
             key="mine_block",
-            val="oak_log",
+            val="diamond_ore",
             num=1,
         ),
     )

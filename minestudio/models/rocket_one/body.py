@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 15:52:16
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-25 07:03:56
+LastEditTime: 2024-11-26 06:41:03
 FilePath: /MineStudio/minestudio/models/rocket_one/body.py
 '''
 import torch
@@ -93,7 +93,7 @@ class RocketOnePolicy(MinePolicy):
 
 if __name__ == '__main__':
     model = RocketOnePolicy(
-        backbone='efficientnet_b0.ra_in1k', 
+        backbone='efficientnet_b2.ra_in1k', 
     ).to("cuda")
     output, memory = model(
         input={
@@ -104,4 +104,4 @@ if __name__ == '__main__':
             }
         }
     )
-    print(output.shape)
+    print(output.keys())

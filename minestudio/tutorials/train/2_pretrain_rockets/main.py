@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-24 08:23:02
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 15:40:42
+LastEditTime: 2024-11-26 06:29:11
 FilePath: /MineStudio/minestudio/tutorials/train/2_pretrain_rockets/main.py
 '''
 import hydra
@@ -17,6 +17,7 @@ from minestudio.data import MineDataModule
 from minestudio.train import MineLightning
 from minestudio.models import RocketOnePolicy
 from minestudio.train.callbacks import BehaviorCloneCallback
+from minestudio.train.utils import convert_to_normal
 
 logger = WandbLogger(project="minestudio")
 
@@ -43,7 +44,7 @@ def main(args):
         ]
     )
     
-    mine_lightning.save_hyperparameters(args)
+    mine_lightning.save_hyperparameters(convert_to_normal(args))
 
     mine_data = MineDataModule(
         data_params=dict(
