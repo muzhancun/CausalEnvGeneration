@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 15:52:16
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-26 06:41:03
+LastEditTime: 2024-11-26 09:46:08
 FilePath: /MineStudio/minestudio/models/rocket_one/body.py
 '''
 import torch
@@ -91,7 +91,16 @@ class RocketOnePolicy(MinePolicy):
             return [t.squeeze(0).to(self.device) for t in self.recurrent.initial_state(1)]
         return [t.to(self.device) for t in self.recurrent.initial_state(batch_size)]
 
+def load_rocket_policy(ckpt_path: str):
+    ckpt = torch.load(ckpt_path)
+    model = RocketOnePolicy(**ckpt['hyper_parameters']['model'])
+    state_dict = {k.replace('mine_policy.', ''): v for k, v in ckpt['state_dict'].items()}
+    model.load_state_dict(state_dict, strict=True)
+    return model
+
 if __name__ == '__main__':
+    # ckpt_path = "/nfs-shared-2/shaofei/minestudio/save/2024-11-25/14-39-15/checkpoints/step-step=120000.ckpt"
+    # model = load_rocket_policy(ckpt_path).to("cuda")
     model = RocketOnePolicy(
         backbone='efficientnet_b2.ra_in1k', 
     ).to("cuda")
