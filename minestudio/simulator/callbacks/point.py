@@ -95,7 +95,7 @@ class PlaySegmentCallback(MinecraftCallback):
     def _clear(self):
         self.positive_points = []
         self.negative_points = []
-        self.mask = None
+        self.segment = None
         self.able_to_track = False
         self.tracking = False
         self.tracking_time = 0
@@ -116,11 +116,11 @@ class PlaySegmentCallback(MinecraftCallback):
             # stop tracking
             print(f'[red]Stop tracking[/red]')
             self._clear()
-            info['mask'] = None
+            info['segment'] = None
         elif (not self.tracking) and info.get('S', False):
             # start tracking
             print(f'[green]Start segmenting[/green]')
-            info['mask'] = None
+            info['segment'] = None
             info['positive_points'] = []
             info['negative_points'] = []
             info = self._segment_gui(info)
@@ -128,12 +128,14 @@ class PlaySegmentCallback(MinecraftCallback):
                 info['S'] = False
         elif self.tracking and info.get('S', False):
             self.tracking_time += 1
-            info['mask'] = self._segment(info)
+            info['segment'] = self._segment(info)
 
-        if info.get('mask', None) is not None and self.tracking:
-            # resize the mask to the size of the obs
-            mask = cv2.resize(info['mask'].astype(np.uint8), dsize=(obs['image'].shape[0], obs['image'].shape[1]), interpolation=cv2.INTER_NEAREST)
-            obs['segment'] = mask
+        if info.get('segment', None) is not None and self.tracking:
+            # resize the segment to the size of the obs
+            segment = cv2.resize(info['segment'].astype(np.uint8), dsize=(obs['image'].shape[0], obs['image'].shape[1]), interpolation=cv2.INTER_NEAREST)
+            obs['segment'] = {}
+            obs['segment']['obj_mask'] = segment
+            obs['segment']['obj_id'] = 6
         
         info['message'] = self._get_message(info)
         return obs, reward, terminated, truncated, info
@@ -157,7 +159,7 @@ class PlaySegmentCallback(MinecraftCallback):
             released_keys = gui._capture_all_keys()
             if 'ESCAPE' in released_keys:
                 self._clear()
-                info['mask'] = None
+                info['segment'] = None
                 info['positive_points'] = self.positive_points
                 info['negative_points'] = self.negative_points
                 self.tracking = False
@@ -166,7 +168,7 @@ class PlaySegmentCallback(MinecraftCallback):
 
             if 'C' in released_keys:
                 self._clear()
-                info['mask'] = None
+                info['segment'] = None
                 info['positive_points'] = self.positive_points
                 info['negative_points'] = self.negative_points
                 last_mouse_position = None
@@ -174,7 +176,7 @@ class PlaySegmentCallback(MinecraftCallback):
                 print('[red]Points cleared[/red]')
 
             if 'ENTER' in released_keys and self.able_to_track:
-                assert info['mask'] is not None, 'Mask is not generated.'
+                assert info['segment'] is not None, 'segment is not generated.'
                 print(f'[green]Start tracking[/green]')
                 self.tracking = True
                 break
@@ -207,7 +209,7 @@ class PlaySegmentCallback(MinecraftCallback):
 
             if self.able_to_track:
                 self._segment(info, refresh)
-                info['mask'] = self.mask
+                info['segment'] = self.segment
                 refresh = False
 
             gui._show_image(info, message=help_message, remap_points=(gui.constants.WINDOW_WIDTH, info['pov'].shape[1], gui.constants.FRAME_HEIGHT, info['pov'].shape[0]))
@@ -216,11 +218,11 @@ class PlaySegmentCallback(MinecraftCallback):
         return info
 
     def _segment(self, info, refresh=False):
-        if  (self.mask is None) or refresh:
+        if  (self.segment is None) or refresh:
             assert len(self.positive_points) > 0
             points = self.positive_points + self.negative_points
             self.predictor.load_first_frame(info['pov'])
-            _, out_obj_ids, out_mask_logits = self.predictor.add_new_prompt(
+            _, out_obj_ids, out_segment_logits = self.predictor.add_new_prompt(
                 frame_idx=0, 
                 obj_id=0,
                 points=points,
