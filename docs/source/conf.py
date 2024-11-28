@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-28 17:46:44
 LastEditors: muzhancun muzhancun@126.com
-LastEditTime: 2024-11-28 19:24:10
+LastEditTime: 2024-11-28 20:03:50
 FilePath: /MineStudio/docs/source/conf.py
 '''
 # Configuration file for the Sphinx documentation builder.
@@ -43,7 +43,7 @@ source_parsers = {
 }
 source_suffix = ['.rst', '.md']
 
-sys.path.insert(0, os.path.abspath('../../minestudio'))
+sys.path.insert(0, os.path.abspath('../minestudio'))
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

@@ -38,6 +38,9 @@ jobs:
           echo "$DEPLOY_KEYS" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           git config --global user.name $USER_NAME
           git config --global user.email $USER_EMAIL
 
