@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 14:00:50
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-28 16:12:24
+LastEditTime: 2024-11-28 16:17:40
 FilePath: /MineStudio/minestudio/tutorials/train/1_finetune_vpts/main.py
 '''
 import hydra
@@ -49,7 +49,7 @@ def main(args):
             frame_height=128,
             win_len=128,
         ),
-        train_shuffle=True,
+        shuffle_episodes=True,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         prefetch_factor=args.prefetch_factor,

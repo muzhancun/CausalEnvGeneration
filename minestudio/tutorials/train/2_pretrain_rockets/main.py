@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-24 08:23:02
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-28 16:11:16
+LastEditTime: 2024-11-28 16:17:55
 FilePath: /MineStudio/minestudio/tutorials/train/2_pretrain_rockets/main.py
 '''
 import hydra
@@ -56,7 +56,7 @@ def main(args):
             win_len=128,
             enable_segment=True,
         ),
-        train_shuffle=True, 
+        shuffle_episodes=True, 
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         prefetch_factor=args.prefetch_factor,

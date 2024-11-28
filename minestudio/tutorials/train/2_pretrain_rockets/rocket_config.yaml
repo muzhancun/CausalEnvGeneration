@@ -24,9 +24,9 @@ save_freq: 10000
 
 model:
   backbone: 'efficientnet_b0.ra_in1k'
-  hiddim: 1024
+  hiddim: 2048
   num_heads: 16
-  num_layers: 4
+  num_layers: 8
   timesteps: 128
   mem_len: 128
 
