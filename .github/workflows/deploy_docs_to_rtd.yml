@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths: # 当更改以下文件时，会触发Actions更新文档
       - "minestudio/**"
+      - "docs/**"
       - ".github/workflows/deploy_docs_to_rtd.yml"
       - "README.md"
 
@@ -48,6 +49,8 @@ jobs:
           git clone -b ${SUBMMIT_BRANCH} $CLONE_URL ${SUBMMIT_BRANCH}
           cd ${SUBMMIT_BRANCH}
 
+          make clean
+
           rm source/README.md || true
 
           echo "====================="
@@ -73,6 +76,8 @@ jobs:
 
           rm -r ./${PACKAGE_NAME}
           rm requirements.txt
+
+          make html
 
           git add .
           git status
