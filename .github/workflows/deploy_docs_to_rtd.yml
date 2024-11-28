@@ -49,8 +49,6 @@ jobs:
           git clone -b ${SUBMMIT_BRANCH} $CLONE_URL ${SUBMMIT_BRANCH}
           cd ${SUBMMIT_BRANCH}
 
-          make clean
-
           rm source/README.md || true
 
           echo "====================="
@@ -70,6 +68,7 @@ jobs:
 
           echo "Generate the api doc"
           pip install sphinx
+          pip install -r requirements.txt
           sphinx-apidoc -o source/API/ ./${PACKAGE_NAME} -f -E -M
           sed -i '1d' source/API/modules.rst
           sed -i '1i\API' source/API/modules.rst
@@ -77,6 +76,7 @@ jobs:
           rm -r ./${PACKAGE_NAME}
           rm requirements.txt
 
+          make clean
           make html
 
           git add .
