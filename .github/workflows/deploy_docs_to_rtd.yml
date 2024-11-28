@@ -71,7 +71,8 @@ jobs:
           cd ${SUBMIT_BRANCH}
 
           rm -rf *
-          mv ../build/html/* ./
+          mv ../build/doctrees ./
+          mv ../build/html/* ./docs/
 
           git add .
           git status
