@@ -32,10 +32,10 @@ jobs:
 
       - name: Set SSH Environment
         env:
-          DEPLOY_KEYS: ${{ secrets.DEPLOY_KEYS }}
+          SSH_PRIVATE: ${{ secrets.SSH_PRIVATE }}
         run: |
           mkdir -p ~/.ssh/
-          echo "$DEPLOY_KEYS" > ~/.ssh/id_rsa
+          echo "$SSH_PRIVATE" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
           git config --global user.name $USER_NAME
