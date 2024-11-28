@@ -34,9 +34,15 @@ jobs:
         env:
           DEPLOY_KEYS: ${{ secrets.DEPLOY_KEYS }}
         run: |
+          mkdir -p ~/.ssh/
+          echo "$DEPLOY_KEYS" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
           eval `ssh-agent -s`
           ssh-add ~/.ssh/git_id_rsa
           cd ${{ secrets.PATH}}
+          git config --global user.name $USER_NAME
+          git config --global user.email $USER_EMAIL
 
       - name: Summit repo to docs branch.
         run: |
