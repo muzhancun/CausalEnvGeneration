@@ -67,8 +67,8 @@ jobs:
           make clean
           make html
 
-          git clone -b ${SUBMMIT_BRANCH} $CLONE_URL ${SUBMMIT_BRANCH}
-          cd ${SUBMMIT_BRANCH}
+          git clone -b ${SUBMIT_BRANCH} $CLONE_URL ${SUBMIT_BRANCH}
+          cd ${SUBMIT_BRANCH}
 
           rm -rf *
           mv ../build/html/* ./
