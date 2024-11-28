@@ -49,7 +49,7 @@ jobs:
 
           echo "Update requirements and add packages needed by sphinx"
           touch requirements.txt
-          echo -e 'recommonmark\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> requirements.txt
+          echo -e 'myst-parser\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> requirements.txt
 
           echo "replace mermaid to {mermaid}"
           sed -i 's/mermaid/{mermaid}/g' ../README.md
@@ -58,7 +58,7 @@ jobs:
           cp ../README.md source/
 
           echo "Generate the api doc"
-          pip install sphinx
+          pip install 'sphinx>=2.1'
           pip install -r requirements.txt
           sphinx-apidoc -o source/API/ ../${PACKAGE_NAME} -f -E -M
           sed -i '1d' source/API/modules.rst

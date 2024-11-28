@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-28 17:46:44
 LastEditors: muzhancun muzhancun@126.com
-LastEditTime: 2024-11-28 20:03:50
+LastEditTime: 2024-11-28 22:52:57
 FilePath: /MineStudio/docs/source/conf.py
 '''
 # Configuration file for the Sphinx documentation builder.
@@ -11,7 +11,6 @@ FilePath: /MineStudio/docs/source/conf.py
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
-from recommonmark.parser import CommonMarkParser
 import os
 import sys
 
@@ -33,15 +32,17 @@ extensions = [
    'sphinx.ext.ifconfig',
    'sphinx.ext.viewcode',
    'sphinx.ext.githubpages',
+   'myst_parser'
 ]
 
 templates_path = ['_templates']
 exclude_patterns = []
 
-source_parsers = {
-    '.md': CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.txt': 'markdown',
+    '.md': 'markdown',
 }
-source_suffix = ['.rst', '.md']
 
 sys.path.insert(0, os.path.abspath('../minestudio'))
 
@@ -50,3 +51,7 @@ sys.path.insert(0, os.path.abspath('../minestudio'))
 
 html_theme = "pydata_sphinx_theme"
 html_static_path = ['_static']
+
+html_theme_options = {
+  "show_nav_level": 2
+}

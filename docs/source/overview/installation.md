@@ -1,9 +1,10 @@
 <!--
  * @Date: 2024-11-28 22:13:52
  * @LastEditors: muzhancun muzhancun@126.com
- * @LastEditTime: 2024-11-28 22:14:19
- * @FilePath: /MineStudio/docs/source/getting-started/installation.md
+ * @LastEditTime: 2024-11-28 22:58:48
+ * @FilePath: /MineStudio/docs/source/overview/installation.md
 -->
+(gentle-intro)=
 # Installing Minestudio
 
 ```bash
