@@ -29,3 +29,9 @@ model:
   num_layers: 4
   timesteps: 128
   mem_len: 128
+
+ema:
+  decay: 0.999
+  validate_original_weights: True
+  every_n_steps: 8
+  cpu_offload: False

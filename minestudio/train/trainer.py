@@ -1,16 +1,16 @@
 '''
 Date: 2024-11-10 13:44:13
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 08:59:55
+LastEditTime: 2024-11-28 16:14:02
 FilePath: /MineStudio/minestudio/train/trainer.py
 '''
 import os
 import torch
 import torch.nn as nn
 import lightning as L
-from lightning.pytorch.core.mixins import HyperparametersMixin
+from rich import print
 from minestudio.models import MinePolicy
-from minestudio.train.callbacks import ObjectiveCallback
+from minestudio.train.mine_callbacks import ObjectiveCallback
 from typing import List
 
 IMPORTANT_VARIABLES = [
@@ -20,7 +20,7 @@ IMPORTANT_VARIABLES = [
 
 for var in IMPORTANT_VARIABLES:
     val = os.environ.get(var, "not found")
-    print(f"VAR - {var}: {val}")
+    print(f"[Env Variable]  {var}: {val}")
 
 def tree_detach(tree):
     if isinstance(tree, dict):
@@ -32,12 +32,13 @@ def tree_detach(tree):
     else:
         return tree
 
-class MineLightning(L.LightningModule, HyperparametersMixin):
+class MineLightning(L.LightningModule):
 
     def __init__(
         self, 
         mine_policy: MinePolicy, 
         callbacks: List[ObjectiveCallback] = [], 
+        hyperparameters: dict = {},
         *,
         log_freq: int = 20,
         learning_rate: float = 1e-5,
@@ -56,7 +57,7 @@ class MineLightning(L.LightningModule, HyperparametersMixin):
             "init_memory": None, 
             "last_timestamp": None,
         }
-        self.save_hyperparameters()
+        self.save_hyperparameters(hyperparameters)
 
     def _make_memory(self, batch):
         if self.memory_dict["init_memory"] is None:
