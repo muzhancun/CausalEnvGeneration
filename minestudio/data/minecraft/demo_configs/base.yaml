@@ -1,6 +1,6 @@
 hydra:
   run:
-    dir: ${oc.env:MINESTUDIO_OUTPUT}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    dir: ${oc.env:MINESTUDIO_SAVE_DIR}/${now:%Y-%m-%d}/${now:%H-%M-%S}
 
 hydra/job_logging: colorlog
 hydra/hydra_logging: colorlog

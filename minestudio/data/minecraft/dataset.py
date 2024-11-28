@@ -33,6 +33,7 @@ class MinecraftDataset(Dataset):
         win_len: int = 128,
         skip_frame: int = 1,
         split_ratio: float = 0.9, 
+        shuffle: bool = False, # episode-level shuffle
         # below are parameters for event dataset
         bias: int = 0,
         event_regex: str = '',
@@ -54,6 +55,7 @@ class MinecraftDataset(Dataset):
             frame_width = frame_width,
             frame_height = frame_height,
             enable_resize = enable_resize,
+            shuffle = shuffle,
         )
         self.raw_dataset_kwargs = dict(
             win_len = win_len,

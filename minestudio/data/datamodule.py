@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 06:41:44
+LastEditTime: 2024-11-28 16:18:25
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 
@@ -29,7 +29,7 @@ class MineDataModule(pl.LightningDataModule):
         data_params: Dict, 
         batch_size: int = 1,
         num_workers: int = 0,
-        train_shuffle: bool = False,
+        shuffle_episodes: bool = False,
         prefetch_factor: Optional[int] = None,
         **kwargs, 
     ):
@@ -37,13 +37,13 @@ class MineDataModule(pl.LightningDataModule):
         self.data_params = data_params
         self.batch_size = batch_size
         self.num_workers = num_workers
-        self.train_shuffle = train_shuffle
+        self.shuffle_episodes = shuffle_episodes
         self.prefetch_factor = prefetch_factor
         self.kwargs = kwargs
     
     def setup(self, stage: Optional[str] = None):
-        self.train_dataset = MinecraftDataset(split='train', **self.data_params, **self.kwargs)
-        self.val_dataset   = MinecraftDataset(split='val', **self.data_params, **self.kwargs)
+        self.train_dataset = MinecraftDataset(split='train', shuffle=self.shuffle_episodes, **self.data_params, **self.kwargs)
+        self.val_dataset   = MinecraftDataset(split='val', shuffle=self.shuffle_episodes, **self.data_params, **self.kwargs)
 
     def train_dataloader(self):
         if self.data_params['mode'] == 'raw':
@@ -65,7 +65,7 @@ class MineDataModule(pl.LightningDataModule):
                 dataset=self.train_dataset, 
                 batch_size=self.batch_size, 
                 num_workers=self.num_workers, 
-                shuffle=self.train_shuffle, 
+                shuffle=True, 
                 collate_fn=batchify,
                 prefetch_factor=self.prefetch_factor,
                 pin_memory=True,

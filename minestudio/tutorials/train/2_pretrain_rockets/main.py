@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-24 08:23:02
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-26 06:29:11
+LastEditTime: 2024-11-28 16:17:55
 FilePath: /MineStudio/minestudio/tutorials/train/2_pretrain_rockets/main.py
 '''
 import hydra
@@ -9,22 +9,24 @@ import torch
 import torch.nn as nn
 import lightning as L
 from lightning.pytorch.loggers import WandbLogger
-from lightning.pytorch.callbacks import ModelCheckpoint
+from lightning.pytorch.callbacks import LearningRateMonitor
 from einops import rearrange
 from typing import Dict, Any, Tuple
 
 from minestudio.data import MineDataModule
 from minestudio.train import MineLightning
-from minestudio.models import RocketOnePolicy
-from minestudio.train.callbacks import BehaviorCloneCallback
+from minestudio.models import RocketPolicy
 from minestudio.train.utils import convert_to_normal
+from minestudio.train.mine_callbacks import BehaviorCloneCallback
+from minestudio.train.lightning_callbacks import SmartCheckpointCallback, SpeedMonitorCallback, EMA
+
 
 logger = WandbLogger(project="minestudio")
 
-@hydra.main(config_path='.', config_name='rocket_small')
+@hydra.main(config_path='.', config_name='rocket_config')
 def main(args):
-    
-    rocket_policy = RocketOnePolicy(
+
+    rocket_policy = RocketPolicy(
         backbone=args.model.backbone,
         hiddim=args.model.hiddim,
         num_heads=args.model.num_heads,
@@ -32,7 +34,7 @@ def main(args):
         timesteps=args.model.timesteps,
         mem_len=args.model.mem_len
     )
-    
+
     mine_lightning = MineLightning(
         mine_policy=rocket_policy, 
         log_freq=20,
@@ -41,10 +43,9 @@ def main(args):
         weight_decay=args.weight_decay,
         callbacks=[
             BehaviorCloneCallback(weight=1.0),
-        ]
+        ], 
+        hyperparameters=convert_to_normal(args),
     )
-    
-    mine_lightning.save_hyperparameters(convert_to_normal(args))
 
     mine_data = MineDataModule(
         data_params=dict(
@@ -55,31 +56,43 @@ def main(args):
             win_len=128,
             enable_segment=True,
         ),
+        shuffle_episodes=True, 
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         prefetch_factor=args.prefetch_factor,
         split_ratio=args.split_ratio, 
     )
 
-    callbacks = []
-    if args.save_freq > 0:
-        checkpoint_callback = ModelCheckpoint(
-            dirpath="checkpoints/",
-            filename="step-{step:06d}",
-            every_n_train_steps=args.save_freq,
-            save_top_k=-1,
+    callbacks=[
+        LearningRateMonitor(logging_interval='step'), 
+        SpeedMonitorCallback(),
+        SmartCheckpointCallback(
+            dirpath='./weights', filename='weight-{epoch}-{step}', save_top_k=-1, 
+            every_n_train_steps=args.save_freq, save_weights_only=True,
+        ), 
+        SmartCheckpointCallback(
+            dirpath='./checkpoints', filename='ckpt-{epoch}-{step}', save_top_k=1, 
+            every_n_train_steps=args.save_freq+1, save_weights_only=False,
+        ), 
+        EMA(
+            decay=args.ema.decay, 
+            validate_original_weights=args.ema.validate_original_weights, 
+            every_n_steps=args.ema.every_n_steps, 
+            cpu_offload=args.ema.cpu_offload, 
         )
-        callbacks.append(checkpoint_callback)
+    ]
 
-    trainer = L.Trainer(
-        callbacks=callbacks,
+    L.Trainer(
         logger=logger, 
         devices=args.devices, 
         precision=16, 
         strategy='ddp_find_unused_parameters_true', 
         use_distributed_sampler=False, 
+        callbacks=callbacks, 
+    ).fit(
+        model=mine_lightning, 
+        datamodule=mine_data
     )
-    trainer.fit(mine_lightning, datamodule=mine_data)
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 11:01:51
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 15:57:37
+LastEditTime: 2024-11-28 16:24:11
 FilePath: /MineStudio/minestudio/data/minecraft/demo.py
 '''
 import os
@@ -161,6 +161,7 @@ def visualize_raw_dataset(args):
         frame_height=args.frame_height,
         enable_augmentation=args.enable_augmentation,
         enable_resize=args.enable_resize,
+        shuffle=args.shuffle,
     )
     Console().log(f"num-workers: {args.num_workers}")
     batch_sampler = MineDistributedBatchSampler(
@@ -168,7 +169,6 @@ def visualize_raw_dataset(args):
         batch_size=args.batch_size,
         num_replicas=1, 
         rank=0,
-        shuffle=args.shuffle,
     )
     dataloader = DataLoader(
         dataset=raw_dataset,

@@ -1,14 +1,14 @@
 '''
 Date: 2024-11-12 13:59:08
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 11:37:48
-FilePath: /MineStudio/minestudio/train/callbacks/behavior_clone.py
+LastEditTime: 2024-11-28 16:11:56
+FilePath: /MineStudio/minestudio/train/mine_callbacks/behavior_clone.py
 '''
 
 import torch
 from typing import Dict, Any
 from minestudio.models import MinePolicy
-from minestudio.train.callbacks.callback import ObjectiveCallback
+from minestudio.train.mine_callbacks.callback import ObjectiveCallback
 
 class BehaviorCloneCallback(ObjectiveCallback):
         
