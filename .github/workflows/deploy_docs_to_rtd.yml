@@ -2,11 +2,11 @@ name: Deploy the docs to RTD
 
 on:
   push:
-    branches: [ master ]
-    paths:  # 当更改以下文件时，会触发Actions更新文档
-      - 'minestudio/**'
-      - '.github/workflows/deploy_docs_to_rtd.yml'
-      - 'README.md'
+    branches: [master]
+    paths: # 当更改以下文件时，会触发Actions更新文档
+      - "minestudio/**"
+      - ".github/workflows/deploy_docs_to_rtd.yml"
+      - "README.md"
 
 env:
   REPO_SSH: git@github.com:phython96/MineStudio.git
@@ -24,10 +24,10 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Set up Python 3.7
-uses: actions/setup-python@v4
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.7'
-          architecture: 'x64'
+          python-version: "3.7"
+          architecture: "x64"
 
       - name: Set SSH Environment
         env:
