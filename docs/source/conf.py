@@ -1,22 +1,16 @@
 '''
 Date: 2024-11-28 17:46:44
 LastEditors: muzhancun muzhancun@126.com
-LastEditTime: 2024-11-28 22:52:57
+LastEditTime: 2024-11-28 23:13:19
 FilePath: /MineStudio/docs/source/conf.py
 '''
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
-
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os
 import sys
+from datetime import datetime
 
 project = 'MineStudio'
-copyright = '2024, CraftJarvis'
-author = 'CraftJarvis'
+copyright = str(datetime.now().year) + ", The CraftJarvis Team"
+author = 'The CraftJarvis Team'
 release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
@@ -55,3 +49,5 @@ html_static_path = ['_static']
 html_theme_options = {
   "show_nav_level": 2
 }
+
+html_title = f"MineStudio {release}"
