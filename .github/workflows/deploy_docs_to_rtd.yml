@@ -46,6 +46,7 @@ jobs:
           rm -r docs
 
           git clone -b ${SUBMMIT_BRANCH} $CLONE_URL ${SUBMMIT_BRANCH}
+          ls
           cd ${SUBMMIT_BRANCH}
           rm -r ${PACKAGE_NAME} || true
           rm source/README.md || true
