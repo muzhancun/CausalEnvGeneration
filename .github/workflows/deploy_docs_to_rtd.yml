@@ -74,6 +74,7 @@ jobs:
           mv ../build/doctrees ./
           mkdir -p ./docs
           mv ../build/html/* ./docs/
+          touch .nojekyll
 
           git add .
           git status
