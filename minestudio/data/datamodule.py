@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 06:41:44
+LastEditTime: 2024-11-28 08:42:02
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 
@@ -42,7 +42,7 @@ class MineDataModule(pl.LightningDataModule):
         self.kwargs = kwargs
     
     def setup(self, stage: Optional[str] = None):
-        self.train_dataset = MinecraftDataset(split='train', **self.data_params, **self.kwargs)
+        self.train_dataset = MinecraftDataset(split='train', shuffle=self.train_shuffle, **self.data_params, **self.kwargs)
         self.val_dataset   = MinecraftDataset(split='val', **self.data_params, **self.kwargs)
 
     def train_dataloader(self):

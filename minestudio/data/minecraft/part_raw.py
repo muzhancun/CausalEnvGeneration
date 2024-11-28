@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 10:26:32
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 06:50:48
+LastEditTime: 2024-11-28 10:07:55
 FilePath: /MineStudio/minestudio/data/minecraft/part_raw.py
 '''
 import io
@@ -28,6 +28,7 @@ class RawDataset(BaseDataset):
         split: Literal['train', 'val'] = 'train',
         split_ratio: float = 0.8,
         verbose: bool = True,
+        shuffle: bool = False, 
         **kernel_kwargs, 
     ) -> Any:
         super(RawDataset, self).__init__(verbose=verbose, **kernel_kwargs)
@@ -36,12 +37,18 @@ class RawDataset(BaseDataset):
         self.split = split
         self.split_ratio = split_ratio
         self.verbose = verbose
+        self.shuffle = shuffle
         self.build_items()
     
     def build_items(self) -> None:
-        
         self.episodes_with_length = self.kernel.get_episodes_with_length()
         _episodes_with_length = list(self.episodes_with_length.items())
+
+        if self.shuffle:
+            print("[Raw Dataset] Shuffling episodes ...")
+            random.seed(44) # ensure the same shuffle order for all workers
+            random.shuffle(_episodes_with_length)
+
         divider = int(len(_episodes_with_length) * self.split_ratio)
         if self.split == 'train':
             _episodes_with_length = _episodes_with_length[:divider]

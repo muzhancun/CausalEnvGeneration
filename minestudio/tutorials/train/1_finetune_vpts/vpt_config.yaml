@@ -5,8 +5,8 @@ hydra:
 hydra/job_logging: colorlog
 hydra/hydra_logging: colorlog
 
-model_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-2x.model'
-weights_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-2x.weights'
+model_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-1x.model'
+weights_path: '/nfs-shared/jarvisbase/pretrained/foundation-model-1x.weights'
 
 dataset_dirs: 
   - '/nfs-shared-2/data/contractors/dataset_6xx'

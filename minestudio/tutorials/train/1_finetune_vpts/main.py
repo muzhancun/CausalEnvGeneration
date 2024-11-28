@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 14:00:50
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 14:53:34
+LastEditTime: 2024-11-28 09:11:43
 FilePath: /MineStudio/minestudio/tutorials/train/1_finetune_vpts/main.py
 '''
 import hydra
@@ -17,7 +17,7 @@ from minestudio.train import MineLightning
 from minestudio.models import load_openai_policy
 from minestudio.train.callbacks import BehaviorCloneCallback
 
-logger = WandbLogger(project="minestudio", prefix="finetune_vpt_")
+logger = WandbLogger(project="minestudio")
 
 @hydra.main(config_path='.', config_name='vpt_2x')
 def main(args):
@@ -44,6 +44,7 @@ def main(args):
             frame_height=128,
             win_len=128,
         ),
+        train_shuffle=True,
         batch_size=args.batch_size,
         num_workers=args.num_workers,
         prefetch_factor=args.prefetch_factor,
