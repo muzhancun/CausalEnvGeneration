@@ -46,9 +46,8 @@ jobs:
           rm -r docs
 
           git clone -b ${SUBMMIT_BRANCH} $CLONE_URL ${SUBMMIT_BRANCH}
-          ls
           cd ${SUBMMIT_BRANCH}
-          rm -r ${PACKAGE_NAME} || true
+
           rm source/README.md || true
 
           echo "====================="
@@ -56,9 +55,8 @@ jobs:
           cp -r ../${PACKAGE_NAME} .
 
           echo "Update requirements and add packages needed by sphinx"
-          echo -e '\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> ../requirements.txt
-          rm requirements.txt
-          cp ../requirements.txt .
+          touch requirements.txt
+          echo -e '\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> requirements.txt
 
           echo "replace mermaid to {mermaid}"
           sed -i 's/mermaid/{mermaid}/g' ../README.md
@@ -70,6 +68,8 @@ jobs:
           sphinx-apidoc -o source/API/ ./${PACKAGE_NAME} -f -E -M
           sed -i '1d' source/API/modules.rst
           sed -i '1i\API' source/API/modules.rst
+
+          rm -r ./${PACKAGE_NAME}
 
           git add .
           git status
