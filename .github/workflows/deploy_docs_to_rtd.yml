@@ -58,7 +58,7 @@ jobs:
           echo "Update requirements and add packages needed by sphinx"
           rm requirements.txt || true
           touch requirements.txt
-          echo -e '\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> requirements.txt
+          echo -e 'recommonmark\nsphinx_rtd_theme\nsphinxcontrib.mermaid\nmyst-parser\nsphinx_copybutton\nget_pypi_latest_version\npydata-sphinx-theme' >> requirements.txt
 
           echo "replace mermaid to {mermaid}"
           sed -i 's/mermaid/{mermaid}/g' ../README.md
