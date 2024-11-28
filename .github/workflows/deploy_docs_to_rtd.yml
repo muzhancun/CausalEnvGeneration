@@ -38,9 +38,7 @@ jobs:
           echo "$DEPLOY_KEYS" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           chmod 700 ~/.ssh && chmod 600 ~/.ssh/*
-          eval `ssh-agent -s`
-          ssh-add ~/.ssh/git_id_rsa
-          cd ${{ secrets.PATH}}
+          ssh-add - <<< "${{ secrets.SSH_PRIVATE_KEY }}"
           git config --global user.name $USER_NAME
           git config --global user.email $USER_EMAIL
 
