@@ -61,6 +61,7 @@ jobs:
           echo "replace mermaid to {mermaid}"
           sed -i 's/mermaid/{mermaid}/g' ../README.md
 
+          ls
           cp ../README.md source/
 
           echo "Generate the api doc"
