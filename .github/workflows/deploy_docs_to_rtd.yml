@@ -34,7 +34,6 @@ jobs:
         env:
           SSH_PRIVATE: ${{ secrets.SSH_PRIVATE }}
         run: |
-          echo $SSH_PRIVATE
           mkdir -p ~/.ssh/
           echo "$SSH_PRIVATE" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
