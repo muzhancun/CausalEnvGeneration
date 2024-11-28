@@ -72,6 +72,7 @@ jobs:
 
           rm -rf *
           mv ../build/doctrees ./
+          mkdir -p ./docs
           mv ../build/html/* ./docs/
 
           git add .
