@@ -24,3 +24,9 @@ ipyleaflet
 colorama
 ipywidgets
 graphviz
+nsphinx_rtd_theme
+nsphinxcontrib.mermaid
+nmyst-parser
+nsphinx_copybutton
+nget_pypi_latest_version
+npydata-sphinx-theme
