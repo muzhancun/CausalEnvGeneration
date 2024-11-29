@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-28 22:13:52
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 11:34:57
+ * @LastEditTime: 2024-11-29 11:41:12
  * @FilePath: /MineStudio/docs/source/overview/installation.md
 -->
 (gentle-intro)=
@@ -80,6 +80,10 @@ $ export DISPLAY=:1
 ``````
 
 ## Verify by running simulator
+
+```{hint}
+The first time you run it, the script will ask whether to download the compiled model from Hugging Face; just choose Y. 
+```
 
 If you are using **Xvfb**, run the following command: 
 ```console
