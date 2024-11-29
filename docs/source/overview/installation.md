@@ -24,12 +24,12 @@ Welcome to MineStudio, please follow the tutorial below for installation.
     
     a. Install MineStudio from the [GitHub](https://github.com/phython96/MineStudio). 
     ```console
-    pip install git+https://github.com/phython96/MineStudio.git
+    $ pip install git+https://github.com/phython96/MineStudio.git
     ```
 
     b. Install MineStudio from [PyPI](https://pypi.org/project/minestudio/). 
     ```console
-    pip install minestudio
+    $ pip install minestudio
     ```
 
 3. Install the rendering tool. For users with **nvidia graphics cards**, we recommend installing virtualGL; for other users, we recommend using xvfb, which supports CPU rendering but is relatively slower. 
