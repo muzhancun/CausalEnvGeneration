@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 16:28:26
+ * @LastEditTime: 2024-11-29 16:32:06
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
@@ -49,7 +49,9 @@ callbacks: List[MinecraftCallback] = []        # the callbacks to customize the 
 
 ## Using Callbacks
 
-Callbacks can be used to customize the environment. Here is some examples of how to use callbacks:
+Callbacks can be used to customize the environment in a flexible way. We provide several built-in callbacks, and users can also implement their own callbacks. 
+
+Here is some examples of how to use callbacks:
 
 ```{note}
 All the callbacks are optional, and you can use them in any combination. 
