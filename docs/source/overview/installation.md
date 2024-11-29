@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-28 22:13:52
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 10:41:19
+ * @LastEditTime: 2024-11-29 11:25:52
  * @FilePath: /MineStudio/docs/source/overview/installation.md
 -->
 (gentle-intro)=
@@ -37,15 +37,17 @@ Welcome to MineStudio, please follow the tutorial below for installation.
     ```{note}
     Installing rendering tools may require **root** permissions. 
     ```
+    There are two options: 
+    ``````{tab-set}
 
-    a. **Render using Xvfb.**
+    `````{tab-item} Xvfb
     ```console
     $ apt update 
     $ apt install -y xvfb mesa-utils libegl1-mesa libgl1-mesa-dev libglu1-mesa-dev 
     ```
+    `````
 
-    b. **Render using VirtualGL. (Optional)** 
-
+    `````{tab-item} VirtualGL
     ```{warning}
     Not all graphics cards support virtualGL. If you do not have speed requirements, it is recommended to use the easier-to-install xvfb rendering tool. 
     ```
@@ -71,7 +73,31 @@ Welcome to MineStudio, please follow the tutorial below for installation.
     $ export VGL_REFRESHRATE="$REFRESH"
     $ export DISPLAY=:1
     ```
+    `````
+
+    ``````
+
 
 4. Verify by running simulator. 
 
+If you are using **Xvfb**, run the following command: 
+```console
+$ python -m minestudio.simulator.entry
+```
+If you are using **VirtualGL**, run the following command: 
+```console
+$ MINESTUDIO_GPU_RENDER=1 python -m minestudio.simulator.entry
+```
 
+If you see the following output, the installation is successful. 
+```console
+Speed Test Status: 
+Average Time: 0.03 
+Average FPS: 38.46 
+Total Steps: 50 
+
+Speed Test Status: 
+Average Time: 0.02 
+Average FPS: 45.08 
+Total Steps: 100 
+```

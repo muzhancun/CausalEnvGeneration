@@ -15,7 +15,7 @@ RESETTING_EXPIRE = 5 * 60
 if not os.path.exists(DATABASE_DIR):
     os.makedirs(DATABASE_DIR)
 
-if not os.environ.get("JARVISBASE_DISABLE_DISKCACHE", False):
+if not os.environ.get("MINESTUDIO_DISABLE_DISKCACHE", False):
     # Console().log("Set JARVISBASE_DISABLE_DISKCACHE = False")
     database = diskcache.Cache(DATABASE_DIR, eviction_policy='none')
     instance_list_lock = diskcache.Lock(database, ("lock", "instance_list"), expire=60)

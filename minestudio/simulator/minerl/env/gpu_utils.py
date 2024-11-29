@@ -1,3 +1,9 @@
+'''
+Date: 2024-11-29 11:05:35
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-29 11:07:37
+FilePath: /MineStudio/minestudio/simulator/minerl/env/gpu_utils.py
+'''
 # https://nvidia.github.io/cuda-python/
 from cuda import cuda, cudart
 import argparse
@@ -26,7 +32,7 @@ def getPCIBusIdByCudaDeviceOrdinal(cuda_device_id):
     return result.decode("ascii").split('\0')[0]
 
 if __name__ == "__main__":
-    if os.environ.get("FORCE_CPU_RENDER", 0) == '1':
+    if os.environ.get("MINESTUDIO_GPU_RENDER", 0) != '1':
         print("cpu")
         exit(0)
     try:

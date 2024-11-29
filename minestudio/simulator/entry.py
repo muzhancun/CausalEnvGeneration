@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 05:20:17
-LastEditors: muzhancun muzhancun@stu.pku.edu.cn
-LastEditTime: 2024-11-19 22:38:13
+LastEditors: caishaofei caishaofei@stu.pku.edu.cn
+LastEditTime: 2024-11-29 11:23:38
 FilePath: /MineStudio/minestudio/simulator/entry.py
 '''
 
@@ -208,3 +208,16 @@ class MinecraftSim(gymnasium.Env):
         return gymnasium.spaces.Dict({
             "image": gymnasium.spaces.Box(low=0, high=255, shape=(height, width, 3), dtype=np.uint8)
         })
+
+if __name__ == '__main__':
+    # test if the simulator works
+    from minestudio.simulator.callbacks import SpeedTestCallback
+    sim = MinecraftSim(
+        action_type="env", 
+        callbacks=[SpeedTestCallback(50)]
+    )
+    obs, info = sim.reset()
+    for i in range(100):
+        action = sim.action_space.sample()
+        obs, reward, terminated, truncated, info = sim.step(action)
+    sim.close()
