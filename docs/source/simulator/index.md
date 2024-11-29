@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 16:32:06
+ * @LastEditTime: 2024-11-29 16:48:09
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
@@ -35,7 +35,20 @@ sim.close()
 
 The simulator has several arguments that can be used to customize the environment. 
 
-```python
+| Argument | Default | Description |
+| --- | --- | --- |
+| obs_size | (224, 224) | The resolution of the observation (cv2 resize) |
+| action_type | "agent" | The style of the action space |
+| render_size | (640, 360) | The original resolution of the game is 640x360 |
+| seed | 0 | The seed of the minecraft world |
+| inventory | {} | The initial inventory of the agent |
+| preferred_spawn_biome | None | The preferred spawn biome when call reset |
+| num_empty_frames | 20 | The number of empty frames to skip when calling reset |
+| callbacks | [] | The callbacks to customize the environment (**advanced**) |
+
+
+
+<!-- ```python
 obs_size: Tuple[int, int] = (224, 224)         # the resolution of the observation (cv2 resize)
 action_type: Literal['env', 'agent'] = 'agent' # the style of the action space
 render_size: Tuple[int, int] = (640, 360)      # the original resolution of the game is 640x360
@@ -44,7 +57,7 @@ inventory: Dict = {}                           # the initial inventory of the ag
 preferred_spawn_biome: Optional[str] = None    # the preferred spawn biome when call reset 
 num_empty_frames: int = 20                     # the number of empty frames to skip when calling reset
 callbacks: List[MinecraftCallback] = []        # the callbacks to customize the environment (advanced)
-```
+``` -->
 
 
 ## Using Callbacks
