@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-28 22:13:52
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 10:35:53
+ * @LastEditTime: 2024-11-29 10:41:19
  * @FilePath: /MineStudio/docs/source/overview/installation.md
 -->
 (gentle-intro)=
@@ -22,7 +22,7 @@ Welcome to MineStudio, please follow the tutorial below for installation.
 
 2. Install MineStudio. 
     
-    a. Install MineStudio from the github. 
+    a. Install MineStudio from the [GitHub](https://github.com/phython96/MineStudio). 
     ```console
     pip install git+https://github.com/phython96/MineStudio.git
     ```
