@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 15:45:12
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 16:10:33
+ * @LastEditTime: 2024-11-29 16:24:27
  * @FilePath: /MineStudio/docs/source/simulator/design-principles.md
 -->
 
@@ -15,10 +15,14 @@ The simulator lifecycle is divided into three stages: `reset`, `step`, and `clos
     Our simulator wrapper's `reset` method code looks like this:
     ```python
     def reset(self):
+        reset_flag = True
         for callback in self.callbacks:
-            callback.before_reset(self)
+            reset_flag = callback.before_reset(self, reset_flag)
         ... # some other code
-        obs, info = self.env.reset()
+        if reset_flag:
+            obs, info = self.env.reset()
+        else:
+            obs, info = ...
         for callback in self.callbacks:
             obs, info = callback.after_reset(self, obs, info)
         return obs, info
@@ -28,6 +32,8 @@ The simulator lifecycle is divided into three stages: `reset`, `step`, and `clos
     We can use callbacks to preprocess the ``obs`` or ``info`` before it is returned to the agent. 
 
     For example, we can add task information to the observation when the environment is reset, so that the agent knows what task it is going to perform.  
+
+    Besides, we can implement fast reset by suppressing the internal environment reset.
     ```
 
 - `step`: This method is called when the agent takes an action. It returns the observation, reward, termination status, and information. 
@@ -71,3 +77,32 @@ The simulator lifecycle is divided into three stages: `reset`, `step`, and `clos
 ## Callbacks
 
 Callbacks are used to customize the environment. All the callbacks are optional, and you can use them in any combination. 
+
+The structure of a callback is as follows:
+```python
+class MinecraftCallback:
+    
+    def before_step(self, sim, action):
+        return action
+    
+    def after_step(self, sim, obs, reward, terminated, truncated, info):
+        return obs, reward, terminated, truncated, info
+    
+    def before_reset(self, sim, reset_flag: bool) -> bool: # whether need to call env reset
+        return reset_flag
+    
+    def after_reset(self, sim, obs, info):
+        return obs, info
+    
+    def before_close(self, sim):
+        return
+    
+    def after_close(self, sim):
+        return
+    
+    def before_render(self, sim):
+        return
+    
+    def after_render(self, sim):
+        return
+```

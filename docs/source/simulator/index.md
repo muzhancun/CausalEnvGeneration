@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 15:45:25
+ * @LastEditTime: 2024-11-29 16:28:26
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
@@ -30,6 +30,22 @@ for _ in range(100):
     obs, reward, terminated, truncated, info = sim.step(action)
 sim.close()
 ```
+
+## Basic Arguments
+
+The simulator has several arguments that can be used to customize the environment. 
+
+```python
+obs_size: Tuple[int, int] = (224, 224)         # the resolution of the observation (cv2 resize)
+action_type: Literal['env', 'agent'] = 'agent' # the style of the action space
+render_size: Tuple[int, int] = (640, 360)      # the original resolution of the game is 640x360
+seed: int = 0                                  # the seed of the minecraft world
+inventory: Dict = {}                           # the initial inventory of the agent
+preferred_spawn_biome: Optional[str] = None    # the preferred spawn biome when call reset 
+num_empty_frames: int = 20                     # the number of empty frames to skip when calling reset
+callbacks: List[MinecraftCallback] = []        # the callbacks to customize the environment (advanced)
+```
+
 
 ## Using Callbacks
 
