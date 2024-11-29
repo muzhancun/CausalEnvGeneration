@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-12 11:53:55
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-12 11:58:17
+LastEditTime: 2024-11-29 14:32:28
 FilePath: /MineStudio/minestudio/tutorials/simulator/test_sim.py
 '''
 import numpy as np
@@ -47,11 +47,12 @@ if __name__ == '__main__':
         ]
     )
     obs, info = sim.reset()
+    import ipdb; ipdb.set_trace()
     print(sim.action_space)
-    for i in range(300):
+    for i in range(100):
         action = sim.action_space.sample()
         # action = sim.noop_action()
         obs, reward, terminated, truncated, info = sim.step(action)
-        if (i+1) % 150 == 0:
-            obs, info = sim.reset()
+        # if (i+1) % 150 == 0:
+        #     obs, info = sim.reset()
     sim.close()

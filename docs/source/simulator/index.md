@@ -1,10 +1,130 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 08:11:10
+ * @LastEditTime: 2024-11-29 15:45:25
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
-# Simulator
+# MineStudio Simulator
 
-我写中文
+We provide an easily customizable Minecraft simulator that is developed based on [MineRL](https://github.com/minerllabs/minerl). We designed a Gym-style Minecraft Wrapper, which supports a callbacks mechanism, allowing users to customize their own environment, including custom reward functions, environment initialization, trajectory recording, and more. 
+
+```{toctree}
+:caption: MineStudio Simulator
+
+general-information
+design-principles
+```
+
+## Hello World
+
+Here is a minimal example of how to use the simulator:
+
+```python
+from minestudio.simulator import MinecraftSim
+
+sim = MinecraftSim(action_type="env")
+obs, info = sim.reset()
+for _ in range(100):
+    action = sim.action_space.sample()
+    obs, reward, terminated, truncated, info = sim.step(action)
+sim.close()
+```
+
+## Using Callbacks
+
+Callbacks can be used to customize the environment. Here is some examples of how to use callbacks:
+
+```{note}
+All the callbacks are optional, and you can use them in any combination. 
+```
+
+### Test Speed
+We provide a callback to test the speed of the simulator by hooking into the `before_step` and `after_step` methods. 
+```python
+from minestudio.simulator.callbacks import SpeedTestCallback
+
+sim = MinecraftSim(callbacks=[SpeedTestCallback(interval=50)])
+```
+
+If you run the above code, you will see the following output:
+```
+Speed Test Status: 
+Average Time: 0.03 
+Average FPS: 38.46 
+Total Steps: 50 
+
+Speed Test Status: 
+Average Time: 0.02 
+Average FPS: 45.08 
+Total Steps: 100 
+```
+
+### Send Chat Commands
+
+We provide a callback to send chat commands to the Minecraft server **when the environment is reset**. This enable users to customize the environment initialization. 
+```python
+from minestudio.simulator.callbacks import CommandsCallback
+
+sim = MinecraftSim(callbacks=[CommandsCallback(commands=[
+    "/time set day", 
+    "/weather clear",
+    "/give @p minecraft:iron_sword 1",
+    "/give @p minecraft:diamond 64",
+])])
+```
+
+```{hint}
+The commands will be executed in the order they are provided. 
+```
+
+### Custom Reward Function
+
+We provide a simple callback to customize the reward function. This callback will be called after each step, and detect the event in ``info`` to calculate the reward. 
+```python
+from minestudio.simulator.callbacks import RewardsCallback
+
+sim = MinecraftSim(callbacks=[
+    RewardsCallback([{
+        'event': 'kill_entity', 
+        'objects': ['cow', 'sheep'], 
+        'reward': 1.0, 
+        'identity': 'kill sheep or cow', 
+        'max_reward_times': 5, 
+    }])
+])
+```
+```{hint}
+This example will give a reward of 1.0 when the agent kills a sheep or cow. The maximum reward times is 5. 
+```
+
+### Fast Reset
+
+Generally, the environment reset is slow because it needs to restart the Minecraft server. We provide a callback to speed up the reset process by hooking into the `before_reset` method. This would be pretty useful when you want to reset the environment frequently, like in RL training.  
+```python
+from minestudio.simulator.callbacks import FastResetCallback
+
+sim = MinecraftSim(callbacks=[
+    FastResetCallback(
+        biomes=['mountains'],
+        random_tp_range=1000,
+    ), 
+])
+```
+```{hint}
+Fast reset is implemented by killing the agent and teleporting it to a random location. 
+```
+
+### Record Trajectories
+
+We provide a callback to record trajectories. It will records the observation, action, info at each step, and save them to a specified path. 
+```python
+from minestudio.simulator.callbacks import RecordCallback
+
+sim = MinecraftSim(callbacks=[RecordCallback(record_path="./output", fps=30)])
+```
+```{hint}
+You can use this callback to record the agent's behavior and analyze it later. Or you can use it to generate a dataset for imitation learning. 
+```
+
+
