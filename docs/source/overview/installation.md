@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-28 22:13:52
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 11:41:12
+ * @LastEditTime: 2024-11-29 11:52:17
  * @FilePath: /MineStudio/docs/source/overview/installation.md
 -->
 (gentle-intro)=
@@ -75,6 +75,14 @@ $ export VGL_DISPLAY="egl"
 $ export VGL_REFRESHRATE="$REFRESH"
 $ export DISPLAY=:1
 ```
+
+```{warning}
+Each time the system is restarted, it may be necessary to rerun the following commands.
+```
+```console
+$ bash vgl_entrypoint.sh
+```
+
 `````
 
 ``````
