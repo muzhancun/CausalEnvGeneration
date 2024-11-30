@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:08:13
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-30 05:18:33
+ * @LastEditTime: 2024-11-30 05:53:11
  * @FilePath: /MineStudio/docs/source/overview/getting-started.md
 -->
 # Getting Started
@@ -25,9 +25,9 @@ installation
 ../benchmark/index
 ```
 
-Before you start, make sure you have installed MineStudio. 
+Before you start, make sure you have installed [MineStudio](https://github.com/phython96/MineStudio) and its dependencies. 
 
-```{dropdown} Installation MineStudio
+```{dropdown} Install MineStudio
 ```{include} installation.md
 ```
 
@@ -35,22 +35,22 @@ Before you start, make sure you have installed MineStudio.
 
 Click on the dropdowns for your desired library to get started:
 ```{dropdown} Simulator: Customizable Minecraft Environment
-```{include} ../simulator/index.md
+```{include} quick-simulator.md
 ```
 ```{dropdown} Data: Flexible Data Structures and Efficient Data Processing
-```{include} ../data/index.md
+```{include} quick-data.md
 ```
 ```{dropdown} Models: Policy Template and Baseline Models
-```{include} ../models/index.md
+```{include} quick-models.md
 ```
 ```{dropdown} Train: Training Policy with Offline Data
-```{include} ../train/index.md
+```{include} quick-train.md
 ```
 ```{dropdown} Inference: Parallel Inference and Record Trajectories
-```{include} ../inference/index.md
+```{include} quick-inference.md
 ```
 ```{dropdown} Benchmark: Benchmarking and Evaluation
-```{include} ../benchmark/index.md
+```{include} quick-benchmark.md
 ```
 
 ## Papers
