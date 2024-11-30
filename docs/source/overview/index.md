@@ -6,7 +6,11 @@
 -->
 # Overview
 
+![](../_static/banner.png)
+
 MineStudio is a simple and efficient Minecraft development kit for AI research.
+
+
 
 ```{toctree}
 :caption: Getting started
