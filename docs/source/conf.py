@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-28 17:46:44
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-30 13:08:21
+LastEditTime: 2024-11-30 13:37:48
 FilePath: /MineStudio/docs/source/conf.py
 '''
 import os
@@ -86,8 +86,8 @@ html_theme_options = {
   "navbar_center": ["version-switcher", "navbar-nav"],  
     "logo": {
       "text": "MineStudio",
-      "image_light": "_static/logo-no-text.svg", 
-      "image_dark": "_static/logo-no-text.svg",
+      "image_light": "_static/logo-no-text-light.svg", 
+      "image_dark": "_static/logo-no-text-light.svg",
     },
   "navbar_start": ["navbar-logo"],  # 在导航栏显示 Logo
 }
