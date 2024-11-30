@@ -4,13 +4,12 @@
  * @LastEditTime: 2024-11-30 05:36:11
  * @FilePath: /MineStudio/docs/source/overview/index.md
 -->
-# Overview
 
 ![](../_static/banner.png)
 
+# Overview
+
 MineStudio is a simple and efficient Minecraft development kit for AI research.
-
-
 
 ```{toctree}
 :caption: Getting started
