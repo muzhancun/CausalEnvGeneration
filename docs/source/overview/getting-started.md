@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:08:13
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-30 05:53:11
+ * @LastEditTime: 2024-11-30 13:17:14
  * @FilePath: /MineStudio/docs/source/overview/getting-started.md
 -->
 # Getting Started
@@ -34,22 +34,22 @@ Before you start, make sure you have installed [MineStudio](https://github.com/p
 ## MineStudio Libraries Quickstart
 
 Click on the dropdowns for your desired library to get started:
-```{dropdown} Simulator: Customizable Minecraft Environment
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Simulator: Customizable Minecraft Environment
 ```{include} quick-simulator.md
 ```
-```{dropdown} Data: Flexible Data Structures and Efficient Data Processing
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Data: Flexible Data Structures and Efficient Data Processing
 ```{include} quick-data.md
 ```
-```{dropdown} Models: Policy Template and Baseline Models
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Models: Policy Template and Baseline Models
 ```{include} quick-models.md
 ```
-```{dropdown} Train: Training Policy with Offline Data
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Train: Training Policy with Offline Data
 ```{include} quick-train.md
 ```
-```{dropdown} Inference: Parallel Inference and Record Trajectories
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Inference: Parallel Inference and Record Trajectories
 ```{include} quick-inference.md
 ```
-```{dropdown} Benchmark: Benchmarking and Evaluation
+```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Benchmark: Benchmarking and Evaluation
 ```{include} quick-benchmark.md
 ```
 
