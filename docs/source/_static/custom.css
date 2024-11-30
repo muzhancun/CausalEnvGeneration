@@ -1,0 +1,16 @@
+.bd-main .bd-content .bd-article-container {
+    max-width: 100%;  /* default is 60em */
+}
+
+.bd-page-width {
+    max-width: 90%;  /* default is 88rem */
+}
+
+.bd-sidebar {
+    width: 15rem; /* 左侧导航栏宽度 */
+}
+
+/* 调整右侧工具栏宽度 */
+.bd-toc {
+    width: 15rem; /* 右侧工具栏宽度 */
+}

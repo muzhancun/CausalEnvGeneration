@@ -1,11 +1,11 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 16:48:09
+ * @LastEditTime: 2024-11-30 05:12:53
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
-# MineStudio Simulator
+# Simulator
 
 We provide an easily customizable Minecraft simulator that is developed based on [MineRL](https://github.com/minerllabs/minerl). We designed a Gym-style Minecraft Wrapper, which supports a callbacks mechanism, allowing users to customize their own environment, including custom reward functions, environment initialization, trajectory recording, and more. 
 
@@ -37,28 +37,14 @@ The simulator has several arguments that can be used to customize the environmen
 
 | Argument | Default | Description |
 | --- | --- | --- |
-| obs_size | (224, 224) | The resolution of the observation (cv2 resize) |
 | action_type | "agent" | The style of the action space |
+| obs_size | (224, 224) | The resolution of the observation (cv2 resize) |
 | render_size | (640, 360) | The original resolution of the game is 640x360 |
 | seed | 0 | The seed of the minecraft world |
 | inventory | {} | The initial inventory of the agent |
 | preferred_spawn_biome | None | The preferred spawn biome when call reset |
 | num_empty_frames | 20 | The number of empty frames to skip when calling reset |
 | callbacks | [] | The callbacks to customize the environment (**advanced**) |
-
-
-
-<!-- ```python
-obs_size: Tuple[int, int] = (224, 224)         # the resolution of the observation (cv2 resize)
-action_type: Literal['env', 'agent'] = 'agent' # the style of the action space
-render_size: Tuple[int, int] = (640, 360)      # the original resolution of the game is 640x360
-seed: int = 0                                  # the seed of the minecraft world
-inventory: Dict = {}                           # the initial inventory of the agent
-preferred_spawn_biome: Optional[str] = None    # the preferred spawn biome when call reset 
-num_empty_frames: int = 20                     # the number of empty frames to skip when calling reset
-callbacks: List[MinecraftCallback] = []        # the callbacks to customize the environment (advanced)
-``` -->
-
 
 ## Using Callbacks
 

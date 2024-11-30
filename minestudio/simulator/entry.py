@@ -55,8 +55,8 @@ class MinecraftSim(gymnasium.Env):
     
     def __init__(
         self,  
-        obs_size: Tuple[int, int] = (224, 224),         # the resolution of the observation (cv2 resize)
         action_type: Literal['env', 'agent'] = 'agent', # the style of the action space
+        obs_size: Tuple[int, int] = (224, 224),         # the resolution of the observation (cv2 resize)
         render_size: Tuple[int, int] = (640, 360),      # the original resolution of the game is 640x360
         seed: int = 0,                                  # the seed of the minecraft world
         inventory: Dict = {},                           # the initial inventory of the agent

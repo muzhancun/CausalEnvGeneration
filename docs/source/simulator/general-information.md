@@ -1,14 +1,14 @@
 <!--
  * @Date: 2024-11-29 14:50:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-29 15:42:45
+ * @LastEditTime: 2024-11-30 05:38:30
  * @FilePath: /MineStudio/docs/source/simulator/general-information.md
 -->
 
 # General Information
 
 
-### Observation Space
+## Observation Space
 Most environments use the same observation space (just an RGB image), refer to [MineRL](https://minerl.readthedocs.io/en/latest/environments/index.html#observation-space).
 
 ```python
@@ -34,7 +34,7 @@ We use ``cv2.INTER_LINEAR`` as the interpolation method when resizing the image.
 We found that it is very important to align the interpolation methods between training and inference; otherwise, it may lead to poor performance. 
 ```
 
-### Action Space
+## Action Space
 
 We provide two types of action spaces: ``env`` and ``agent``. 
 
@@ -90,7 +90,7 @@ We provide two types of action spaces: ``env`` and ``agent``.
     ```
 
 
-### Information
+## Information
 
 The information space is a dictionary with the following keys:
 

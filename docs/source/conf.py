@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-28 17:46:44
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-29 10:37:02
+LastEditTime: 2024-11-30 05:38:56
 FilePath: /MineStudio/docs/source/conf.py
 '''
 import os
@@ -43,7 +43,7 @@ extensions = [
     "nbsphinx",
     "numpydoc",
     "sphinx_togglebutton",
-    "jupyterlite_sphinx",
+    # "jupyterlite_sphinx",
     "sphinx_favicon",
 ]
 
@@ -64,9 +64,11 @@ sys.path.insert(0, os.path.abspath('../minestudio'))
 html_theme = "pydata_sphinx_theme"
 # htmp_theme = "sphinx_rtd_theme"
 html_static_path = ['_static']
+html_css_files = [
+    "custom.css"
+]
 
 html_theme_options = {
-  "show_nav_level": 3, 
   "icon_links": [
         {
             "name": "GitHub",
@@ -81,7 +83,7 @@ html_theme_options = {
   ], 
   "navbar_align": "left",
   "show_toc_level": 1,
-  "navbar_center": ["version-switcher", "navbar-nav"],
+  "navbar_center": ["version-switcher", "navbar-nav"],  
 }
 
 html_title = f"MineStudio {release}"
