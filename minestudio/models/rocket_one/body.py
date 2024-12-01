@@ -1,10 +1,11 @@
 '''
 Date: 2024-11-10 15:52:16
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-28 15:30:30
+LastEditTime: 2024-11-30 16:19:52
 FilePath: /MineStudio/minestudio/models/rocket_one/body.py
 '''
 import torch
+import torch.nn.functional as F
 import torchvision
 from torch import nn
 from einops import rearrange
@@ -33,9 +34,17 @@ class RocketPolicy(MinePolicy):
             torchvision.transforms.Normalize(mean=data_config['mean'], std=data_config['std']),
         ])
         num_features = self.backbone.feature_info[-1]['num_chs']
-        self.updim = nn.Conv2d(num_features, hiddim, kernel_size=1)
-        self.pos_bias = nn.Parameter(torch.rand(1, 14 * 14, hiddim) * 0.01)
-        self.pooling = nn.MultiheadAttention(hiddim, num_heads, batch_first=True) # missing positional encoding
+        self.updim = nn.Conv2d(num_features, hiddim, kernel_size=1, bias=False)
+        self.pooling = nn.TransformerEncoder(
+            nn.TransformerEncoderLayer(
+                d_model=hiddim, 
+                nhead=num_heads, 
+                dim_feedforward=hiddim*2, 
+                dropout=0.1,
+            ), 
+            num_layers=2,
+        )
+        
         self.interaction = nn.Embedding(10, hiddim) # denotes the number of interaction types
 
         self.recurrent = ResidualRecurrentBlocks(
@@ -62,25 +71,26 @@ class RocketPolicy(MinePolicy):
         obj_mask = input['segment']['obj_mask']
         obj_mask = rearrange(obj_mask, 'b t h w -> (b t) 1 h w')
         x = torch.cat([rgb, obj_mask], dim=1)
-        x = self.backbone(x)[-1]
-        x = self.updim(x)
+        feats = self.backbone(x)
+        x = self.updim(feats[-1])
         x = rearrange(x, 'b c h w -> b (h w) c')
 
         y = rearrange(input['segment']['obj_id'], 'b t -> (b t) 1')
         y = self.interaction(y + 1) # add 1 to avoid -1 index
         z = torch.cat([x, y], dim=1)
-        z = z + self.pos_bias[:, :z.shape[1]] # add positional embedding
-        z, _ = self.pooling(z, z, z) # (b t) p c
-        z = rearrange(z.mean(dim=1), '(b t) c -> b t c', b=b, t=t)
+        z = self.pooling(z).mean(dim=1)
+        z = rearrange(z, '(b t) c -> b t c', b=b, t=t)
 
         if not hasattr(self, 'first'):
             self.first = torch.tensor([[False]], device=z.device).repeat(b, t)
         if memory is None:
             memory = [state.to(z.device) for state in self.recurrent.initial_state(b)]
-        x, memory = self.recurrent(z, self.first, memory)
-        x = self.lastlayer(x)
-        x = self.final_ln(x)
-        pi_h = v_h = x
+        z, memory = self.recurrent(z, self.first, memory)
+        
+        z = F.relu(z, inplace=False)
+        z = self.lastlayer(z)
+        z = self.final_ln(z)
+        pi_h = v_h = z
         pi_logits = self.pi_head(pi_h)
         vpred = self.value_head(v_h)
         latents = {"pi_logits": pi_logits, "vpred": vpred}
@@ -102,8 +112,12 @@ if __name__ == '__main__':
     # ckpt_path = "/nfs-shared-2/shaofei/minestudio/save/2024-11-25/14-39-15/checkpoints/step-step=120000.ckpt"
     # model = load_rocket_policy(ckpt_path).to("cuda")
     model = RocketPolicy(
-        backbone='efficientnet_b2.ra_in1k', 
+        backbone='efficientnet_b0.ra_in1k', 
+        hiddim=2048, 
+        num_layers=8,
     ).to("cuda")
+    num_params = sum(p.numel() for p in model.parameters())
+    print(f"Params (MB): {num_params / 1e6 :.2f}")
     output, memory = model(
         input={
             'image': torch.zeros(1, 8, 224, 224, 3).to("cuda"), 

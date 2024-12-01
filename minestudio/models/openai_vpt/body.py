@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-11 20:54:15
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-24 14:46:17
+LastEditTime: 2024-11-30 16:30:12
 FilePath: /MineStudio/minestudio/models/openai_vpt/body.py
 '''
 import os
@@ -169,8 +169,6 @@ class MinecraftPolicy(nn.Module):
         self.diff_obs_process = None
 
         self.recurrence_type = recurrence_type
-
-        self.recurrent_layer = None
         self.recurrent_layer = ResidualRecurrentBlocks(
             hidsize=hidsize,
             timesteps=timesteps,
