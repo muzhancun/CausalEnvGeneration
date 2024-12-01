@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-24 08:23:02
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-28 16:17:55
+LastEditTime: 2024-12-01 06:02:44
 FilePath: /MineStudio/minestudio/tutorials/train/2_pretrain_rockets/main.py
 '''
 import hydra
@@ -91,7 +91,8 @@ def main(args):
         callbacks=callbacks, 
     ).fit(
         model=mine_lightning, 
-        datamodule=mine_data
+        datamodule=mine_data, 
+        ckpt_path=args.ckpt_path,
     )
 
 if __name__ == '__main__':

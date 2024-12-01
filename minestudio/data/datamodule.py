@@ -1,7 +1,7 @@
 '''
 Date: 2024-11-10 12:31:33
 LastEditors: caishaofei caishaofei@stu.pku.edu.cn
-LastEditTime: 2024-11-28 16:18:25
+LastEditTime: 2024-12-01 08:06:07
 FilePath: /MineStudio/minestudio/data/datamodule.py
 '''
 
@@ -120,7 +120,7 @@ if __name__ == '__main__':
         ),
         batch_size=8,
         num_workers=8,
-        train_shuffle=True,
+        shuffle_episodes=True,
         prefetch_factor=4,
     )
     data_module.setup()

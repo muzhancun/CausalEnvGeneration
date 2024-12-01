@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:09:07
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-30 05:12:53
+ * @LastEditTime: 2024-12-01 08:27:24
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
@@ -16,19 +16,9 @@ general-information
 design-principles
 ```
 
-## Hello World
+## Quick Start
 
-Here is a minimal example of how to use the simulator:
-
-```python
-from minestudio.simulator import MinecraftSim
-
-sim = MinecraftSim(action_type="env")
-obs, info = sim.reset()
-for _ in range(100):
-    action = sim.action_space.sample()
-    obs, reward, terminated, truncated, info = sim.step(action)
-sim.close()
+```{include} quick-simulator.md
 ```
 
 ## Basic Arguments

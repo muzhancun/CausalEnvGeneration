@@ -1,8 +1,8 @@
 <!--
  * @Date: 2024-11-30 05:44:44
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-30 05:55:49
- * @FilePath: /MineStudio/docs/source/overview/quick-simulator.md
+ * @LastEditTime: 2024-12-01 08:28:50
+ * @FilePath: /MineStudio/docs/source/simulator/quick-simulator.md
 -->
 
 Here is a minimal example of how to use the simulator:
@@ -62,12 +62,4 @@ for i in range(100):
     action = sim.action_space.sample()
     obs, reward, terminated, truncated, info = sim.step(action)
 sim.close()
-```
-
-```{button-ref}  ../simulator/index
-:color: primary
-:outline:
-:expand:
-
-Learn more about MineStudio Simulator
 ```

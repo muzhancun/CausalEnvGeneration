@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:08:13
  * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-11-30 13:33:38
+ * @LastEditTime: 2024-12-01 08:33:39
  * @FilePath: /MineStudio/docs/source/overview/getting-started.md
 -->
 # Getting Started
@@ -34,24 +34,41 @@ Before you start, make sure you have installed [MineStudio](https://github.com/p
 ## MineStudio Libraries Quickstart
 
 Click on the dropdowns for your desired library to get started:
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Simulator: Customizable Minecraft Environment
-```{include} quick-simulator.md
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Simulator: Customizable Minecraft Environment
+```{include} ../simulator/quick-simulator.md
 ```
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Data: Flexible Data Structures and Efficient Data Processing
-```{include} quick-data.md
+```{button-ref}  ../simulator/index
+:color: primary
+:outline:
+:expand:
+Learn more about MineStudio Simulator
 ```
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Models: Policy Template and Baseline Models
+````
+
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Data: Flexible Data Structures and Fast Dataloaders
+```{include} ../data/quick-data.md
+```
+````
+
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Models: Policy Template and Baselines
 ```{include} quick-models.md
 ```
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Train: Training Policy with Offline Data
+````
+
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Train: Training Policy with Offline Data
 ```{include} quick-train.md
 ```
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Inference: Parallel Inference and Record Trajectories
+````
+
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Inference: Parallel Inference and Record Demonstrations
 ```{include} quick-inference.md
 ```
-```{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Benchmark: Benchmarking and Evaluation
+````
+
+````{dropdown} <img src="../_static/logo-no-text-gray.svg" alt="minestudio" width="35px"> Benchmark: Benchmarking and Evaluation
 ```{include} quick-benchmark.md
 ```
+````
 
 ## Papers
 

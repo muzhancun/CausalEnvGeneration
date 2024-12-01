@@ -14,3 +14,17 @@
 .bd-toc {
     width: 15rem; /* 右侧工具栏宽度 */
 }
+
+div.admonition.admonition-youtube {
+    border-color: hsl(0deg 100% 50%); /* YouTube red */
+  }
+  
+  div.admonition.admonition-youtube > .admonition-title {
+    background-color: hsl(0deg 99% 18%);
+    color: white;
+  }
+  
+  div.admonition.admonition-youtube > .admonition-title::after {
+    color: hsl(0deg 100% 50%);
+    content: "\f26c"; /* fa-solid fa-tv */
+  }

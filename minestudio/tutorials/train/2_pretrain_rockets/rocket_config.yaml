@@ -21,6 +21,7 @@ learning_rate: 0.0000181
 warmup_steps: 1000
 weight_decay: 0.000181
 save_freq: 10000
+ckpt_path: null
 
 model:
   backbone: 'efficientnet_b0.ra_in1k'
