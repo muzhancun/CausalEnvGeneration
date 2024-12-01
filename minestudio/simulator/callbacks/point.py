@@ -135,7 +135,7 @@ class PlaySegmentCallback(MinecraftCallback):
             segment = cv2.resize(info['segment'].astype(np.uint8), dsize=(obs['image'].shape[0], obs['image'].shape[1]), interpolation=cv2.INTER_NEAREST)
             obs['segment'] = {}
             obs['segment']['obj_mask'] = segment
-            obs['segment']['obj_id'] = 3
+            obs['segment']['obj_id'] = 2
         else:
             obs['segment'] = {}
             obs['segment']['obj_mask'] = np.zeros((obs['image'].shape[0], obs['image'].shape[1]), dtype=np.uint8)
@@ -211,7 +211,6 @@ class PlaySegmentCallback(MinecraftCallback):
             if len(self.positive_points) > 0:
                 self.able_to_track = True
 
-            print(self.able_to_track)
             if self.able_to_track:
                 self._segment(info, refresh)
                 info['segment'] = self.segment

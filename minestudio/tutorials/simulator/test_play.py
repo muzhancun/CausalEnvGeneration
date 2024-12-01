@@ -9,7 +9,7 @@ from minestudio.models import load_openai_policy, load_rocket_policy
 if __name__ == '__main__':
     agent_generator = partial(
         load_rocket_policy,
-        ckpt_path="/home/zhwang/Desktop/zhancun/jarvisbase/pretrained/rocket_small.ckpt",
+        ckpt_path="/home/zhwang/Desktop/zhancun/jarvisbase/pretrained/rocket_12-01.ckpt",
     )
     sim = MinecraftSim(
         obs_size=(224, 224),
