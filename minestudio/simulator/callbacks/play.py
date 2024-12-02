@@ -137,6 +137,8 @@ class PlayCallback(MinecraftCallback):
                 v = f"({v[0]:.2f}, {v[1]:.2f})"
             elif 'hotbar' in k:
                 continue
+            elif 'chat' in k:
+                continue
             action_items.append(f"{k}: {v}")
         message.append(action_items)
          
