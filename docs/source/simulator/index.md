@@ -1,7 +1,7 @@
 <!--
  * @Date: 2024-11-29 08:09:07
- * @LastEditors: caishaofei caishaofei@stu.pku.edu.cn
- * @LastEditTime: 2024-12-01 08:27:24
+ * @LastEditors: muzhancun muzhancun@126.com
+ * @LastEditTime: 2024-12-02 21:41:46
  * @FilePath: /MineStudio/docs/source/simulator/index.md
 -->
 
@@ -14,6 +14,7 @@ We provide an easily customizable Minecraft simulator that is developed based on
 
 general-information
 design-principles
+play
 ```
 
 ## Quick Start
