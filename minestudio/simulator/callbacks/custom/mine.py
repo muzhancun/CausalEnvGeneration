@@ -121,6 +121,10 @@ if __name__ == "__main__":
     from minestudio.simulator.callbacks import (
         PlayCallback, FastResetCallback
     )
+    from openai import OpenAI
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    openai_api_base = os.getenv("OPENAI_API_BASE")
+    client = OpenAI(api_key=openai_api_key, base_url=openai_api_base)
     sim = MinecraftSim(
         obs_size=(224, 224),
         action_type="env",
