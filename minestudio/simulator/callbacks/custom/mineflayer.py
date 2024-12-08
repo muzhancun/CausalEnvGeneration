@@ -2,6 +2,9 @@ from minestudio.simulator.callbacks.callback import MinecraftCallback
 import random
 import numpy as np
 import os
+import time
+import threading
+import subprocess
 
 class MineflayerCallback(MinecraftCallback):
     def __init__(self, mineflayer_path, bot_name, port):
@@ -12,25 +15,49 @@ class MineflayerCallback(MinecraftCallback):
     
     def after_reset(self, sim, obs, info):
         
-        obs, _, _, info = sim.env.execute_cmd(f"/publish {self.port}")      
+        obs, _, _, info = sim.env.execute_cmd(f"/publish {self.port}")
 
+        for _ in range(5):
+            obs, _, _, _, info = sim.step(sim.noop_action())
+
+        thread = threading.Thread(target=_start_mineflayer, args=(self.mineflayer_path,))
+        thread.start()
+
+        # wait for 2 seconds
+        time.sleep(2)
+
+        obs, _, _, info = sim.env.execute_cmd(f"/tp {self.bot_name} ~ ~ ~")
+
+        obs, info = sim._wrap_obs_info(obs, info)
         return obs, info
+
+def _start_mineflayer(mineflayer_path):
+    env = os.environ.copy() 
+    subprocess.run(
+        ['node', mineflayer_path],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env
+    )
 
 if __name__ == "__main__":
     from minestudio.simulator import MinecraftSim
     from minestudio.simulator.callbacks import (
-        RecordCallback
+        RecordCallback, PlayCallback
     )
-    mineflayer_path = "./mineflayer"
+    import subprocess
+    import threading
+
+    mineflayer_path = "./mineflayer/index.js"
     bot_name = "Bot"
-    port = 59181
+    port = 59182
 
     sim = MinecraftSim(
         obs_size=(224, 224),
         action_type="env",
         callbacks=[
             MineflayerCallback(mineflayer_path, bot_name, port),
-            # RecordCallback(record_path="./record", frame_type='pov', recording=True)
+            PlayCallback()
         ]
 
     )
@@ -38,16 +65,9 @@ if __name__ == "__main__":
     obs, info = sim.reset()
     terminated = False
 
-    try:
-        os.subprocess.run(f'cd {mineflayer_path} && DEBUG="minecraft-protocol" node index.js')
-
-        # tp the bot
-        obs, _, _, info = sim.env.execute_cmd(f"/tp {bot_name} ~ ~ ~")
-    except:
-        print("Error running Mineflayer bot")  
-
-    for i in range(100):
-        obs, reward, terminated, truncated, info = sim.step(sim.noop_action())
+    while not terminated:
+        action = None
+        obs, reward, terminated, truncated, info = sim.step(action)
 
     sim.close()
 
