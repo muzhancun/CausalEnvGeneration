@@ -170,6 +170,7 @@ output/
 lightning_logs/
 wandb/
 outputs/
+node_modules/
 
 minestudio/models/realtime_sam/notebooks/*.jpg
 minestudio/models/realtime_sam/checkpoints/*.pt
