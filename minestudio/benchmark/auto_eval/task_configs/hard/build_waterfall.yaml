@@ -1,9 +1,0 @@
-custom_init_commands:
-- /give @s minecraft:water_bucket 5
-- /give @s minecraft:stone 64
-- /execute as @p at @s run fill ~2 ~ ~2 ~5 ~10 ~5 minecraft:stone
-- /give @s minecraft:torch 10
-defaults:
-- base
-- _self_
-text: Create a waterfall using water and suitable terrain.

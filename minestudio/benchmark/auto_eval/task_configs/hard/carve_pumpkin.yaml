@@ -1,9 +1,0 @@
-custom_init_commands:
-- /give @s minecraft:shears 1
-- /setblock ~1 ~ ~ minecraft:pumpkin
-- /give @s minecraft:flower_pot 3
-- /time set day
-defaults:
-- base
-- _self_
-text: Use shears to carve a pumpkin.

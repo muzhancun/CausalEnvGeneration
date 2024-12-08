@@ -1,9 +1,0 @@
-custom_init_commands:
-- /give @s minecraft:stick 64
-- /give @s minecraft:crafting_table
-- /give @s minecraft:flower_pot
-- /give @s minecraft:torch 10
-defaults:
-- base
-- _self_
-text: Use a crafting table to craft ladders from wooden sticks.

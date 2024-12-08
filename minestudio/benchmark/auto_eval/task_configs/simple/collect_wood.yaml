@@ -1,8 +1,0 @@
-custom_init_commands:
-- /give @s minecraft:oak_planks 10
-- /give @s minecraft:iron_ingot 5
-- /give @s minecraft:shield 1
-defaults:
-- base
-- _self_
-text: 'Collect wood from trees in your surroundings.  '

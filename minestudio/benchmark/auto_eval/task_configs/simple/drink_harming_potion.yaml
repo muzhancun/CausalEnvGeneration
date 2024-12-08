@@ -1,7 +1,0 @@
-custom_init_commands:
-- /give @p minecraft:obsidian 20
-- /give @p minecraft:flint_and_steel 1
-defaults:
-- base
-- _self_
-text: Construct a nether portal using obsidian blocks and a flint and steel.
