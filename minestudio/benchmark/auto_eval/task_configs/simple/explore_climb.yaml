@@ -1,0 +1,8 @@
+custom_init_commands:
+- /execute as @p at @s run tp ~ ~ ~10000
+- /give @s minecraft:bread 32
+- /give @s minecraft:iron_pickaxe
+defaults:
+- base
+- _self_
+text: Explore and climb a mountain.

@@ -1,0 +1,9 @@
+custom_init_commands:
+- /give @s minecraft:snow_block 10
+- /give @s minecraft:pumpkin 5
+- /summon minecraft:snow_golem ~2 ~ ~
+- /give @s minecraft:torch 16
+defaults:
+- base
+- _self_
+text: Gather snow and pumpkins to build snow golems in your world.

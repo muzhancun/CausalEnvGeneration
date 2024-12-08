@@ -1,0 +1,9 @@
+custom_init_commands:
+- /give @s minecraft:stone 10
+- /give @s minecraft:iron_ingot 5
+- /give @s minecraft:crafting_table
+- /time set day
+defaults:
+- base
+- _self_
+text: 'Find and mine dirt using the right tool.  '
