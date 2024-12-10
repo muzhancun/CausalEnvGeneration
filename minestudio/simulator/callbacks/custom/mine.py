@@ -61,7 +61,8 @@ class MineblockCallback(MinecraftCallback):
                 {
                     "type": "text",
                     "text": f"""
-                        <image>In this image, I want to know the coordinates of the biome {self.config[0]['biome']} from the command in left bottom corner. If the command raises an error, please return "Error", else return the coordinates of the biome in the format of "x, y, z", e.g. 100, ~, -200, where ~ means the y coordinate is not important. DO NOT OUTPUT ANYTHING ELSE.
+                        <image>In this image, I want to know the Callback(mineflayer_path, bot_name, port),
+            PlayCallbacoordinates of the biome {self.config[0]['biome']} from the command in left bottom corner. If the command raises an error, please return "Error", else return the coordinates of the biome in the format of "x, y, z", e.g. 100, ~, -200, where ~ means the y coordinate is not important. DO NOT OUTPUT ANYTHING ELSE.
                     """
                 },
                 {
@@ -159,7 +160,7 @@ class MineblockCallback(MinecraftCallback):
 
         obs, _, _, _, info = sim.step(sim.noop_action())
         self.prev_info = info.copy()
-        obs, info = sim._wrap_obs_info(obs, info)
+        # obs, info = sim._wrap_obs_info(obs, info)
         return obs, info
     
     def after_step(self, sim, obs, reward, terminated, truncated, info):
