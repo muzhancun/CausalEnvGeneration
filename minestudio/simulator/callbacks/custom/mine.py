@@ -13,8 +13,8 @@ class MineblockCallback(MinecraftCallback):
                 "event": "mine_block",
                 "structure": "village",
                 "biomes": ["plains"],
-                "start_time": 1000,
-                "start_weather": "clear",
+                "time": 1000,
+                "weather": "clear",
                 "block": "iron_ore",
                 "reward": 1.0,
                 "inventory": {"iron_ore": 1},
@@ -30,82 +30,38 @@ class MineblockCallback(MinecraftCallback):
         self.model = model
     
     def _fast_reset(self, sim):
-        biome = random.choice(self.config['biomes'])
+        biome = self.config['biome']
         x = np.random.randint(-self.config['random_tp_range'] // 2, self.config['random_tp_range'] // 2)
         z = np.random.randint(-self.config['random_tp_range'] // 2, self.config['random_tp_range'] // 2)
+
+        if self.config['world'] == "nether":
+            command = "/setblock ~ ~1 ~ minecraft:nether_portal"
+        elif self.config['world'] == "end":
+            command = "/setblock ~ ~1 ~ minecraft:end_portal"
+        else:
+            command = None
+
         fast_reset_commands = [
             "/effect give @s minecraft:night_vision 99999 1 true",
             "/effect give @s minecraft:water_breathing 99999 1 true",
             "/effect give @s minecraft:fire_resistance 99999 1 true",
-            "/gamemode creative",
-            f"/time set {self.config['start_time']}",
-            f"/weather {self.config['start_weather']}",
-            f"/teleportbiome @a {biome} {x} ~0 {z}"
+            "/gamemode creative"
         ]
+        if command is not None:
+            fast_reset_commands.append(command)
+        fast_reset_commands.extend([
+            f"/time set {self.config['time']}",
+            f"/weather {self.config['weather']}",
+            f"/teleportbiome @a {biome} {x} ~0 {z}"
+        ])
         for command in fast_reset_commands:
             obs, _, done, info = sim.env.execute_cmd(command)
         return False
 
-    def _encode_image(self, image):
-        # image is a numpy array
-        # encode image to base64
-        _, image = cv2.imencode('.png', image)
-        image_base64 = base64.b64encode(image.tobytes()).decode('utf-8')
-        return image_base64
-
-    def _get_coordinates(self, image):
-        image_base64 = self._encode_image(image)
-        message = [{
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": f"""
-                        <image>In this image, I want to know the Callback(mineflayer_path, bot_name, port),
-            PlayCallbacoordinates of the biome {self.config[0]['biome']} from the command in left bottom corner. If the command raises an error, please return "Error", else return the coordinates of the biome in the format of "x, y, z", e.g. 100, ~, -200, where ~ means the y coordinate is not important. DO NOT OUTPUT ANYTHING ELSE.
-                    """
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {
-                        "url": f"data:image/jpeg;base64,{image_base64}"
-                    }
-                }
-            ]
-        }]
-        try:
-            response = self.client.chat.completions.create(messages=message, model=self.model)
-            return response.choices[0].message.content
-        except Exception as e:
-            return "Error"
-        
-
     def after_reset(self, sim, obs, info):
         self.prev_info = {}
 
-        repeat_times = 10
-        while (repeat_times > 0):
-            self._fast_reset(sim)
-            repeat_times -= 1
-            if self.config['structure'] is not None:
-                obs, _, done, info = sim.env.execute_cmd(f"/locate {self.config['structure']}")
-
-                obs, _, _, _, info = sim.step(sim.noop_action())
-
-                # pass the info['pov'] to VLM client to extract biome coordinates
-                image = info['pov']
-                coordinates = self._get_coordinates(image)
-                if coordinates == "Error":
-                    continue
-                else:
-                    break
-
-        if self.config['structure'] is not None:
-            # parse coordinates
-            x, y, z = coordinates.split(',')
-
-            # teleport to the structure
-            obs, _, _, info = sim.env.execute_cmd(f"/tp @s {x} {y} {z}")
+        self._fast_reset(sim)
 
         # do a attack action
         obs, _, _, info = sim.env.execute_cmd("/fill ~ ~ ~ ~1 ~1 ~1 air")
@@ -115,11 +71,13 @@ class MineblockCallback(MinecraftCallback):
 
         # randomly choose facing direction from 0 to 90.0
         facing = int(random.uniform(-90.0, 90.0))
+        if self.config['underground'] == 0:
+            facing = int(random.uniform(-45.0, 45.0))
         obs, _, _, info = sim.env.execute_cmd(f"/tp @s ~ ~-{self.config['underground']} ~ -90 {facing}")
 
         prev_y = None
         repeat_times = 20
-        while (repeat_times > 0):
+        while (repeat_times > 0 and self.config['underground'] < 0):
             repeat_times -= 1
             for _ in range(5):
                 obs, _, _, _, info = sim.step(sim.noop_action())
@@ -128,35 +86,38 @@ class MineblockCallback(MinecraftCallback):
                 break
             prev_y = info['player_pos']['y']
         obs, _, _, info = sim.env.execute_cmd(f"/tp @s ~ ~ ~ -90 {facing}")
-
-        # place the target block
-        if  0 <= facing < 45:
-            # randomly choose the y coordinate
-            y = 1
-            obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
-        elif facing >= 45:
-            # randomly choose y to be -1 or 0
-            y = random.choice([-1, 0])
-            if y == -1:
-                obs, _, _, info = sim.env.execute_cmd(f"/setblock ~ ~{y} ~ {self.config['block']}")
-            else:
+        if self.config['generate_block']:
+            # place the target block
+            if  0 <= facing < 45:
+                # randomly choose the y coordinate
+                y = 1
                 obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
-        elif -45 <= facing < 0:
-            # randomly choose y coordinate from 0 to 2
-            y = 1
-            obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
-        elif facing < -45:
-            # randomly choose y coordinate from 2 to 3
-            y = random.choice([2, 3])
-            obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
+            elif facing >= 45:
+                # randomly choose y to be -1 or 0
+                y = random.choice([-1, 0])
+                if y == -1:
+                    obs, _, _, info = sim.env.execute_cmd(f"/setblock ~ ~{y} ~ {self.config['block']}")
+                else:
+                    obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
+            elif -45 <= facing < 0:
+                # randomly choose y coordinate from 0 to 2
+                y = 1
+                obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
+            elif facing < -45:
+                # randomly choose y coordinate from 2 to 3
+                y = random.choice([2, 3])
+                obs, _, _, info = sim.env.execute_cmd(f"/setblock ~1 ~{y} ~ {self.config['block']}")
 
         # come back to survival mode
         obs, _, _, info = sim.env.execute_cmd("/gamemode survival")
-        # set main hand
-        obs, _, _, info = sim.env.execute_cmd(f"/give @s {self.config['main_hand']}")
 
-        for item, count in self.config['inventory'].items():
-            obs, _, _, info = sim.env.execute_cmd(f"/give @s {item} {count}")
+        for slot, item in self.config['armor'].items():
+            if item == "":
+                continue
+            obs, _, _, info = sim.env.execute_cmd(f"/replaceitem entity @s {slot} {item}")
+
+        for block, num in self.config['inventory'].items():
+            obs, _, _, info = sim.env.execute_cmd(f"/give @s {block} {num}")
 
         obs, _, _, _, info = sim.step(sim.noop_action())
         self.prev_info = info.copy()
@@ -197,25 +158,36 @@ if __name__ == "__main__":
         obs_size=(224, 224),
         action_type="env",
         callbacks=[
-            # FastResetCallback(biomes=["mountains"], random_tp_range=100),
             MineblockCallback(
                 config={
-                    "event": "mine_block",
-                    "underground": 40, # number of blocks to dig
-                    "structure": None,
-                    "start_time": 1000,
-                    "start_weather": "clear",
-                    "biomes": ["forest"],
-                    "block": "iron_ore",
+                    "time": 13000,
+                    "weather": "clear",
+                    "biome": "taiga",
+                    "world": "overworld",
+                    "block": "spruce_sign",
+                    "inventory": {"minecraft:wooden_axe": 1, "minecraft:torch": 10, "minecraft:bread": 5},
+                    "underground": 0,
+                    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:wooden_axe", "weapon.offhand": ""},
                     "reward": 1.0,
-                    "max_reward_times": 5,
-                    "inventory": {"minecraft:dirt": 4, "minecraft:torch": 16, "minecraft:crafting_table": 1},
-                    "main_hand": "minecraft:iron_pickaxe",
-                    "random_tp_range": 100, 
+                    "random_tp_range": 100,
+                    "generate_block": True,
+                    "event": "mine_block",
+                    # "underground": 30, # number of blocks to dig
+                    # "world": "nether",
+                    # "structure": None,
+                    # "time": 1000,
+                    # "weather": "clear",
+                    # "biomes": ["soul_sand_valley"],
+                    # "block": "iron_ore",
+                    # "reward": 1.0,
+                    # "max_reward_times": 5,
+                    # "inventory": {"minecraft:dirt": 4, "minecraft:torch": 16, "minecraft:crafting_table": 1},
+                    # "main_hand": "minecraft:iron_pickaxe",
+                    # "random_tp_range": 100, 
                 }
             ),
             PlayCallback(),
-        ]
+        ],
     )
 
     obs, info = sim.reset()
@@ -223,4 +195,3 @@ if __name__ == "__main__":
     while not terminated:
         action = None
         obs, reward, terminated, truncated, info = sim.step(action)
-        print(reward)
