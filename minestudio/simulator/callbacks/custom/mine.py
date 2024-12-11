@@ -95,6 +95,8 @@ class MineblockCallback(MinecraftCallback):
             elif facing >= 45:
                 # randomly choose y to be -1 or 0
                 y = random.choice([-1, 0])
+                if self.config['pos'] != y:
+                    y = self.config['pos']
                 if y == -1:
                     obs, _, _, info = sim.env.execute_cmd(f"/setblock ~ ~{y} ~ {self.config['block']}")
                 else:
@@ -172,6 +174,7 @@ if __name__ == "__main__":
                     "random_tp_range": 100,
                     "generate_block": True,
                     "event": "mine_block",
+                    "in_air": False,
                     # "underground": 30, # number of blocks to dig
                     # "world": "nether",
                     # "structure": None,

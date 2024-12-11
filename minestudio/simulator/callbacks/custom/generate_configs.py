@@ -19,7 +19,6 @@ import numpy as np
 # random select a mine
 print(mines)
 mine = random.choice(mines)
-mine = "sign"
 print(mine)
 # find response's title == mine
 
@@ -41,7 +40,9 @@ ret = []
 for item in item_list:
     if mine in item:
         ret.append(item)
-
+if len(ret) == 0:
+    print("Not suitable for mining")
+    exit(0)
 mine = random.choice(ret)
 
 print(response)
@@ -68,7 +69,8 @@ prompt += '    "block": "iron_ore", # the block to be mined,\n'
 prompt += '    "inventory": {"minecraft:dirt": 4, "minecraft:torch": 31, "minecraft:crafting_table": 1, "minecraft:bread": 10, "minecraft:cobblestone": 58, "minecraft:bow": 1, "minecraft:arrow": 62}, # You should pay attention to the format of the inventory, and may not repeatedly give inventory items and armor/weapon items, for example, if your set armor to minecraft:iron_pickaxe, you should not give another pickaxe in the inventory,\n'
 prompt += '    "underground": 30, # the number of blocks to dig down, if the block ususally generates on the surface, you can set it to 0,\n'
 prompt += '    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:stone_pickaxe", "weapon.offhand": ""}, # the armor and weapon of the agent, you should pay attention to the format of the armor. If you want to add enchantments to the weapon, you can add it like this: "weapon.mainhand": "minecraft:stone_pickaxe{Enchantments:[{id:silk_touch, lvl:1}]}",\n'
-prompt += '    "generate_block": True, # whether to use command to generate a new block. If the block natrually generates in front of your with a great probability, say 95%, you can set it to False, for example, if you want to mine a sand/wood block and tp to a desert/birch forest biome since sand/wood block usually can be seen. However for iron ore, you should set it to True, since iron ore is rare and may not be found. Or for items like diamond blocks/crafting table which are not naturally generated, set it to True.If you are not sure about this, you can set it to True.\n'
+prompt += '    "generate_block": True, # whether to use command to generate a new block. If the block natrually generates in front of your with a great probability, say 95%, you can set it to False, for example, if you want to mine a sand/wood block and tp to a desert/birch forest biome since sand/wood block usually can be seen. However for iron ore, you should set it to True, since iron ore is rare and may not be found. Or for items like diamond blocks/crafting table which are not naturally generated, set it to True.If you are not sure about this, you can set it to True,\n'
+prompt += '    "pos": 0, # [-1, 0, 1]. whether the object is suitable for mining in the air or underground, for example, iron ore is not suitable for mining in the air, you should set it to 0 or -1. For objects like log, you can set it to 1,\n'
 prompt += '}\n'
 prompt += "```\n"
 prompt += "If the object can not be founded on the given conditions, please output 'Not suitable for mining' (for example maybe the object is in another Minecraft version than 1.16.5).\n"
