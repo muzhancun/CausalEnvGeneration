@@ -180,8 +180,8 @@ class MineEnvGenerator:
             config['reward'] = 1.0
 
         sim = MinecraftSim(
-            self.obs_size,
-            self.action_type,
+            obs_size = self.obs_size,
+            action_type = self.action_type,
             callbacks=[
                 MineblockCallback(config),
                 # PlayCallback(),
@@ -199,10 +199,10 @@ class MineEnvGenerator:
         prompt = f"Pinpoint the {name} block. If there is no {name} block, please return 'NONE', else return the coordinates of the {name} block. DO NOT OUTPUT ANYTHING ELSE."
 
         # get the image
-        image = Image.from_array(info['pov'])
+        image = Image.fromarray(info['pov'])
         output = self.vlm_session.gen_point(image, prompt)
 
-        if output == "NONE":
+        if output is None:
             print(f"Validation failed for {name}")
             return None
         else:
@@ -263,8 +263,8 @@ if __name__ == "__main__":
     from functools import partial
 
     molmo_session = Pointer(
-            model_id="molmo-72b-0924", 
-            model_url="http://172.17.30.127:8000/v1", 
+            model_id="molmo-7b-d-0924", 
+            model_url="http://172.17.30.1.127:9161/v1", 
     )
 
     sam_path = "../../../models/realtime_sam/checkpoints/"

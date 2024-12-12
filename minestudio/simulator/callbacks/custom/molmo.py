@@ -19,7 +19,7 @@ class Pointer:
     '''
     Pointer is a model based on molmo, which can output point location of the object in the image.
     '''
-    def __init__(self, model_id, model_url:str="http://127.0.0.1:9162/v1", api_key:str="EMPTY"):
+    def __init__(self, model_id, model_url:str="http://172.17.30.1.127:9161/v1", api_key:str="EMPTY"):
         self.model_id = model_id
         self.model_url = model_url
         self.api_key = api_key
