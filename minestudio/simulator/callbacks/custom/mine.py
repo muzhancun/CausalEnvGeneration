@@ -8,23 +8,15 @@ from PIL import Image
 import random
 import numpy as np
 from rich import print
+import torch
+
+SEGMENT_MAPPING = {
+    "Hunt": 0, "Use": 3, "Mine": 2, "Interact": 3, "Craft": 4, "Switch": 5, "Approach": 6, "None": -1
+}
 
 class MineblockCallback(MinecraftCallback):
     """
         Use to generate env setting suitable for mining
-        Examples:
-            config = {
-                "event": "mine_block",
-                "structure": "village",
-                "biomes": ["plains"],
-                "time": 1000,
-                "weather": "clear",
-                "block": "iron_ore",
-                "reward": 1.0,
-                "inventory": {"iron_ore": 1},
-                "main_hand": "minecraft:iron_pickaxe",
-                "random_tp_range": 100, 
-            }
     """
     def __init__(self, config, openai_client=None, model=None):
         super().__init__()
@@ -172,6 +164,7 @@ class MineEnvGenerator:
         self.action_type = action_type
         self.vlm_session = vlm_session
         self.sam_session = sam_session
+        self.segment_type = "Mine"
 
     def generate_env(self, name = None):
         config_list = os.listdir(self.config_path)
@@ -211,7 +204,7 @@ class MineEnvGenerator:
 
         if output == "NONE":
             print(f"Validation failed for {name}")
-            return False
+            return None
         else:
             print(f"Validation passed for {name}")
             
@@ -223,45 +216,74 @@ class MineEnvGenerator:
                 points=output,
                 labels=[1 for _ in range(len(output))],
             )
-            obj_mask = (out_mask_logits[0, 0] > 0.0).cpu().numpy()
+            obj_mask = (out_mask_logits[0, 0] > 0.0).cpu().numpy().as_type(np.uint8)
+            obj_id = torch.tensor(SEGMENT_MAPPING[self.segment_type])
+
+            # save an image for visualization
+            image = info['pov'].copy()
+            os.mkdir(f"./images/{name}")
+            cv2.circle(image, (output[0], output[1]), 5, (0, 255, 0), -1)
+            # draw the mask
+            image[obj_mask == 1] = [0, 0, 255]
+            cv2.imwrite(f"./images/{name}/image.png", image)
+
+            obj_mask = cv2.resize(obj_mask, self.obs_size, interpolation=cv2.INTER_NEAREST)
+            obj_mask = torch.tensor(obj_mask, dtype=torch.uint8)
+
+            segment = {}
+            segment['obj_mask'] = obj_mask
+            segment['obj_id'] = obj_id
+
+        return segment
 
 
+
+def load_sam(sam_path, sam_choice):
+    from sam2.build_sam import build_sam2_camera_predictor
+    ckpt_mapping = {
+        'large': [os.path.join(sam_path, "sam2_hiera_large.pt"), "sam2_hiera_l.yaml"],
+        'base': [os.path.join(sam_path, "sam2_hiera_base_plus.pt"), "sam2_hiera_b+.yaml"],
+        'small': [os.path.join(sam_path, "sam2_hiera_small.pt"), "sam2_hiera_s.yaml"],
+        'tiny': [os.path.join(sam_path, "sam2_hiera_tiny.pt"), "sam2_hiera_t.yaml"]
+    }
+    sam_ckpt, model_cfg = ckpt_mapping[sam_choice]
+    predictor = build_sam2_camera_predictor(model_cfg, sam_ckpt)
+    print(f"Successfully loaded SAM2 from {sam_ckpt}")
+    return predictor
 
 if __name__ == "__main__":
     from minestudio.simulator import MinecraftSim
     from minestudio.simulator.callbacks import (
         PlayCallback, FastResetCallback
     )
+    from molmo import Pointer
     from openai import OpenAI
     import json
     import os
     from functools import partial
 
-    # load configs from ./configs
-    config_list = os.listdir('./configs')
-
-    # randomly sample a config
-    name = random.choice(config_list)
-    config = json.load(open(f'./configs/{name}'))
-    config['generate_block'] = True
-    config['event'] = "mine_block"
-    config['random_tp_range'] = 20
-    config['reward'] = 1.0
-    print(name, config)
-
-    env_generator = partial(
-        MinecraftSim,
-        obs_size=(224, 224),
-        action_type="env",
-        callbacks=[
-            MineblockCallback(config),
-            PlayCallback(),
-        ]
+    molmo_session = Pointer(
+            model_id="molmo-72b-0924", 
+            model_url="http://172.17.30.127:8000/v1", 
     )
 
-    sim = env_generator()
+    sam_path = "../../../models/realtime_sam/checkpoints/"
+    sam_choice = "tiny"
 
-    obs, info = sim.reset()
+    sam_session = load_sam(sam_path, sam_choice)
+
+    mine_generator = MineEnvGenerator(
+        vlm_session=molmo_session,
+        sam_session=sam_session,
+        config_path='./configs',
+        obs_size=(224, 224),
+        action_type="env"
+    )
+
+    sim, name = mine_generator.generate_env()
+    segment = mine_generator.validate_env(sim, name)
+
+    # obs, info = sim.reset()
     terminated = False
     while not terminated:
         action = None
