@@ -1,0 +1,23 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "snowy_taiga",
+    "world": "overworld",
+    "block": "snow_block",
+    "inventory": {
+        "minecraft:stone_shovel": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 10,
+        "minecraft:wooden_planks": 20
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

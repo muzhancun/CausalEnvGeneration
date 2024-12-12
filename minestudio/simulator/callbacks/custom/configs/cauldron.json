@@ -1,0 +1,25 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "swamp",
+    "world": "overworld",
+    "block": "cauldron",
+    "inventory": {
+        "minecraft:stone": 10,
+        "minecraft:torch": 16,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:bucket": 1,
+        "minecraft:iron_pickaxe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

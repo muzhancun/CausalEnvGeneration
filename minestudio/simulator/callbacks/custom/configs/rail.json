@@ -1,0 +1,11 @@
+{
+    "time": 2000,
+    "weather": "clear",
+    "biome": "forest",
+    "world": "overworld",
+    "block": "powered_rail",
+    "inventory": {"minecraft:torch": 20, "minecraft:crafting_table": 1, "minecraft:bread": 10, "minecraft:stone": 32, "minecraft:iron_ingot": 5},
+    "underground": 0,
+    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_pickaxe", "weapon.offhand": ""},
+    "generate_block": true
+}

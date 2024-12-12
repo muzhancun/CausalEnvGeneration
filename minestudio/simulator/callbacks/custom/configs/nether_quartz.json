@@ -1,0 +1,24 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "nether_wastes",
+    "world": "nether",
+    "block": "nether_quartz_ore",
+    "inventory": {
+        "minecraft:netherrack": 64,
+        "minecraft:torch": 64,
+        "minecraft:crafting_table": 1,
+        "minecraft:stone_pickaxe": 1,
+        "minecraft:baked_potato": 16
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

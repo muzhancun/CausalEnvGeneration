@@ -1,0 +1,24 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "crimson_forest",
+    "world": "nether",
+    "block": "crimson_slab",
+    "inventory": {
+        "minecraft:iron_axe": 1,
+        "minecraft:cooked_porkchop": 5,
+        "minecraft:netherrack": 10,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_axe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

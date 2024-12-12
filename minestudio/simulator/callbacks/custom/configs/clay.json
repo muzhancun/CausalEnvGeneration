@@ -1,0 +1,24 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "swamp",
+    "world": "overworld",
+    "block": "clay",
+    "inventory": {
+        "minecraft:wooden_shovel": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 20,
+        "minecraft:bucket": 1,
+        "minecraft:oak_boat": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

@@ -1,0 +1,24 @@
+{
+    "time": 2000,
+    "weather": "clear",
+    "biome": "windswept_savanna",
+    "world": "overworld",
+    "block": "coarse_dirt",
+    "inventory": {
+        "minecraft:stick": 10,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:wooden_planks": 30
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

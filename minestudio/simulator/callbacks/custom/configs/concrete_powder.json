@@ -1,0 +1,24 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "beach",
+    "world": "overworld",
+    "block": "yellow_concrete_powder",
+    "inventory": {
+        "minecraft:sand": 20,
+        "minecraft:gravel": 20,
+        "minecraft:shovel": 1,
+        "minecraft:torch": 10,
+        "minecraft:bread": 5
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

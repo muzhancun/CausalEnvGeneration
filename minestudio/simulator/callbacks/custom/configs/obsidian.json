@@ -1,0 +1,26 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "obsidian",
+    "inventory": {
+        "minecraft:bucket": 2,
+        "minecraft:water_bucket": 1,
+        "minecraft:lava_bucket": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:dirt": 20
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:diamond_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

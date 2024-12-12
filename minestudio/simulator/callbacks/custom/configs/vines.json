@@ -1,0 +1,23 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "warped_forest",
+    "world": "nether",
+    "block": "twisting_vines",
+    "inventory": {
+        "minecraft:netherrack": 16,
+        "minecraft:golden_carrot": 5,
+        "minecraft:bow": 1,
+        "minecraft:arrow": 32
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "minecraft:golden_helmet",
+        "armor.chest": "minecraft:golden_chestplate",
+        "armor.legs": "minecraft:golden_leggings",
+        "armor.feet": "minecraft:golden_boots",
+        "weapon.mainhand": "minecraft:stone_axe{Enchantments:[{id:silk_touch, lvl:1}]}",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

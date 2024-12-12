@@ -1,0 +1,23 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "ocean",
+    "world": "overworld",
+    "block": "kelp_plant",
+    "inventory": {
+        "minecraft:wooden_axe": 1,
+        "minecraft:boat": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 10
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:wooden_axe",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

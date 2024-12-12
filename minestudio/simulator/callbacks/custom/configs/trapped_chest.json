@@ -1,0 +1,24 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "forest",
+    "world": "overworld",
+    "block": "trapped_chest",
+    "inventory": {
+        "minecraft:wooden_shovel": 1,
+        "minecraft:torch": 20,
+        "minecraft:bread": 5,
+        "minecraft:cobblestone": 10,
+        "minecraft:iron_axe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

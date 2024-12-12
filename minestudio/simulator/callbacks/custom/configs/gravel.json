@@ -1,0 +1,23 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "beach",
+    "world": "overworld",
+    "block": "gravel",
+    "inventory": {
+        "minecraft:stone_pickaxe": 1,
+        "minecraft:torches": 10,
+        "minecraft:bread": 5,
+        "minecraft:water_bucket": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

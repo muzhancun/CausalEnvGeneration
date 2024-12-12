@@ -1,0 +1,24 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "blue_stained_glass_pane",
+    "inventory": {
+        "minecraft:dirt": 20,
+        "minecraft:torch": 5,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:wooden_axe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe{Enchantments:[{id:silk_touch,lvl:1}]}",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

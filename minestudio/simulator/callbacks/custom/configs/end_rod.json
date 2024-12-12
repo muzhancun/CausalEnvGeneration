@@ -1,0 +1,23 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "end_midlands",
+    "world": "end",
+    "block": "end_rod",
+    "inventory": {
+        "minecraft:ender_pearl": 5,
+        "minecraft:gapple": 2,
+        "minecraft:end_stone": 10,
+        "minecraft:iron_pickaxe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "minecraft:iron_helmet",
+        "armor.chest": "minecraft:iron_chestplate",
+        "armor.legs": "minecraft:iron_leggings",
+        "armor.feet": "minecraft:iron_boots",
+        "weapon.mainhand": "minecraft:iron_sword",
+        "weapon.offhand": "minecraft:shield"
+    },
+    "generate_block": false
+}

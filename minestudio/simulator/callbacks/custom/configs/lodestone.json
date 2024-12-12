@@ -1,0 +1,11 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "forest",
+    "world": "overworld",
+    "block": "lodestone",
+    "inventory": {"minecraft:dirt": 10, "minecraft:torch": 20, "minecraft:compass": 1, "minecraft:bread": 5, "minecraft:cobblestone": 40, "minecraft:iron_ingot": 3},
+    "underground": 0,
+    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_pickaxe", "weapon.offhand": ""},
+    "generate_block": true
+}

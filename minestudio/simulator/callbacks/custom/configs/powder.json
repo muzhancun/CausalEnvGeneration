@@ -1,0 +1,24 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "gray_concrete_powder",
+    "inventory": {
+        "minecraft:torch": 10,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:iron_shovel": 1,
+        "minecraft:cobblestone": 20
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_shovel",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

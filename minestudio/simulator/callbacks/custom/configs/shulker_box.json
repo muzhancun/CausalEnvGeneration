@@ -1,0 +1,25 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "desert",
+    "world": "overworld",
+    "block": "blue_shulker_box",
+    "inventory": {
+        "minecraft:bread": 5,
+        "minecraft:torch": 20,
+        "minecraft:wooden_axe": 1,
+        "minecraft:planks": 24,
+        "minecraft:iron_ingot": 3,
+        "minecraft:water_bucket": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "minecraft:leather_chestplate",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_axe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

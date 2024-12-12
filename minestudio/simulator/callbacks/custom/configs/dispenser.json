@@ -1,0 +1,25 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "jungle",
+    "world": "overworld",
+    "block": "dispenser",
+    "inventory": {
+        "minecraft:dirt": 10,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:cobblestone": 40,
+        "minecraft:redstone": 16
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

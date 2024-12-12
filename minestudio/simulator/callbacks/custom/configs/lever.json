@@ -1,0 +1,24 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "jungle",
+    "world": "overworld",
+    "block": "lever",
+    "inventory": {
+        "minecraft:torch": 20,
+        "minecraft:cooked_porkchop": 5,
+        "minecraft:crafting_table": 1,
+        "minecraft:spruce_planks": 10,
+        "minecraft:iron_axe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_axe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

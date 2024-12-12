@@ -1,0 +1,24 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "crimson_forest",
+    "world": "nether",
+    "block": "nether_wart_block",
+    "inventory": {
+        "minecraft:stone_hoe": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 20,
+        "minecraft:cobblestone": 64,
+        "minecraft:wooden_planks": 32
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "minecraft:iron_helmet",
+        "armor.chest": "minecraft:iron_chestplate",
+        "armor.legs": "minecraft:iron_leggings",
+        "armor.feet": "minecraft:iron_boots",
+        "weapon.mainhand": "minecraft:stone_hoe",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

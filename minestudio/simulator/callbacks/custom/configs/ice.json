@@ -1,0 +1,24 @@
+{
+    "time": 5000,
+    "weather": "clear",
+    "biome": "snowy_slopes",
+    "world": "overworld",
+    "block": "ice",
+    "inventory": {
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:wheat_seeds": 10,
+        "minecraft:stone": 32
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:diamond_pickaxe{Enchantments:[{id:efficiency,lvl:3}]}",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

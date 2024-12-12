@@ -1,0 +1,26 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "crimson_forest",
+    "world": "nether",
+    "block": "nether_gold_ore",
+    "inventory": {
+        "minecraft:netherrack": 10,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:golden_sword": 1,
+        "minecraft:arrow": 30,
+        "minecraft:bucket": 1
+    },
+    "underground": 20,
+    "armor": {
+        "armor.head": "minecraft:golden_helmet",
+        "armor.chest": "minecraft:iron_chestplate",
+        "armor.legs": "minecraft:iron_leggings",
+        "armor.feet": "minecraft:iron_boots",
+        "weapon.mainhand": "minecraft:iron_pickaxe{Enchantments:[{id:fortune, lvl:1}]}",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

@@ -1,0 +1,25 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "badlands",
+    "world": "overworld",
+    "block": "gold_ore",
+    "inventory": {
+        "minecraft:dirt": 10,
+        "minecraft:torch": 40,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 15,
+        "minecraft:cobblestone": 60,
+        "minecraft:log": 5
+    },
+    "underground": 40,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

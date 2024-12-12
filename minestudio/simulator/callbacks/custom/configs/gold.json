@@ -1,0 +1,26 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "nether_wastes",
+    "world": "nether",
+    "block": "nether_gold_ore",
+    "inventory": {
+        "minecraft:netherrack": 64,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:cooked_porkchop": 10,
+        "minecraft:bow": 1,
+        "minecraft:arrow": 64,
+        "minecraft:stone_pickaxe": 1
+    },
+    "underground": 5,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

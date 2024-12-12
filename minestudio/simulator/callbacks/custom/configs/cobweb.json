@@ -1,0 +1,11 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "forest",
+    "world": "overworld",
+    "block": "cobweb",
+    "inventory": {"minecraft:shears": 1, "minecraft:bread": 5, "minecraft:torches": 10, "minecraft:cobblestone": 20, "minecraft:water_bucket": 1},
+    "underground": 0,
+    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_sword", "weapon.offhand": ""},
+    "generate_block": false
+}

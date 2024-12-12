@@ -1,0 +1,11 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "honeycomb_block",
+    "inventory": {"minecraft:stone": 20, "minecraft:torch": 10, "minecraft:crafting_table": 1, "minecraft:bread": 5, "minecraft:stone_pickaxe": 1},
+    "underground": 0,
+    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:wooden_axe", "weapon.offhand": ""},
+    "generate_block": true
+}

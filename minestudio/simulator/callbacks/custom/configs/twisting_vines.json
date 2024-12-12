@@ -1,0 +1,25 @@
+{
+    "time": 2000,
+    "weather": "clear",
+    "biome": "warped_forest",
+    "world": "nether",
+    "block": "twisting_vines",
+    "inventory": {
+        "minecraft:iron_hoe": 1,
+        "minecraft:bone_meal": 16,
+        "minecraft:warped_nylium": 10,
+        "minecraft:warped_fungus": 5,
+        "minecraft:food_item": 10,
+        "minecraft:torch": 20
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "minecraft:iron_helmet",
+        "armor.chest": "minecraft:iron_chestplate",
+        "armor.legs": "minecraft:iron_leggings",
+        "armor.feet": "minecraft:iron_boots",
+        "weapon.mainhand": "minecraft:shears",
+        "weapon.offhand": ""
+    },
+    "generate_block": false
+}

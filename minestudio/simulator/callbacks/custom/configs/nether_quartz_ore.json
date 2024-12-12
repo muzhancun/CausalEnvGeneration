@@ -1,0 +1,26 @@
+{
+    "time": 13000,
+    "weather": "clear",
+    "biome": "nether_wastes",
+    "world": "nether",
+    "block": "nether_quartz_ore",
+    "inventory": {
+        "minecraft:torch": 64,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 20,
+        "minecraft:iron_pickaxe": 1,
+        "minecraft:cobblestone": 64,
+        "minecraft:arrow": 64,
+        "minecraft:bow": 1
+    },
+    "underground": 20,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "minecraft:golden_chestplate",
+        "armor.legs": "minecraft:golden_leggings",
+        "armor.feet": "minecraft:golden_boots",
+        "weapon.mainhand": "minecraft:stone_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

@@ -1,0 +1,25 @@
+{
+    "time": 18000,
+    "weather": "clear",
+    "biome": "crimson_forest",
+    "world": "nether",
+    "block": "gilded_blackstone",
+    "inventory": {
+        "minecraft:netherrack": 20,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:stone_pickaxe": 1,
+        "minecraft:golden_apple": 2
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

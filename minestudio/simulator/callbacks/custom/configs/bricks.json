@@ -1,0 +1,11 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "bricks",
+    "inventory": {"minecraft:stone_pickaxe": 1, "minecraft:torch": 16, "minecraft:oak_log": 10, "minecraft:bread": 5, "minecraft:water_bucket": 1},
+    "underground": 0,
+    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_pickaxe", "weapon.offhand": ""},
+    "generate_block": true
+}

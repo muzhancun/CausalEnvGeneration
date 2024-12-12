@@ -1,0 +1,25 @@
+{
+    "time": 1000,
+    "weather": "clear",
+    "biome": "warm_ocean",
+    "world": "overworld",
+    "block": "tube_coral_block",
+    "inventory": {
+        "minecraft:boat": 1,
+        "minecraft:bread": 5,
+        "minecraft:torch": 10,
+        "minecraft:iron_pickaxe": 1,
+        "minecraft:bucket": 1,
+        "minecraft:emerald": 10
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_pickaxe{Enchantments:[{id:silk_touch, lvl:1}]}",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

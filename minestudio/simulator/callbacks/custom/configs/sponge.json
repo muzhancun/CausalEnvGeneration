@@ -1,0 +1,23 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "ocean",
+    "world": "overworld",
+    "block": "wet_sponge",
+    "inventory": {
+        "minecraft:bread": 5,
+        "minecraft:torch": 20,
+        "minecraft:crafting_table": 1,
+        "minecraft:hoe": 1
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:iron_hoe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}

@@ -1,0 +1,26 @@
+{
+    "time": 6000,
+    "weather": "clear",
+    "biome": "plains",
+    "world": "overworld",
+    "block": "detector_rail",
+    "inventory": {
+        "minecraft:dirt": 5,
+        "minecraft:torch": 15,
+        "minecraft:crafting_table": 1,
+        "minecraft:bread": 5,
+        "minecraft:minecart": 1,
+        "minecraft:iron_ingot": 10,
+        "minecraft:stick": 4
+    },
+    "underground": 0,
+    "armor": {
+        "armor.head": "",
+        "armor.chest": "",
+        "armor.legs": "",
+        "armor.feet": "",
+        "weapon.mainhand": "minecraft:stone_pickaxe",
+        "weapon.offhand": ""
+    },
+    "generate_block": true
+}
