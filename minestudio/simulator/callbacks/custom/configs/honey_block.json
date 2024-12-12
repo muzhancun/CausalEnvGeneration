@@ -1,11 +1,1 @@
-{
-    "time": 6000,
-    "weather": "clear",
-    "biome": "plains",
-    "world": "overworld",
-    "block": "honey_block",
-    "inventory": {"minecraft:wooden_pickaxe": 1, "minecraft:torch": 20, "minecraft:bread": 5, "minecraft:crafting_table": 1, "minecraft:bucket": 1},
-    "underground": 0,
-    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:wooden_pickaxe", "weapon.offhand": ""},
-    "generate_block": true
-}
+{"time": 6000, "weather": "clear", "biome": "plains", "world": "overworld", "block": "honey_block", "inventory": {"minecraft:wooden_pickaxe": 1, "minecraft:torch": 20, "minecraft:bread": 5, "minecraft:crafting_table": 1, "minecraft:bucket": 1}, "underground": 0, "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:wooden_pickaxe", "weapon.offhand": ""}, "generate_block": true, "in_air": false}

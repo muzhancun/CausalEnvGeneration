@@ -1,11 +1,1 @@
-{
-    "time": 1000,
-    "weather": "clear",
-    "biome": "plains",
-    "world": "overworld",
-    "block": "tall_grass",
-    "inventory": {"minecraft:shears": 1, "minecraft:bone_meal": 5, "minecraft:dirt": 10},
-    "underground": 0,
-    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:shears", "weapon.offhand": ""},
-    "generate_block": false
-}
+{"time": 1000, "weather": "clear", "biome": "plains", "world": "overworld", "block": "tall_grass", "inventory": {"minecraft:shears": 1, "minecraft:bone_meal": 5, "minecraft:dirt": 10}, "underground": 0, "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:shears", "weapon.offhand": ""}, "generate_block": false, "in_air": false}

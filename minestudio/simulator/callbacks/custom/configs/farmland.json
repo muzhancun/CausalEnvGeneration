@@ -1,11 +1,1 @@
-{
-    "time": 1000,
-    "weather": "clear",
-    "biome": "plains",
-    "world": "overworld",
-    "block": "farmland",
-    "inventory": {"minecraft:hoe": 1, "minecraft:water_bucket": 1, "minecraft:torch": 20, "minecraft:seeds": 12, "minecraft:carrot": 5},
-    "underground": 0,
-    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:hoe", "weapon.offhand": ""},
-    "generate_block": true
-}
+{"time": 1000, "weather": "clear", "biome": "plains", "world": "overworld", "block": "farmland", "inventory": {"minecraft:hoe": 1, "minecraft:water_bucket": 1, "minecraft:torch": 20, "minecraft:seeds": 12, "minecraft:carrot": 5}, "underground": 0, "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:hoe", "weapon.offhand": ""}, "generate_block": true, "in_air": false}

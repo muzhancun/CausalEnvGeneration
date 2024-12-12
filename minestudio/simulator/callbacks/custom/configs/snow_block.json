@@ -1,11 +1,1 @@
-{
-    "time": 6000,
-    "weather": "clear",
-    "biome": "snowy_slopes",
-    "world": "overworld",
-    "block": "snow_block",
-    "inventory": {"minecraft:shovel": 1, "minecraft:torch": 20, "minecraft:bread": 5},
-    "underground": 0,
-    "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_shovel", "weapon.offhand": ""},
-    "generate_block": false
-}
+{"time": 6000, "weather": "clear", "biome": "snowy_slopes", "world": "overworld", "block": "snow_block", "inventory": {"minecraft:shovel": 1, "minecraft:torch": 20, "minecraft:bread": 5}, "underground": 0, "armor": {"armor.head": "", "armor.chest": "", "armor.legs": "", "armor.feet": "", "weapon.mainhand": "minecraft:iron_shovel", "weapon.offhand": ""}, "generate_block": false, "in_air": true}
