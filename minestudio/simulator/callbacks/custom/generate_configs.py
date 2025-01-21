@@ -35,9 +35,9 @@ import openai
 import requests
 import os
 
-openai_key = "sk-o2KHVcwHYwI6E8X03e883bD19bB74f3cA25fA65c3fBe83A3"
-url = "https://www.dwyu.top/v1/chat/completions"
-client = openai.Client(api_key=openai_key, base_url="https://www.dwyu.top/v1/chat/completions")
+openai_key = ""
+url = ""
+client = openai.Client(api_key=openai_key, base_url="")
 
 for mine in tqdm(mines):
     # change the space to underscore
