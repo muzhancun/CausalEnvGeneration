@@ -9,6 +9,16 @@
 
 This is final project for the 2024 Fall course "Knowledge Representation and Learning" at PKU. The project is to integrate causal knowledge for automated RL environment generation and evaluation in open world. The project is based on the [MineStudio](https://github.com/CraftJarvis/MineStudio)
 
+
+## Extracting Causal Graph Relations from Minecraft Wiki
+
+This section describes our approach for gathering structured causal knowledge from unstructured natural language wiki. We prompt GPT-4o in a few-shot manner to make the language model extract causal knowledge in the format of [head, relation, tail]. The prompt cab be seen in `extract/frame.py`. Run 
+```bash
+python extract/call.py --api_key YOUR_OPENAI_API
+```
+to find all minecraft-related causal knowledge in `extract/responses`, and each json file stands for knowledge related to term in Minecraft. Replace `YOUR_OPENAI_API` in this command with your openai api to call gpt-4o.
+
+
 ## Generating Environments Using Causal Knowledge
 
 This section describes our approach for synthesizing diverse Minecraft environments tailored for multi-task reinforcement learning and evaluation. The method integrates causal graphs with large language models to produce task-specific environment configurations. By leveraging causal dependencies and structured reasoning, we ensure the generated environments are both coherent and sufficiently varied.

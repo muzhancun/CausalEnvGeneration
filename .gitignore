@@ -175,3 +175,11 @@ record/
 
 minestudio/models/realtime_sam/notebooks/*.jpg
 minestudio/models/realtime_sam/checkpoints/*.pt
+
+
+# extract phase
+.DS_Store
+extract/*.csv
+extract/*models/
+extract/responses/
+extract/draw.py
